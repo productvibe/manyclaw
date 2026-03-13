@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* ─── Apple HIG System Tokens ─────────────────────────────────────── */
+:root {
+  /* Layout */
+  --sidebar-width: 220px;
+  --toolbar-height: 52px;
+  --item-height: 32px;
+
+  /* Backgrounds */
+  --sidebar-bg: #F5F5F5;
+  --content-bg: #FFFFFF;
+
+  /* Borders */
+  --border-color: rgba(0, 0, 0, 0.1);
+
+  /* Text */
+  --text-primary: #1C1C1E;
+  --text-secondary: #8E8E93;
+
+  /* Accent / Semantic */
+  --accent: #007AFF;
+  --destructive: #FF3B30;
+  --success: #34C759;
+  --warning: #FF9500;
+
+  /* Typography */
+  --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-size-label: 11px;
+  --font-size-body: 13px;
+  --font-size-title: 15px;
+
+  /* ─── shadcn/ui CSS variable surface (zinc base) ────────────────── */
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+
+  --accent-shadcn: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+
+  --destructive-shadcn: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 5.9% 10%;
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+
+  --accent-shadcn: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+
+  --destructive-shadcn: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+
+  /* Dark mode Apple tokens */
+  --sidebar-bg: #1C1C1E;
+  --content-bg: #000000;
+  --text-primary: #F2F2F7;
+  --text-secondary: #636366;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Base Reset ────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  font-size: var(--font-size-body);
+  color: var(--text-primary);
+  background: var(--content-bg);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
