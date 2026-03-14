@@ -6,16 +6,11 @@ section: Concepts
 description: How MultiClaw uses OpenClaw's profile system for true agent isolation.
 date: 2026-03-14
 ---
-# Understanding Profiles
 
-Each instance in MultiClaw is an OpenClaw profile. When you create an instance called 'Dev', MultiClaw runs it as `openclaw --profile dev`. Everything about that agent — its memory, sessions, workspace, API auth — lives in its own isolated directory.
+Every instance you create in MultiClaw corresponds to a named OpenClaw profile. Under the hood, MultiClaw passes `--profile <id>` when it launches each agent, which tells OpenClaw to use a completely separate directory for all of its state.
 
-Two instances can never see each other's context. What your work agent knows, your personal agent doesn't. This isn't a setting — it's structural.
+This means two instances share nothing. Memory files, session history, workspace contents, API authentication, skills configuration, and the gateway port are all scoped to the profile. An action taken in one instance — a file written, a session started, a skill configured — has no effect on any other instance.
 
-## What's isolated
+This isolation is not a MultiClaw abstraction. It is a property of OpenClaw itself. MultiClaw surfaces it visually and manages the process lifecycle, but the isolation guarantee comes from the underlying profile system. You can inspect it directly: each profile lives in `~/.openclaw-<id>/` on disk.
 
-- Memory (MEMORY.md and daily notes)
-- Session history
-- Agent workspace and files
-- Gateway auth token
-- Model configuration
+The practical consequence is that you can use different API keys per instance, maintain separate agent personas, and run development and production agents side by side without any risk of state contamination between them.

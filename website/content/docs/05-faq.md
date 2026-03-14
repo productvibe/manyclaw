@@ -6,19 +6,18 @@ section: Reference
 description: Common questions about MultiClaw.
 date: 2026-03-14
 ---
-# FAQ
 
-**Does MultiClaw require OpenClaw?**
-Yes. MultiClaw is a management layer on top of OpenClaw. You need OpenClaw installed first.
+**Does MultiClaw require OpenClaw to be installed?**
+MultiClaw bundles a compatible OpenClaw binary, so a separate installation is not required. If you already have OpenClaw installed, MultiClaw uses its own bundled copy and leaves your existing installation untouched.
 
-**Can I use different API keys per instance?**
-Yes. Each instance is an isolated OpenClaw profile with its own configuration. Set up each one independently via its TUI or web dashboard.
+**Can I use different API keys for each instance?**
+Yes. Because each instance is a separate OpenClaw profile with its own isolated config directory, you configure API credentials per instance through that instance's OpenClaw dashboard. MultiClaw does not manage API keys directly.
 
 **Is data shared between instances?**
-No. Memory, sessions, and workspaces are fully isolated. Instances cannot access each other's data.
+No. Memory, sessions, workspace files, and configuration are fully isolated per profile. Two instances running simultaneously cannot read each other's state. This is a property of OpenClaw's `--profile` system, not a MultiClaw-level abstraction.
 
 **Is MultiClaw open source?**
-Yes. MIT licensed.
+Yes. MultiClaw is MIT-licensed and the source is available on [GitHub](https://github.com/nichochar/multiclaw).
 
-**Does it work on Intel Macs?**
-Yes. MultiClaw runs on both Apple Silicon and Intel Macs (macOS 12+).
+**What happens to my data if I delete an instance?**
+Deleting an instance removes the profile directory from disk (`~/.openclaw-<id>/`). This is permanent and includes all memory, sessions, and workspace files for that instance. MultiClaw shows a confirmation dialog before deleting.
