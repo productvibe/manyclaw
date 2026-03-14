@@ -26,6 +26,9 @@ export default defineConfig({
     emptyOutDir: true,
   },
 
+  // Critical for Electron file:// loading — assets must use relative paths
+  base: './',
+
   // In dev mode, electron's main process reads this URL from VITE_DEV_SERVER_URL
   server: {
     port: 5173,

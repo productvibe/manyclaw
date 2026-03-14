@@ -1,109 +1,166 @@
 @import "tailwindcss";
 
-/* ─── Apple HIG System Tokens ─────────────────────────────────────── */
+/* ─── Apple HIG Design Tokens (Dee's spec) ─────────────────────────── */
 :root {
-  /* Layout */
-  --sidebar-width: 220px;
-  --toolbar-height: 52px;
-  --item-height: 32px;
-
-  /* Backgrounds */
+  /* ── Surface colors ── */
   --sidebar-bg: #F5F5F5;
   --content-bg: #FFFFFF;
+  --toolbar-bg: #F5F5F5;
+  --instance-toolbar-bg: #FAFAFA;
+  --input-bg: #FFFFFF;
+  --terminal-bg: #1C1C1E;
 
-  /* Borders */
-  --border-color: rgba(0, 0, 0, 0.1);
+  /* ── Border ── */
+  --border-color: rgba(0, 0, 0, 0.10);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-focus: rgba(0, 122, 255, 0.50);
 
-  /* Text */
+  /* ── Text ── */
   --text-primary: #1C1C1E;
   --text-secondary: #8E8E93;
+  --text-tertiary: #C7C7CC;
+  --text-inverted: #FFFFFF;
+  --text-terminal: #F5F5F7;
+  --text-terminal-dim: #48484A;
 
-  /* Accent / Semantic */
+  /* ── Accent / semantic ── */
   --accent: #007AFF;
-  --destructive: #FF3B30;
-  --success: #34C759;
-  --warning: #FF9500;
+  --accent-hover: #0066D6;
+  --accent-subtle: rgba(0, 122, 255, 0.10);
+  --accent-subtle-border: rgba(0, 122, 255, 0.20);
 
-  /* Typography */
+  --destructive: #FF3B30;
+  --destructive-subtle: rgba(255, 59, 48, 0.10);
+  --destructive-subtle-border: rgba(255, 59, 48, 0.25);
+
+  --success: #34C759;
+  --success-subtle: rgba(52, 199, 89, 0.12);
+  --success-subtle-border: rgba(52, 199, 89, 0.30);
+
+  --warning: #FF9500;
+  --warning-subtle: rgba(255, 149, 0, 0.10);
+  --warning-subtle-border: rgba(255, 149, 0, 0.25);
+
+  /* ── Selection / hover ── */
+  --row-hover-bg: rgba(0, 0, 0, 0.04);
+  --row-selected-bg: rgba(0, 122, 255, 0.10);
+  --row-selected-bg-focused: rgba(0, 122, 255, 0.12);
+
+  /* ── Typography ── */
   --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
+
   --font-size-label: 11px;
   --font-size-body: 13px;
   --font-size-title: 15px;
+  --font-size-headline: 17px;
+  --font-size-mono: 13px;
+  --font-size-mono-code: 12px;
 
-  /* ─── shadcn/ui CSS variable surface (zinc base) ────────────────── */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --line-height-body: 1.4;
+  --line-height-terminal: 1.5;
+
+  --letter-spacing-label: 0.06em;
+
+  /* ── Spacing ── */
+  --sidebar-width: 220px;
+  --toolbar-height: 52px;
+  --instance-toolbar-height: 44px;
+  --item-height: 32px;
+  --input-height: 36px;
+  --button-height-sm: 28px;
+  --button-height-md: 32px;
+
+  /* ── Radius ── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* ── Status dot ── */
+  --dot-size: 8px;
+  --dot-size-sm: 6px;
+
+  /* ── Shadows ── */
+  --shadow-dialog: 0 20px 60px rgba(0, 0, 0, 0.20);
+  --shadow-popover: 0 4px 20px rgba(0, 0, 0, 0.12);
+
+  /* ── Transitions ── */
+  --transition-fast: 120ms ease;
+  --transition-base: 150ms ease;
+  --transition-slow: 300ms ease;
+  --transition-sheet: 200ms ease-out;
+
+  /* ── shadcn/ui CSS variable surface ────────────────── */
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
-
   --card: 0 0% 100%;
   --card-foreground: 240 10% 3.9%;
-
   --popover: 0 0% 100%;
   --popover-foreground: 240 10% 3.9%;
-
   --primary: 240 5.9% 10%;
   --primary-foreground: 0 0% 98%;
-
   --secondary: 240 4.8% 95.9%;
   --secondary-foreground: 240 5.9% 10%;
-
   --muted: 240 4.8% 95.9%;
   --muted-foreground: 240 3.8% 46.1%;
-
   --accent-shadcn: 240 4.8% 95.9%;
   --accent-foreground: 240 5.9% 10%;
-
   --destructive-shadcn: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
   --ring: 240 5.9% 10%;
-
   --radius: 0.5rem;
 }
 
-.dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-
-  --primary: 0 0% 98%;
-  --primary-foreground: 240 5.9% 10%;
-
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-
-  --accent-shadcn: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-
-  --destructive-shadcn: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 240 4.9% 83.9%;
-
-  /* Dark mode Apple tokens */
-  --sidebar-bg: #1C1C1E;
-  --content-bg: #000000;
-  --text-primary: #F2F2F7;
-  --text-secondary: #636366;
-  --border-color: rgba(255, 255, 255, 0.1);
+/* ─── Animations ────────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
 }
 
-/* ─── Base Reset ────────────────────────────────────────────────────── */
+@keyframes dialog-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes dialog-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.96); }
+}
+
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes thinking-dot {
+  0%, 80%, 100% { opacity: 0.3; }
+  40%           { opacity: 1; }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Global Reset ──────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -111,7 +168,297 @@ body {
   font-size: var(--font-size-body);
   color: var(--text-primary);
   background: var(--content-bg);
-  margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* ─── Status dot animations ─────────────────────────────────────────── */
+.status-dot-animated {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+/* ─── Instance row ──────────────────────────────────────────────────── */
+.instance-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--item-height);
+  margin: 0 8px;
+  padding: 0 8px;
+  border-radius: var(--radius-md);
+  cursor: default;
+  user-select: none;
+  transition: background var(--transition-fast);
+  position: relative;
+}
+
+.instance-row:hover {
+  background: var(--row-hover-bg);
+}
+
+.instance-row[data-selected="true"] {
+  background: var(--row-selected-bg);
+}
+
+.instance-row[data-selected="true"] .row-name {
+  color: var(--accent);
+}
+
+.accent-dot {
+  width: var(--dot-size-sm);
+  height: var(--dot-size-sm);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  flex-shrink: 0;
+}
+
+.instance-row:hover .accent-dot,
+.instance-row[data-selected="true"] .accent-dot {
+  opacity: 1;
+}
+
+/* ─── Chat bubbles ──────────────────────────────────────────────────── */
+.chat-bubble {
+  max-width: 65%;
+  padding: 8px 12px;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  margin-bottom: 8px;
+  animation: message-in 150ms ease-out;
+  position: relative;
+}
+
+.chat-bubble--user {
+  background: var(--accent);
+  color: var(--text-inverted);
+  border-radius: 16px 16px 4px 16px;
+  align-self: flex-end;
+}
+
+.chat-bubble--assistant {
+  background: #F2F2F7;
+  color: var(--text-primary);
+  border-radius: 16px 16px 16px 4px;
+  align-self: flex-start;
+  max-width: 75%;
+}
+
+.chat-timestamp {
+  font-size: var(--font-size-label);
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  margin-top: 2px;
+}
+
+.chat-bubble:hover .chat-timestamp {
+  opacity: 1;
+}
+
+/* ─── Thinking dots ─────────────────────────────────────────────────── */
+.thinking-dot:nth-child(1) { animation: thinking-dot 1.2s infinite 0ms; }
+.thinking-dot:nth-child(2) { animation: thinking-dot 1.2s infinite 150ms; }
+.thinking-dot:nth-child(3) { animation: thinking-dot 1.2s infinite 300ms; }
+
+/* ─── Send button ───────────────────────────────────────────────────── */
+.send-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-base);
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.send-button--active {
+  background: var(--accent);
+}
+
+.send-button--inactive {
+  background: var(--text-tertiary);
+  cursor: default;
+}
+
+/* ─── Color swatches ────────────────────────────────────────────────── */
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow var(--transition-base);
+  border: none;
+  outline: none;
+}
+
+.color-swatch:hover:not([data-selected="true"]) {
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.15);
+}
+
+/* ─── Hint bar ──────────────────────────────────────────────────────── */
+.hint-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  background: rgba(0, 122, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 122, 255, 0.15);
+  font-size: 12px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.hint-bar__dismiss {
+  margin-left: auto;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.hint-bar__dismiss:hover {
+  color: var(--text-primary);
+}
+
+/* ─── Context menu ──────────────────────────────────────────────────── */
+.context-menu {
+  position: fixed;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
+  padding: 4px;
+  min-width: 160px;
+  z-index: 1000;
+  animation: dialog-in 150ms ease-out;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  font-size: var(--font-size-body);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: default;
+  transition: background var(--transition-fast);
+}
+
+.context-menu-item:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.context-menu-item--destructive {
+  color: var(--destructive);
+}
+
+.context-menu-item--destructive:hover {
+  background: var(--destructive);
+  color: white;
+}
+
+.context-menu-separator {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 4px 0;
+}
+
+/* ─── Dialog / Modal overlay ────────────────────────────────────────── */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlay-in 150ms ease-out;
+}
+
+.dialog-content {
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-dialog);
+  padding: 24px;
+  animation: dialog-in 200ms ease-out;
+}
+
+/* ─── Input native ──────────────────────────────────────────────────── */
+.input-native {
+  height: var(--item-height);
+  border: 1px solid rgba(0, 0, 0, 0.20);
+  border-radius: var(--radius-md);
+  padding: 0 10px;
+  font-family: var(--font);
+  font-size: var(--font-size-body);
+  color: var(--text-primary);
+  background: var(--input-bg);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+}
+
+.input-native:focus {
+  border-color: rgba(0, 122, 255, 0.50);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+}
+
+.input-native::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ─── Select (custom) ───────────────────────────────────────────────── */
+.select-native {
+  height: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-md);
+  padding: 0 8px;
+  font-family: var(--font);
+  font-size: var(--font-size-body);
+  color: var(--text-primary);
+  background: var(--content-bg);
+  outline: none;
+  cursor: pointer;
+  min-width: 140px;
+}
+
+/* ─── Toolbar drag region ───────────────────────────────────────────── */
+.toolbar-drag {
+  -webkit-app-region: drag;
+}
+
+.toolbar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* ─── Scrollbars ────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }

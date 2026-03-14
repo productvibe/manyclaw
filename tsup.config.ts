@@ -9,16 +9,15 @@ export default defineConfig([
     target: 'node20',
     platform: 'node',
     external: ['electron'],
-    // Bundle execa and everything else — no node_modules needed at runtime
-    noExternal: ['execa'],
     sourcemap: true,
     clean: true,
   },
   // ── Preload script ─────────────────────────────────────────────────────
+  // Must be CJS — Electron contextBridge requires CommonJS preloads
   {
     entry: { preload: 'src/preload/preload.ts' },
     outDir: 'dist/preload',
-    format: ['esm'],
+    format: ['cjs'],
     target: 'node20',
     platform: 'node',
     external: ['electron'],
