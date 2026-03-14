@@ -610,16 +610,17 @@ export class InstanceManager extends EventEmitter {
    */
   async onboardInstance(
     id: string,
-    opts?: { provider?: string; token?: string },
+    opts?: { provider?: string; token?: string; authChoice?: string },
   ): Promise<{ success: boolean; error?: string }> {
     const inst = this.instances.get(id)
     if (!inst) return { success: false, error: 'Profile not found' }
 
-    const settings = this.getSettings()
-    const token = opts?.token || settings.setupToken
+    const authChoice = opts?.authChoice || 'token'
     const provider = opts?.provider || 'anthropic'
+    const token = opts?.token || this.getSettings().setupToken
 
-    if (!token) {
+    // Token required only for token-based auth
+    if (authChoice === 'token' && !token) {
       return { success: false, error: 'No API token provided.' }
     }
 
@@ -629,22 +630,28 @@ export class InstanceManager extends EventEmitter {
 
     const profileArgs = id === 'default' ? [] : ['--profile', id]
     const workspace = path.join(inst.profileDir, 'workspace')
-    const result = await execa(bin, [
+
+    const args = [
       ...profileArgs,
       'onboard',
       '--non-interactive',
       '--accept-risk',
       '--mode', 'local',
       '--flow', 'quickstart',
-      '--auth-choice', 'token',
-      '--token', token,
-      '--token-provider', provider,
+      '--auth-choice', authChoice,
       '--gateway-port', String(inst.port),
       '--gateway-bind', 'loopback',
       '--gateway-auth', 'token',
       '--workspace', workspace,
       '--skip-health',
-    ], {
+    ]
+
+    // Add token args only for token-based auth
+    if (authChoice === 'token' && token) {
+      args.push('--token', token, '--token-provider', provider)
+    }
+
+    const result = await execa(bin, args, {
       reject: false,
       env: { ...process.env },
     })

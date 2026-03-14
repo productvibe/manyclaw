@@ -7,6 +7,18 @@ description: How MultiClaw uses OpenClaw's profile system to run multiple isolat
 date: 2026-03-15
 ---
 
+## Prerequisites
+
+MultiClaw is a shell around OpenClaw. It doesn't replace it — it manages it.
+
+Before using MultiClaw you need:
+
+- **OpenClaw** installed and working (`npm install -g openclaw`) — run `openclaw onboard` at least once to confirm it's set up
+
+That's it. MultiClaw handles everything else — ports, profile creation, gateway lifecycle, auth. If OpenClaw works in your terminal, MultiClaw will work.
+
+---
+
 ## The profile system
 
 OpenClaw has a first-class concept of profiles. Passing `--profile <name>` to any OpenClaw command tells it to use a completely separate directory for all of its state:

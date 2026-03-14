@@ -106,8 +106,8 @@ That's MultiClaw.
 ---
 
 **Item 3**
-**Title:** Bundled runtime
-**Body:** Ships with the OpenClaw binary included. No version mismatches, no separate install, no setup to get through before the app works.
+**Title:** Built on OpenClaw
+**Body:** MultiClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
 
 ---
 
@@ -157,11 +157,10 @@ brew install --cask multiclaw
 
 - macOS 13 Ventura or later
 - Apple Silicon or Intel
-- OpenClaw included — no separate install required
 
 ---
 
 **Notes:**
-The DMG is signed and notarized. Open it, drag MultiClaw to Applications, launch. OpenClaw is bundled — nothing else to install.
+The DMG is signed and notarized. Open it, drag MultiClaw to Applications, launch.
 
 Source code and release notes on [GitHub →](https://github.com/clawpack/multiclaw)

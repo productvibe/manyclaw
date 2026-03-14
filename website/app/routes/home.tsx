@@ -251,6 +251,7 @@ export default function Home() {
           <a href="/" className="flex items-center gap-2.5 font-display font-extrabold text-xl text-foreground no-underline" aria-label="MultiClaw home">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-extrabold text-lg font-display">M</div>
             <span>MultiClaw</span>
+            <span className="text-xs font-normal text-muted-foreground ml-1 max-md:hidden">One machine. Multiple agents.</span>
           </a>
           <div className="flex items-center gap-5 ml-8 relative top-0.5 max-md:hidden">
             <Link to="/docs" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Docs</Link>
@@ -271,13 +272,15 @@ export default function Home() {
               <div className="w-30 h-30 bg-primary rounded-[28px] flex items-center justify-center font-display font-extrabold text-5xl text-white shadow-[0_16px_48px_rgba(255,107,53,0.3)] max-md:w-[90px] max-md:h-[90px] max-md:text-4xl max-md:rounded-[22px]">M</div>
             </div>
             <h1 id="hero-title" className="text-[4rem] max-w-[700px] text-foreground max-lg:text-5xl max-md:text-4xl">
-              Tame your AI agents, once&nbsp;and&nbsp;for&nbsp;all
+              You don't need three Mac&nbsp;Minis.
             </h1>
             <p className="text-xl text-muted-foreground max-w-[560px] leading-relaxed font-normal max-md:text-base">
-              Run multiple OpenClaw instances side by side with full isolation.
-              No more terminal chaos.
+              MultiClaw runs multiple isolated OpenClaw agents on a single machine. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
             </p>
-            <div className="mt-4 flex flex-col items-center gap-2" id="download">
+            <div className="mt-4 flex flex-col items-center gap-4" id="download">
+              <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-6 py-3 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">
+                Download for macOS
+              </Link>
               <div className="inline-flex items-center bg-foreground border border-[#1a1408] rounded-sm max-w-full">
                 <pre className="m-0 py-4 pl-5 pr-0 font-mono text-sm leading-none text-white whitespace-pre overflow-x-auto text-left max-md:text-sm max-md:py-2.5 max-md:pl-3.5"><code>brew install --cask multiclaw</code></pre>
                 <button className="p-0 mx-4.5 ml-4 flex items-center bg-none border-none text-white/50 font-sans text-sm font-semibold cursor-pointer whitespace-nowrap transition-colors hover:text-white" onClick={copyInstall} type="button">
@@ -294,7 +297,7 @@ export default function Home() {
             <div className="hero-shadow--5 absolute rounded-2xl pointer-events-none z-0" aria-hidden="true" />
             <div className="z-1 origin-center bg-white/55 backdrop-blur-lg border border-black/[0.06] rounded-[20px] p-2 relative overflow-hidden" ref={screenshotRef} style={{ transform: "rotateX(4deg)" }}>
               <img
-                src="https://manifest.build/images/screenshot.svg"
+                src="/images/hero.png"
                 alt="MultiClaw app — multi-instance management"
                 width={1280}
                 height={699}
@@ -311,13 +314,20 @@ export default function Home() {
         <section className="py-28 max-md:py-16 reveal" aria-labelledby="problem-title">
           <div className="w-[min(90%,1080px)] mx-auto max-w-[720px]">
             <h2 id="problem-title" className="text-4xl max-w-[650px] mb-6 text-center mx-auto max-md:text-2xl">
-              Managing multiple AI agents is pure&nbsp;chaos
+              Isolation shouldn't cost $2,000.
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed text-center mx-auto max-w-[650px] max-md:text-base">
-              Profile flags, port conflicts, context bleed between sessions.
-              Running more than one OpenClaw agent means <strong className="text-foreground font-semibold">terminal tab hell</strong> and
-              constant context-switching. You deserve better.
-            </p>
+            <div className="text-lg text-muted-foreground leading-relaxed text-center mx-auto max-w-[650px] max-md:text-base space-y-4">
+              <p>
+                If you've spent time in the OpenClaw community, you've seen the workaround: buy a second Mac Mini. Or a third. One per agent, fully isolated, no risk of context bleed between your dev setup and your production one.
+              </p>
+              <p>
+                It works. It's also expensive, power-hungry, and absurd when the software could handle it.
+              </p>
+              <p>
+                OpenClaw's <code className="font-mono text-base bg-black/[0.06] px-1.5 py-0.5 rounded">--profile</code> flag creates genuine isolation at the process level — separate memory, sessions, workspace, and port per instance. The capability is already there. What's missing is a way to manage it without living in the terminal.
+              </p>
+              <p className="font-semibold text-foreground">That's MultiClaw.</p>
+            </div>
           </div>
         </section>
 
@@ -330,70 +340,64 @@ export default function Home() {
               Everything you need to run agents at scale
             </h2>
             <div className="bento-grid mt-12" id="how-it-works">
-              {/* 1. Multi-instance sidebar */}
+              {/* 1. Named profiles in a sidebar */}
               <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <SidebarVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Multi-instance management</h3>
+                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Named profiles in a sidebar</h3>
                 <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Clean macOS sidebar with named, color-coded instances.
-                  One-click start, stop, and restart.
+                  Colour-coded agents — green for running, grey for stopped. Start, stop, or restart any instance with one click. Drag to reorder. Status at a glance.
                 </p>
               </div>
-              {/* 2. Full isolation */}
+              {/* 2. Real isolation, per instance */}
               <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <IsolationVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Full isolation</h3>
+                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Real isolation, per instance</h3>
                 <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Each agent runs in its own sandbox. No shared state,
-                  no port conflicts, no context bleed between sessions.
+                  Each agent is a separate OpenClaw profile. Independent memory, sessions, workspace, and API auth. Your dev agent and your production agent don't know each other exist.
                 </p>
               </div>
-              {/* 3. Terminal + TUI toggle */}
+              {/* 3. Clone a working instance */}
               <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <TerminalToggleVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Live terminal + TUI toggle</h3>
+                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Clone a working instance</h3>
                 <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Switch between raw terminal output and the rich TUI view
-                  with a single click. See exactly what your agent sees.
+                  Spin up an exact copy of any agent in seconds. Test a configuration change, try a different model, or branch a working setup — without touching the original.
                 </p>
               </div>
-              {/* 4. In-app chat */}
+              {/* 4. Live console and TUI */}
               <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <ChatVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">In-app chat</h3>
+                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Live console and TUI</h3>
                 <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Chat with any running agent directly from the sidebar.
-                  No terminal needed.
+                  Console output per instance, in-app. Switch to the full interactive TUI in one click when you need it — same toolbar, same window.
                 </p>
               </div>
-              {/* 5. Open in browser */}
+              {/* 5. In-app chat */}
               <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <BrowserVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Open in browser</h3>
+                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">In-app chat</h3>
                 <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Preview any agent&apos;s web output in your default browser
-                  with one click.
+                  Message any running instance directly and read replies inline. No browser tab, no authentication step, no switching contexts.
                 </p>
               </div>
-              {/* 6. Drag to reorder */}
+              {/* 6. Zero setup on first run */}
               <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <DragReorderVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Drag to reorder</h3>
+                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Zero setup on first run</h3>
                 <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Organize your sidebar the way you think. Drag instances up or down
-                  to match your workflow priority.
+                  Opens with a default instance already created. Press Start. No wizard, no configuration required before you can use it.
                 </p>
               </div>
             </div>
@@ -404,7 +408,7 @@ export default function Home() {
         <section className="py-28 max-md:py-16 reveal" aria-labelledby="trust-title">
           <div className="w-[min(90%,1080px)] mx-auto">
             <h2 id="trust-title" className="text-4xl max-w-[650px] mb-6 text-center mx-auto max-md:text-2xl">
-              Built for power users
+              Built the right way.
             </h2>
             <div className="grid grid-cols-3 gap-12 mt-12 max-md:grid-cols-1 max-md:gap-12">
               <div className="text-center">
@@ -417,10 +421,9 @@ export default function Home() {
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Native macOS</h3>
+                <h3 className="text-xl font-semibold mb-2">Local-first</h3>
                 <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  Built as a native macOS app. Lightweight, fast, and feels right
-                  at home on your dock.
+                  No cloud, no accounts, no telemetry. Every agent runs on your machine. Nothing leaves.
                 </p>
               </div>
               <div className="text-center">
@@ -431,10 +434,9 @@ export default function Home() {
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Open Source</h3>
+                <h3 className="text-xl font-semibold mb-2">Open source</h3>
                 <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  MultiClaw is fully open source. Inspect, extend, or contribute.
-                  No black boxes, no telemetry.
+                  MIT licensed. The code is on GitHub. Read it, fork it, build on it.
                 </p>
               </div>
               <div className="text-center">
@@ -446,10 +448,9 @@ export default function Home() {
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">OpenClaw native</h3>
+                <h3 className="text-xl font-semibold mb-2">Built on OpenClaw</h3>
                 <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  Deep integration with OpenClaw. One command to install,
-                  zero configuration required.
+                  MultiClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
                 </p>
               </div>
             </div>
@@ -461,12 +462,12 @@ export default function Home() {
           <div className="w-[min(90%,1080px)] mx-auto flex flex-col items-center gap-6 relative z-1">
             <div className="w-18 h-18 bg-primary rounded-[18px] flex items-center justify-center text-white font-display font-extrabold text-3xl mb-2 shadow-[0_8px_24px_rgba(255,107,53,0.2)]">M</div>
             <h2 id="cta-title" className="text-5xl leading-tight -mt-4 tracking-tight max-md:text-4xl">
-              Stop juggling terminals
+              One machine. As many agents as you need.
             </h2>
             <p className="text-lg text-muted-foreground max-w-[440px]">
-              One app. All your agents. Easy to install, impossible to outgrow.
+              MultiClaw is free, open source, and runs entirely on your hardware.
             </p>
-            <a href="#download" className="inline-flex items-center gap-1.5 font-medium text-base px-5.5 py-2.5 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">Download MultiClaw</a>
+            <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-5.5 py-2.5 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">Download for macOS</Link>
           </div>
         </section>
       </main>
@@ -476,14 +477,14 @@ export default function Home() {
         <div className="w-[min(90%,1080px)] mx-auto flex items-center justify-between max-md:flex-col max-md:gap-4 max-md:text-center">
           <div className="flex items-center gap-2 max-md:flex-col">
             <span className="font-display font-extrabold text-xl text-foreground">MultiClaw</span>
-            <span className="text-sm text-muted-foreground">&copy; 2026 MultiClaw. All rights reserved.</span>
+            <span className="text-sm text-muted-foreground">— One machine. Multiple agents.</span>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="https://github.com/nichochar/multiclaw" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground hover:text-foreground transition-colors flex items-center">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-              </svg>
-            </a>
+          <div className="flex items-center gap-5 text-sm text-muted-foreground">
+            <Link to="/download" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Download</Link>
+            <Link to="/docs" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Docs</Link>
+            <Link to="/blog" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Blog</Link>
+            <a href="https://github.com/nichochar/multiclaw" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors no-underline text-muted-foreground">GitHub</a>
+            <a href="https://github.com/nichochar/multiclaw/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors no-underline text-muted-foreground">License</a>
           </div>
         </div>
       </footer>

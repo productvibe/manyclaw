@@ -42,7 +42,7 @@ const api: MultiClawAPI = {
     openDashboard: (id) =>
       ipcRenderer.invoke('instances:openDashboard', id),
 
-    onboard: (id, opts) =>
+    onboard: (id, opts?) =>
       ipcRenderer.invoke('instances:onboard', id, opts),
 
     addChannel: (id, opts) =>

@@ -105,7 +105,7 @@ export interface MultiClawAPI {
     openDashboard(id: string): Promise<void>
 
     /** Run non-interactive onboard for this profile. */
-    onboard(id: string, opts?: { provider?: string; token?: string }): Promise<{ success: boolean; error?: string }>
+    onboard(id: string, opts?: { provider?: string; token?: string; authChoice?: string }): Promise<{ success: boolean; error?: string }>
 
     /** Add a messaging channel to this profile. */
     addChannel(id: string, opts: { channel: string; token: string }): Promise<{ success: boolean; error?: string }>
