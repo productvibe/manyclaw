@@ -1,8 +1,315 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import type { InstanceInfo } from '@shared/ipc'
 import StatusDot from './StatusDot'
 import HintBar from './HintBar'
-import { HINT_DISMISSED_KEY } from './HintBar'
+
+// ── TUI IPC extensions (not yet in @shared/ipc — Brook will add) ─────────────
+interface TuiApi {
+  launchTui(id: string): Promise<void>
+  onTuiData(id: string, cb: (data: string) => void): () => void
+  tuiInput(id: string, data: string): Promise<void>
+}
+function tuiApi(): TuiApi {
+  return window.multiclaw.instances as typeof window.multiclaw.instances & TuiApi
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Strip ANSI escape sequences for plain-text rendering */
+function stripAnsi(s: string): string {
+  // eslint-disable-next-line no-control-regex
+  return s.replace(/\x1b\[[0-9;]*[A-Za-z]/g, '').replace(/\x1b[()][A-Z0-9]/g, '')
+}
+
+/** Map a KeyboardEvent to the string to send via tuiInput */
+function keyEventToData(e: React.KeyboardEvent): string | null {
+  // Ignore modifier-only keys
+  if (['Control', 'Alt', 'Meta', 'Shift', 'CapsLock', 'Tab'].includes(e.key)) return null
+
+  // Ctrl combos
+  if (e.ctrlKey && e.key.length === 1) {
+    const code = e.key.toUpperCase().charCodeAt(0) - 64
+    if (code > 0 && code < 32) return String.fromCharCode(code)
+  }
+
+  switch (e.key) {
+    case 'Enter':     return '\r'
+    case 'Backspace': return '\x7f'
+    case 'Escape':    return '\x1b'
+    case 'Tab':       return '\t'
+    case 'ArrowUp':   return '\x1b[A'
+    case 'ArrowDown': return '\x1b[B'
+    case 'ArrowRight':return '\x1b[C'
+    case 'ArrowLeft': return '\x1b[D'
+    case 'Home':      return '\x1b[H'
+    case 'End':       return '\x1b[F'
+    case 'PageUp':    return '\x1b[5~'
+    case 'PageDown':  return '\x1b[6~'
+    case 'Delete':    return '\x1b[3~'
+    case 'Insert':    return '\x1b[2~'
+    default:
+      // Printable characters
+      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) return e.key
+      return null
+  }
+}
+
+// ── Tab bar ───────────────────────────────────────────────────────────────────
+
+type Tab = 'tui' | 'logs'
+
+interface TabBarProps {
+  active: Tab
+  onChange: (tab: Tab) => void
+}
+
+function TabBar({ active, onChange }: TabBarProps) {
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'tui',  label: 'TUI' },
+    { id: 'logs', label: 'Logs' },
+  ]
+
+  return (
+    <div
+      style={{
+        height: 32,
+        background: 'var(--instance-toolbar-bg)',
+        borderBottom: '1px solid rgba(0,0,0,0.08)',
+        display: 'flex',
+        alignItems: 'flex-end',
+        paddingLeft: 16,
+        gap: 2,
+        flexShrink: 0,
+      }}
+    >
+      {tabs.map((t) => {
+        const isActive = t.id === active
+        return (
+          <button
+            key={t.id}
+            onClick={() => onChange(t.id)}
+            style={{
+              height: 28,
+              padding: '0 12px',
+              fontSize: 'var(--font-size-label)',
+              fontWeight: isActive ? 'var(--font-weight-semibold)' : 'var(--font-weight-regular)',
+              fontFamily: 'var(--font)',
+              background: isActive ? 'var(--terminal-bg)' : 'transparent',
+              color: isActive ? 'var(--text-terminal)' : 'var(--text-secondary)',
+              border: 'none',
+              borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0',
+              cursor: 'pointer',
+              transition: 'background var(--transition-fast), color var(--transition-fast)',
+              letterSpacing: '0.01em',
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive) e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            {t.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+// ── TUI pane ──────────────────────────────────────────────────────────────────
+
+interface TuiPaneProps {
+  instanceId: string
+}
+
+function TuiPane({ instanceId }: TuiPaneProps) {
+  const [chunks, setChunks] = useState<string[]>([])
+  const [launched, setLaunched] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const containerRef = useRef<HTMLPreElement>(null)
+
+  // Launch TUI and subscribe to output
+  useEffect(() => {
+    setChunks([])
+    setLaunched(false)
+
+    const api = tuiApi()
+    api.launchTui(instanceId)
+      .then(() => setLaunched(true))
+      .catch(() => setLaunched(true)) // show output even if launch call errors
+
+    const unsubscribe = api.onTuiData(instanceId, (data) => {
+      setChunks((prev) => [...prev, data])
+    })
+
+    return () => unsubscribe()
+  }, [instanceId])
+
+  // Auto-scroll to bottom when new data arrives
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    }
+  }, [chunks])
+
+  // Focus the pre on mount so keyboard events are captured immediately
+  useEffect(() => {
+    containerRef.current?.focus()
+  }, [])
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const data = keyEventToData(e)
+      if (data === null) return
+      e.preventDefault()
+      e.stopPropagation()
+      tuiApi().tuiInput(instanceId, data).catch(() => {/* IPC errors are non-fatal */})
+    },
+    [instanceId],
+  )
+
+  const displayText = chunks.map(stripAnsi).join('')
+
+  return (
+    <pre
+      ref={containerRef}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      style={{
+        flex: 1,
+        margin: 0,
+        background: 'var(--terminal-bg)',
+        color: 'var(--text-terminal)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 'var(--font-size-mono)',
+        lineHeight: 'var(--line-height-terminal)',
+        padding: '12px 16px',
+        overflowY: 'auto',
+        scrollbarWidth: 'thin',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-all',
+        outline: focused ? '2px solid rgba(0,122,255,0.4)' : 'none',
+        outlineOffset: '-2px',
+        cursor: 'text',
+      }}
+    >
+      {!launched && (
+        <span style={{ color: 'var(--text-terminal-dim)' }}>Connecting to TUI…{'\n'}</span>
+      )}
+      {displayText || (launched && (
+        <span style={{ color: 'var(--text-terminal-dim)' }}>Waiting for output…</span>
+      ))}
+    </pre>
+  )
+}
+
+// ── Logs pane ─────────────────────────────────────────────────────────────────
+
+interface LogsPaneProps {
+  instance: InstanceInfo
+}
+
+function LogsPane({ instance }: LogsPaneProps) {
+  const [logs, setLogs] = useState<string[]>([])
+  const [loadingLogs, setLoadingLogs] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Load existing logs on instance change
+  useEffect(() => {
+    setLogs([])
+    if (instance.status === 'running' || instance.status === 'error') {
+      setLoadingLogs(true)
+      window.multiclaw.instances
+        .getLogs(instance.id)
+        .then((lines) => {
+          setLogs(lines)
+          setLoadingLogs(false)
+        })
+        .catch(() => setLoadingLogs(false))
+    }
+  }, [instance.id])
+
+  // Subscribe to live log lines
+  useEffect(() => {
+    const unsubscribe = window.multiclaw.instances.onLog(instance.id, (line) => {
+      setLogs((prev) => [...prev, line])
+    })
+    return () => unsubscribe()
+  }, [instance.id])
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    }
+  }, [logs])
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        flex: 1,
+        background: 'var(--terminal-bg)',
+        color: 'var(--text-terminal)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 'var(--font-size-mono)',
+        lineHeight: 'var(--line-height-terminal)',
+        padding: '12px 16px',
+        overflowY: 'auto',
+        scrollbarWidth: 'thin',
+      }}
+    >
+      {/* Stopped empty state */}
+      {instance.status === 'stopped' && logs.length === 0 && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            gap: 8,
+            color: 'var(--text-terminal-dim)',
+          }}
+        >
+          <div style={{ opacity: 0.4 }}>─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
+          <div>Instance is stopped.</div>
+          <div>Press Start to run it.</div>
+          <div style={{ opacity: 0.4 }}>─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
+        </div>
+      )}
+
+      {/* Error state */}
+      {instance.status === 'error' && (
+        <div style={{ marginBottom: 16, color: '#FF9500' }}>
+          ⚠ Instance exited with error
+          {instance.lastError && (
+            <div style={{ color: 'var(--text-terminal)', marginTop: 4 }}>
+              {instance.lastError}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Loading */}
+      {loadingLogs && (
+        <div style={{ color: 'var(--text-terminal-dim)' }}>Loading logs…</div>
+      )}
+
+      {/* Log lines */}
+      {logs.map((line, i) => (
+        <div key={i} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+          {line}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── InstancePane ──────────────────────────────────────────────────────────────
 
 interface InstancePaneProps {
   instance: InstanceInfo
@@ -26,40 +333,18 @@ export default function InstancePane({
   onStart,
   onStop,
 }: InstancePaneProps) {
-  const [logs, setLogs] = useState<string[]>([])
-  const [loadingLogs, setLoadingLogs] = useState(false)
-  const terminalRef = useRef<HTMLDivElement>(null)
   const [actionPending, setActionPending] = useState(false)
+  const [tab, setTab] = useState<Tab>('tui')
 
-  // Load logs on mount / instance change
+  // When instance transitions to running, switch to TUI tab
+  // When it stops, fall back to logs
   useEffect(() => {
-    setLogs([])
-    if (instance.status === 'running' || instance.status === 'error') {
-      setLoadingLogs(true)
-      window.multiclaw.instances
-        .getLogs(instance.id)
-        .then((lines) => {
-          setLogs(lines)
-          setLoadingLogs(false)
-        })
-        .catch(() => setLoadingLogs(false))
+    if (instance.status === 'running') {
+      setTab('tui')
+    } else {
+      setTab('logs')
     }
-  }, [instance.id])
-
-  // Subscribe to live log lines
-  useEffect(() => {
-    const unsubscribe = window.multiclaw.instances.onLog(instance.id, (line) => {
-      setLogs((prev) => [...prev, line])
-    })
-    return () => unsubscribe()
-  }, [instance.id])
-
-  // Auto-scroll terminal to bottom
-  useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
-    }
-  }, [logs])
+  }, [instance.status])
 
   async function handleStart() {
     if (actionPending) return
@@ -140,37 +425,14 @@ export default function InstancePane({
         )}
         {isRunning && (
           <>
-            <button
-              onClick={() => window.multiclaw.shell.openExternal(`http://127.0.0.1:${instance.port}`)}
+            <GhostButton
+              onClick={() =>
+                window.multiclaw.shell.openExternal(`http://127.0.0.1:${instance.port}`)
+              }
               title="Open in browser"
-              style={{
-                height: 28,
-                borderRadius: 'var(--radius-md)',
-                padding: '0 10px',
-                fontSize: 12,
-                fontWeight: 'var(--font-weight-medium)',
-                fontFamily: 'var(--font)',
-                background: 'transparent',
-                color: 'var(--text-secondary)',
-                border: '1px solid rgba(0,0,0,0.12)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                whiteSpace: 'nowrap',
-                transition: 'background var(--transition-fast), color var(--transition-fast)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
-                e.currentTarget.style.color = 'var(--text-primary)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.color = 'var(--text-secondary)'
-              }}
             >
               🌐 Open in Browser ↗
-            </button>
+            </GhostButton>
             <TintButton variant="destructive" onClick={handleStop} disabled={actionPending}>
               ■ Stop
             </TintButton>
@@ -186,71 +448,60 @@ export default function InstancePane({
         )}
       </div>
 
-      {/* Terminal pane */}
-      <div
-        ref={terminalRef}
-        style={{
-          flex: 1,
-          background: 'var(--terminal-bg)',
-          color: 'var(--text-terminal)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 'var(--font-size-mono)',
-          lineHeight: 'var(--line-height-terminal)',
-          padding: '12px 16px',
-          overflowY: 'auto',
-          scrollbarWidth: 'thin',
-        }}
-      >
-        {/* Stopped empty state */}
-        {instance.status === 'stopped' && logs.length === 0 && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              gap: 8,
-              color: 'var(--text-terminal-dim)',
-            }}
-          >
-            <div style={{ opacity: 0.4 }}>─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-            <div>Instance is stopped.</div>
-            <div>Press Start to run it.</div>
-            <div style={{ opacity: 0.4 }}>─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-          </div>
-        )}
+      {/* Tab bar — only when running */}
+      {isRunning && <TabBar active={tab} onChange={setTab} />}
 
-        {/* Error state */}
-        {instance.status === 'error' && (
-          <div
-            style={{
-              marginBottom: 16,
-              color: '#FF9500',
-            }}
-          >
-            ⚠ Instance exited with error
-            {instance.lastError && (
-              <div style={{ color: 'var(--text-terminal)', marginTop: 4 }}>
-                {instance.lastError}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Loading */}
-        {loadingLogs && (
-          <div style={{ color: 'var(--text-terminal-dim)' }}>Loading logs…</div>
-        )}
-
-        {/* Log lines */}
-        {logs.map((line, i) => (
-          <div key={i} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-            {line}
-          </div>
-        ))}
-      </div>
+      {/* Content */}
+      {isRunning && tab === 'tui' ? (
+        <TuiPane instanceId={instance.id} />
+      ) : (
+        <LogsPane instance={instance} />
+      )}
     </div>
+  )
+}
+
+// ── Buttons ───────────────────────────────────────────────────────────────────
+
+interface GhostButtonProps {
+  onClick: () => void
+  title?: string
+  children: React.ReactNode
+}
+
+function GhostButton({ onClick, title, children }: GhostButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      style={{
+        height: 28,
+        borderRadius: 'var(--radius-md)',
+        padding: '0 10px',
+        fontSize: 12,
+        fontWeight: 'var(--font-weight-medium)',
+        fontFamily: 'var(--font)',
+        background: 'transparent',
+        color: 'var(--text-secondary)',
+        border: '1px solid rgba(0,0,0,0.12)',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+        whiteSpace: 'nowrap',
+        transition: 'background var(--transition-fast), color var(--transition-fast)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
+        e.currentTarget.style.color = 'var(--text-primary)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'transparent'
+        e.currentTarget.style.color = 'var(--text-secondary)'
+      }}
+    >
+      {children}
+    </button>
   )
 }
 
