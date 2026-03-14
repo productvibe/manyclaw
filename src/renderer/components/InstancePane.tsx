@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { Play, Square, RotateCcw, Globe, Loader2 } from 'lucide-react'
 import type { InstanceInfo } from '@shared/ipc'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import StatusDot from './StatusDot'
 import TuiView from './TuiView'
 import ProfileView from './ProfileView'
@@ -18,22 +19,20 @@ const STATUS_LABELS: Record<string, string> = {
 
 interface InstancePaneProps {
   instance: InstanceInfo
+  visible: boolean
   onStart: (id: string) => Promise<void>
   onStop: (id: string) => Promise<void>
   onDelete: (id: string, opts?: { deleteData?: boolean }) => Promise<boolean>
 }
 
 export default function InstancePane({
-  instance, onStart, onStop, onDelete,
+  instance, visible, onStart, onStop, onDelete,
 }: InstancePaneProps) {
   const [actionPending, setActionPending] = useState(false)
   const [topTab, setTopTab] = useState<TopTab>('tui')
-  const [tuiMounted, setTuiMounted] = useState(false)
+  const [tuiMounted, setTuiMounted] = useState(instance.status === 'running')
 
-  useEffect(() => {
-    setTopTab('tui')
-    setTuiMounted(instance.status === 'running')
-  }, [instance.id])
+  // No reset needed — each InstancePane has its own key and stays mounted
 
   const handleMountTui = useCallback(() => {
     setTuiMounted(true)
@@ -57,7 +56,7 @@ export default function InstancePane({
   const isTransitioning = instance.status === 'starting'
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full absolute inset-0" style={{ visibility: visible ? 'visible' : 'hidden', zIndex: visible ? 1 : 0 }}>
       {/* Toolbar */}
       <div className="flex items-center gap-2 px-4 h-11 shrink-0 bg-muted/50 border-b border-border">
         <span className="text-[15px] font-semibold text-foreground">{instance.name}</span>
@@ -71,24 +70,20 @@ export default function InstancePane({
         <div className="flex-1" />
 
         {/* Top-level tabs */}
-        <div className="flex items-center gap-1">
-          <Button
-            variant={topTab === 'tui' ? 'secondary' : 'ghost'}
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => setTopTab('tui')}
-          >
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          value={topTab}
+          onValueChange={(v) => { if (v) setTopTab(v as TopTab) }}
+          className="h-7"
+        >
+          <ToggleGroupItem value="tui" className="h-7 px-3 text-xs data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
             TUI
-          </Button>
-          <Button
-            variant={topTab === 'profile' ? 'secondary' : 'ghost'}
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => setTopTab('profile')}
-          >
+          </ToggleGroupItem>
+          <ToggleGroupItem value="profile" className="h-7 px-3 text-xs data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
             Profile
-          </Button>
-        </div>
+          </ToggleGroupItem>
+        </ToggleGroup>
 
         <Separator orientation="vertical" className="h-5 mx-1" />
 
@@ -103,13 +98,23 @@ export default function InstancePane({
         {isRunning && (
           <>
             <Button
-              variant="outline"
-              size="sm"
-              className="h-7 text-xs gap-1.5"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
               onClick={() => window.multiclaw.instances.openDashboard(instance.id)}
+              title="Open in Browser"
             >
-              <Globe className="h-3.5 w-3.5" />
-              Browser
+              <Globe className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={handleStart}
+              disabled={actionPending}
+              title="Restart"
+            >
+              <RotateCcw className="h-4 w-4" />
             </Button>
             <Button
               variant="destructive"
@@ -120,16 +125,6 @@ export default function InstancePane({
             >
               <Square className="h-3 w-3" />
               Stop
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 text-xs gap-1.5"
-              onClick={handleStart}
-              disabled={actionPending}
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              Restart
             </Button>
           </>
         )}
@@ -154,7 +149,7 @@ export default function InstancePane({
           <TuiView
             instance={instance}
             tuiMounted={tuiMounted}
-            visible={topTab === 'tui'}
+            visible={visible && topTab === 'tui'}
             onMountTui={handleMountTui}
             onStart={onStart}
           />

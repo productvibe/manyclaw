@@ -21,21 +21,49 @@ export function useTerminalPane(
   const containerRef = useRef<HTMLDivElement>(null)
   const termRef = useRef<Terminal | null>(null)
   const fitAddonRef = useRef<FitAddon | null>(null)
+  const resizeRef = useRef(resize)
+  resizeRef.current = resize
 
   useEffect(() => {
     if (!visible) return
-    // Defer fit until browser has laid out the now-visible container
+    // Double-rAF: first frame lets the browser complete layout + xterm's
+    // IntersectionObserver resume the renderer; second frame fits + repaints.
     const raf = requestAnimationFrame(() => {
-      try {
-        fitAddonRef.current?.fit()
-        const term = termRef.current
-        if (term) {
-          term.refresh(0, term.rows - 1)
-          term.focus()
-        }
-      } catch { /* ignore if disposed */ }
+      const raf2 = requestAnimationFrame(() => {
+        try {
+          const fit = fitAddonRef.current
+          const term = termRef.current
+          if (fit && term) {
+            fit.fit()
+            term.refresh(0, term.rows - 1)
+            term.focus()
+            // Force SIGWINCH: shrink by 1 col first so the TUI app sees an
+            // actual size change, then restore real dimensions after a tick.
+            // Same-size resizes are ignored by many TUI frameworks.
+            resizeRef.current(Math.max(1, term.cols - 1), term.rows)
+          }
+        } catch { /* ignore if disposed */ }
+      })
+      rafRef2 = raf2
     })
-    return () => cancelAnimationFrame(raf)
+    let rafRef2 = 0
+    // Restore real size after a short delay — second SIGWINCH triggers
+    // the TUI to repaint at the correct dimensions.
+    const timer = setTimeout(() => {
+      try {
+        const fit = fitAddonRef.current
+        const term = termRef.current
+        if (fit && term) {
+          fit.fit()
+          resizeRef.current(term.cols, term.rows)
+        }
+      } catch { /* ignore */ }
+    }, 150)
+    return () => {
+      cancelAnimationFrame(raf)
+      cancelAnimationFrame(rafRef2)
+      clearTimeout(timer)
+    }
   }, [visible])
 
   useEffect(() => {
@@ -67,16 +95,7 @@ export function useTerminalPane(
       if (launched) return
       launched = true
       console.log('[useTerminalPane] launching PTY (%dx%d)', term.cols, term.rows)
-      launch(term.cols, term.rows).then((result) => {
-        const r = result as { started?: boolean } | undefined
-        if (r && r.started === false) {
-          // PTY was already running — force SIGWINCH to trigger full redraw.
-          // Data subscription is active (set up before launch), so the
-          // redraw output will be captured.
-          resize(1, 1)
-          resize(term.cols, term.rows)
-        }
-      }).catch((err) => {
+      launch(term.cols, term.rows).catch((err) => {
         console.error('[useTerminalPane] launch failed:', err)
         term.writeln('\r\n\x1b[31mFailed to launch.\x1b[0m')
       })

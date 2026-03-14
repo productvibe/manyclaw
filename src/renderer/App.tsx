@@ -41,10 +41,6 @@ export default function App() {
     }
   }, [sortedInstances, selectedId])
 
-  const selectedInstance = selectedId
-    ? sortedInstances.find((i) => i.id === selectedId) ?? null
-    : null
-
   async function handleCreate(opts: { name: string; color: string; id: string; port: number; label?: string }) {
     const instance = await create(opts)
     if (instance) setSelectedId(instance.id)
@@ -57,7 +53,9 @@ export default function App() {
   return (
     <div className="flex h-screen flex-col">
       <header className="flex h-[38px] shrink-0 items-center justify-center bg-sidebar border-b border-sidebar-border toolbar-drag">
-        <span className="text-sm font-semibold toolbar-no-drag">MultiClaw</span>
+        <span className="text-sm font-semibold toolbar-no-drag">
+          MultiClaw{selectedInstance ? ` — ${selectedInstance.name}` : ''}
+        </span>
       </header>
       <SidebarProvider className="flex-1 !min-h-0">
         <Sidebar
@@ -71,20 +69,26 @@ export default function App() {
           onReorder={handleReorder}
         />
         <SidebarInset>
-          <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="flex-1 relative overflow-hidden">
             {loading ? (
               <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                 Loading...
               </div>
             ) : sortedInstances.length === 0 ? (
               <EmptyState onNewInstance={() => {}} />
-            ) : selectedInstance ? (
-              <InstancePane
-                instance={selectedInstance}
-                onStart={start}
-                onStop={stop}
-                onDelete={handleDelete}
-              />
+            ) : sortedInstances.length > 0 ? (
+              <>
+                {sortedInstances.map((inst) => (
+                  <InstancePane
+                    key={inst.id}
+                    instance={inst}
+                    visible={inst.id === selectedId}
+                    onStart={start}
+                    onStop={stop}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </>
             ) : (
               <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                 Select a profile from the sidebar

@@ -2,86 +2,88 @@
 
 **Severity:** P0 — product is nearly unusable. Users constantly switch between profiles.
 
+**Status:** Fixed (Attempt 6).
+
 ## Problem
 
 When a user switches between profiles in the sidebar (Profile A → Profile B → back to A), the TUI pane goes blank. It's not just a rendering glitch — it's a **blank new session**. The old TUI content is gone. Typing starts a fresh interaction.
 
-## Root Cause
+## Root Cause (two issues)
 
-The issue is a PTY lifecycle problem, not an xterm.js canvas issue.
+### 1. xterm destroyed on every profile switch
 
-### Component tree
+App rendered only the selected InstancePane. Switching profiles unmounted the old one (disposing its xterm buffer) and mounted a new one. The PTY stayed alive but the TUI app had no reason to repaint.
 
-```
-App (selectedId state)
-  └─ InstancePane (instance prop — NO key, React reuses same component)
-       └─ TuiView (instance, tuiMounted, visible)
-            └─ TuiPane (instance, visible)
-                 └─ useTerminalPane(visible, ..., deps=[instance.id])
-                      └─ xterm.js Terminal + FitAddon + ResizeObserver
-```
+### 2. Visibility effect never sent SIGWINCH
 
-### What happens on profile switch (A → B → A)
+The `[visible]` effect in `useTerminalPane` called `fit()` + `refresh()` but never called `resize()` to notify the PTY. Manual window resize worked because the ResizeObserver *did* call `resize()` — that was the only difference.
 
-1. **Switch to A:** `useTerminalPane` creates xterm, subscribes to PTY data, calls `launchTui('a')` → PTY spawned, TUI renders full screen
-2. **Switch to B:** deps `[instance.id]` change → cleanup runs:
-   - xterm terminal **disposed** (buffer destroyed)
-   - IPC data subscription **unsubscribed**
-   - BUT: the PTY process for A **stays alive** in `manager.tuiProcesses`
-   - New xterm created for B, new PTY launched for B — works fine
-3. **Switch back to A:** deps change again → cleanup destroys B's xterm, creates new xterm for A
-   - `launchTui('a')` called → manager sees `tuiProcesses.has('a')` → returns `{ started: false }` (line 363)
-   - **No new PTY is spawned** — the old one is still running
-   - New IPC subscription is active — future data from A's PTY will flow
-   - But the TUI app hasn't changed state, so **it sends nothing**
-   - Result: blank terminal with active PTY, waiting for user input
+Additionally, xterm.js uses `IntersectionObserver` to pause rendering on hidden elements. A single `requestAnimationFrame` could fire before that observer resumed the renderer, making `fit()` + `refresh()` no-ops.
 
-### Key insight
+## Fix (Attempt 5 + 6)
 
-The TUI app (openclaw tui) is a full-screen terminal application. It painted its full UI once when it started. When the renderer disposes the xterm and creates a new one, that painted buffer is lost forever. The PTY is still alive but the TUI app has no reason to repaint — it doesn't know its output was lost.
+Three changes applied together:
 
-## Attempts (chronological)
+### A. Keep all xterm instances alive (Attempt 5)
+
+App.tsx now renders ALL InstancePanes simultaneously, stacked with `position: absolute; inset: 0`. Only the selected one is visible (`visibility: visible`, `zIndex: 1`); the rest are hidden. Each profile's xterm stays mounted with its buffer intact. Switching profiles toggles CSS visibility — no disposal, no buffer loss.
+
+**Files changed:**
+- `src/renderer/App.tsx` — render all instances, pass `visible` prop
+- `src/renderer/components/InstancePane.tsx` — accept `visible`, hide with CSS, thread to TuiPane via `visible && topTab === 'tui'`
+
+### B. Fix the visibility effect (Attempt 5)
+
+`useTerminalPane`'s `[visible]` effect now:
+1. Uses **double rAF** — first frame lets the browser complete layout and xterm's IntersectionObserver resume the renderer; second frame does the work
+2. Sends SIGWINCH to the PTY so the TUI app repaints
+
+The `resize` function is stored in a ref (`resizeRef`) so the `[visible]` effect can access it without being in the deps-effect closure.
+
+### C. Two-step resize with delay (Attempt 6)
+
+Attempt 5's SIGWINCH sent the same dimensions the PTY already had. Many TUI frameworks compare old vs new size and skip the redraw if they match — so the SIGWINCH was silently ignored.
+
+The fix uses a two-step resize with a real 150ms delay:
+1. **Immediately (double-rAF):** fit + refresh + focus + resize to `cols - 1` (forces a real dimension change)
+2. **150ms later:** fit + resize back to actual `cols` (second SIGWINCH triggers full repaint at correct size)
+
+The delay is critical — back-to-back synchronous resizes get coalesced by the OS/PTY, but a 150ms gap guarantees two distinct SIGWINCH signals.
+
+**File changed:** `src/renderer/hooks/useTerminalPane.ts`
+
+## Why manual resize fixed it
+
+The ResizeObserver callback calls both `fitAddon.fit()` AND `resize(term.cols, term.rows)`. The resize sends SIGWINCH to the PTY, which makes the TUI app repaint its full screen. Manual window resize changes the actual dimensions, so the TUI app always repaints. The visibility effect was both missing the `resize()` call (fixed in attempt 5) and sending same-size resizes that got ignored (fixed in attempt 6).
+
+## Previous Attempts
 
 ### Attempt 1: `requestAnimationFrame` + `term.refresh()` on visibility change
 
-Added a `[visible]` effect that defers `fitAddon.fit()` + `term.refresh()` via rAF.
-
-**Result:** No effect. `visible` was hardcoded to `true` in TuiView, so the effect never re-fired.
+**Result:** No effect. `visible` was hardcoded to `true` in TuiView.
 
 ### Attempt 2: Thread real visibility through props
 
-Changed InstancePane to pass `visible={topTab === 'tui'}` → TuiView → TuiPane.
-
-**Result:** Fixes TUI↔Profile tab switching only. On profile-to-profile switch, `topTab` stays `'tui'`, so `visible` stays `true` — effect doesn't re-trigger.
+**Result:** Fixes TUI/Profile tab switching only. Profile-to-profile switch keeps `topTab === 'tui'`, so `visible` stays `true`.
 
 ### Attempt 3: Deferred rAF refresh in main deps effect
 
-Added `requestAnimationFrame` after `term.open(el)` to call `fit()` + `refresh()`.
+**Result:** No effect. Refresh fires before PTY data arrives — empty buffer.
 
-**Result:** No effect. The refresh fires before PTY data arrives. The terminal buffer is empty — nothing to repaint. This was based on the wrong diagnosis (canvas issue vs data issue).
+### Attempt 4: SIGWINCH via PTY resize on reconnect
 
-### Attempt 4: SIGWINCH via PTY resize on reconnect (current)
+Toggle resize 1x1 → actual in `doLaunch()` when `started === false`.
 
-Modified `manager.launchTui()` to detect an already-running PTY and force a resize (toggle 1×1 → actual size) to trigger SIGWINCH. The TUI app receives the signal and redraws its full screen. Also threaded cols/rows from the renderer through IPC so the resize uses the actual terminal dimensions.
+**Result:** Unreliable. Both resizes fire back-to-back synchronously. Some TUI apps compare old vs new dimensions and skip the redraw since the final size matches the original. Also doesn't solve the xterm buffer destruction issue.
 
-**Status:** Implemented, not yet confirmed working.
+### Attempt 5: Keep all InstancePanes alive + visibility effect with SIGWINCH
 
-## If Attempt 4 Fails — Remaining Options
+Render all panes, hide with CSS. Send SIGWINCH via `resize(cols, rows)` on visibility change.
 
-### A. Keep all xterm instances alive (don't destroy on switch)
+**Result:** Mostly fixed but intermittent. Same-size SIGWINCH ignored by TUI app when dimensions haven't changed.
 
-Render ALL profiles' InstancePanes simultaneously, hide inactive ones with CSS (`display: none` or `visibility: hidden`). Each profile's xterm stays mounted with its buffer intact. Switching profiles just toggles visibility.
+### Attempt 6: Two-step resize with 150ms delay
 
-**Tradeoff:** More memory (one xterm + PTY per profile). But profiles are few (typically 2-5), so this is fine. This is the most robust long-term solution.
+Shrink to `cols - 1` immediately, restore to actual `cols` after 150ms. Two distinct SIGWINCH signals with different dimensions.
 
-### B. Add `key={instance.id}` to InstancePane
-
-Forces React to fully destroy and recreate the component tree on profile switch. Combined with the SIGWINCH fix, this ensures a clean DOM element for each terminal.
-
-**Tradeoff:** Destroys all component state on switch. Slight flicker.
-
-### C. Buffer recent PTY output in manager
-
-Keep a ring buffer of the last N bytes of PTY output per instance in `manager.ts`. When `launchTui` returns `{ started: false }`, also return the buffer. The renderer writes the buffer to the new xterm before subscribing to live data.
-
-**Tradeoff:** TUI apps use escape codes for cursor positioning, colors, etc. Replaying raw output may produce garbled display. SIGWINCH is cleaner because the app redraws properly.
+**Result:** Fixed. The dimension change forces the TUI app to repaint every time.
