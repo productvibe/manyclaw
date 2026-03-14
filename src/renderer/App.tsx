@@ -1,20 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useInstances } from './hooks/useInstances'
-import { useChat } from './hooks/useChat'
 import Sidebar from './components/Sidebar'
 import InstancePane from './components/InstancePane'
 import EmptyState from './components/EmptyState'
-import ChatView from './components/ChatView'
 import { HINT_DISMISSED_KEY } from './components/HintBar'
-
-type View = 'instance' | 'chat'
 
 export default function App() {
   const { instances, loading, start, stop, create, deleteInstance } = useInstances()
-  const { messages, sending, send, clearMessages } = useChat()
 
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [view, setView] = useState<View>('instance')
   const [showHint, setShowHint] = useState(
     () => !localStorage.getItem(HINT_DISMISSED_KEY),
   )
@@ -40,7 +34,6 @@ export default function App() {
     const instance = await create(opts)
     if (instance) {
       setSelectedId(instance.id)
-      setView('instance')
     }
   }
 
@@ -51,7 +44,6 @@ export default function App() {
 
   function handleSelectInstance(id: string) {
     setSelectedId(id)
-    setView('instance')
   }
 
   function handleOpenNewInstance() {
@@ -104,42 +96,8 @@ export default function App() {
           MultiClaw
         </div>
 
-        {/* Right: chat icon */}
+        {/* Right: spacer */}
         <div style={{ flex: 1 }} />
-        <button
-          className="toolbar-no-drag"
-          onClick={() => setView(view === 'chat' ? 'instance' : 'chat')}
-          title="Chat (⌘T)"
-          style={{
-            marginRight: 12,
-            width: 32,
-            height: 32,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: view === 'chat' ? 'rgba(0,122,255,0.10)' : 'transparent',
-            border: 'none',
-            borderRadius: 'var(--radius-md)',
-            cursor: 'pointer',
-            color: view === 'chat' ? 'var(--accent)' : 'var(--text-secondary)',
-            transition: 'background var(--transition-fast), color var(--transition-fast)',
-          }}
-          onMouseEnter={(e) => {
-            if (view !== 'chat') e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
-          }}
-          onMouseLeave={(e) => {
-            if (view !== 'chat') e.currentTarget.style.background = 'transparent'
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path
-              d="M2 3.5A1.5 1.5 0 013.5 2h11A1.5 1.5 0 0116 3.5v8A1.5 1.5 0 0114.5 13H6l-4 3V3.5z"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
       </header>
 
       {/* ── Content row: sidebar + main ── */}
@@ -172,61 +130,43 @@ export default function App() {
             overflow: 'hidden',
           }}
         >
-          {/* Chat view */}
-          {view === 'chat' && (
-            <ChatView
-              instances={instances}
-              selectedInstanceId={selectedId}
-              messages={messages}
-              sending={sending}
-              onBack={() => setView('instance')}
-              onSend={send}
-              onClearMessages={clearMessages}
-              onStartInstance={start}
-            />
-          )}
-
           {/* Instance view */}
-          {view === 'instance' && (
-            <>
-              {loading ? (
-                <div
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--text-secondary)',
-                    fontSize: 'var(--font-size-body)',
-                  }}
-                >
-                  Loading…
-                </div>
-              ) : instances.length === 0 ? (
-                <EmptyState onNewInstance={handleOpenNewInstance} />
-              ) : selectedInstance ? (
-                <InstancePane
-                  instance={selectedInstance}
-                  showHint={showHint}
-                  onHintDismiss={() => setShowHint(false)}
-                  onStart={start}
-                  onStop={stop}
-                />
-              ) : (
-                <div
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--text-secondary)',
-                    fontSize: 'var(--font-size-body)',
-                  }}
-                >
-                  Select an instance from the sidebar
-                </div>
-              )}
-            </>
+          {loading ? (
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                fontSize: 'var(--font-size-body)',
+              }}
+            >
+              Loading…
+            </div>
+          ) : instances.length === 0 ? (
+            <EmptyState onNewInstance={handleOpenNewInstance} />
+          ) : selectedInstance ? (
+            <InstancePane
+              instance={selectedInstance}
+              showHint={showHint}
+              onHintDismiss={() => setShowHint(false)}
+              onStart={start}
+              onStop={stop}
+            />
+          ) : (
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                fontSize: 'var(--font-size-body)',
+              }}
+            >
+              Select an instance from the sidebar
+            </div>
           )}
         </main>
       </div>

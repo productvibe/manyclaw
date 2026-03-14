@@ -140,6 +140,37 @@ export default function InstancePane({
         )}
         {isRunning && (
           <>
+            <button
+              onClick={() => window.multiclaw.shell.openExternal(`http://127.0.0.1:${instance.port}`)}
+              title="Open in browser"
+              style={{
+                height: 28,
+                borderRadius: 'var(--radius-md)',
+                padding: '0 10px',
+                fontSize: 12,
+                fontWeight: 'var(--font-weight-medium)',
+                fontFamily: 'var(--font)',
+                background: 'transparent',
+                color: 'var(--text-secondary)',
+                border: '1px solid rgba(0,0,0,0.12)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                whiteSpace: 'nowrap',
+                transition: 'background var(--transition-fast), color var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
+                e.currentTarget.style.color = 'var(--text-primary)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.color = 'var(--text-secondary)'
+              }}
+            >
+              🌐 Open in Browser ↗
+            </button>
             <TintButton variant="destructive" onClick={handleStop} disabled={actionPending}>
               ■ Stop
             </TintButton>
