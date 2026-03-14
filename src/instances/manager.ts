@@ -249,7 +249,7 @@ export class InstanceManager extends EventEmitter {
       const headers: Record<string, string> = { 'Content-Type': 'application/json' }
       if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`
 
-      const res = await fetch(`http://127.0.0.1:${inst.port}/api/chat`, {
+      const res = await fetch(`http://127.0.0.1:${inst.port}/v1/chat/completions`, {
         method: 'POST',
         headers,
         body: JSON.stringify(body),
@@ -352,12 +352,10 @@ export class InstanceManager extends EventEmitter {
       const configPath = path.join(profileDir(id), 'openclaw.json')
       const raw = fs.readFileSync(configPath, 'utf8')
       const config = JSON.parse(raw) as Record<string, unknown>
-      // Try common key names
-      return (
-        (config.gatewayApiKey as string | undefined) ??
-        (config.apiKey as string | undefined) ??
-        (config.token as string | undefined)
-      )
+      // Token lives at gateway.auth.token in openclaw profile config
+      const gateway = (config.gateway as Record<string, unknown> | undefined) ?? {}
+      const auth = (gateway.auth as Record<string, unknown> | undefined) ?? {}
+      return typeof auth.token === 'string' ? auth.token : undefined
     } catch {
       return undefined
     }

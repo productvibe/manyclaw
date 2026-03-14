@@ -1,0 +1,46 @@
+appId: com.openclaw.multiclaw
+productName: MultiClaw
+
+# Source: what gets included in the app
+directories:
+  buildResources: build
+  output: release
+
+files:
+  - dist/**/*
+  - package.json
+
+# Bundled openclaw binary — must be outside ASAR so it can be executed
+# Place the binary at resources/openclaw before running electron-builder
+# (see BLUEPRINT.md §5 for the copy script)
+extraResources:
+  - from: resources/openclaw
+    to: openclaw
+    filter:
+      - "**/*"
+
+# ASAR is enabled but the binary is unpacked
+asar: true
+asarUnpack:
+  - resources/openclaw/**/*
+
+# macOS target
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  # Hardened runtime required for notarization
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  # When signing, set APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID env vars
+  notarize: false  # set to true when credentials are configured
+
+dmg:
+  sign: false
+
+# Don't publish yet
+publish: null
