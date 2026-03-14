@@ -243,6 +243,10 @@ export class InstanceManager extends EventEmitter {
     this.tuiProcesses.get(id)?.ptyProcess.write(data)
   }
 
+  resizeTui(id: string, cols: number, rows: number): void {
+    this.tuiProcesses.get(id)?.ptyProcess.resize(cols, rows)
+  }
+
   // ── Gateway (system openclaw, port 18789) ─────────────────────────────
 
   async getGatewayStatus(): Promise<GatewayStatus> {

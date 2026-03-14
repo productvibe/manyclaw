@@ -23,6 +23,7 @@ export const IPC = {
 
   INSTANCES_LAUNCH_TUI: 'instances:launchTui',
   INSTANCES_TUI_INPUT:  'instances:tui:input',
+  INSTANCES_TUI_RESIZE: 'instances:tui:resize',
 
   // events (main → renderer, via ipcRenderer.on)
   INSTANCE_STATUS_CHANGED: 'instance:statusChanged',
@@ -120,6 +121,9 @@ export interface MultiClawAPI {
      * Subscribe to PTY output for a specific instance's TUI.
      * Returns an unsubscribe function.
      */
+    /** Notify main that the terminal view resized so the PTY can be resized too */
+    resizeTui(id: string, cols: number, rows: number): Promise<void>
+
     onTuiData(id: string, cb: (data: string) => void): () => void
   }
 

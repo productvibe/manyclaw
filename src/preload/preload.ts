@@ -50,6 +50,9 @@ const api: MultiClawAPI = {
     sendTuiInput: (id, data) =>
       ipcRenderer.invoke('instances:tui:input', id, data),
 
+    resizeTui: (id, cols, rows) =>
+      ipcRenderer.invoke('instances:tui:resize', id, cols, rows),
+
     onTuiData: (id, cb) => {
       const channel = `instance:tui:data:${id}`
       const handler = (_: unknown, data: string) => cb(data)

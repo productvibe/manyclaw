@@ -103,6 +103,10 @@ function setupIpc(win: BrowserWindow): void {
     manager.sendTuiInput(id, data)
   })
 
+  ipcMain.handle('instances:tui:resize', (_, id: string, cols: number, rows: number) => {
+    manager.resizeTui(id, cols, rows)
+  })
+
   // System gateway
   ipcMain.handle('gateway:status', () =>
     manager.getGatewayStatus(),
