@@ -104,18 +104,25 @@ export interface TuiHandle {
  * The caller owns the handle and is responsible for calling kill().
  */
 export function launchTui(
-  instance: { id: string; name: string },
+  instance: { id: string; name: string; port: number },
   onData: (data: string) => void,
   onExit: () => void,
 ): TuiHandle {
   const bin = getOpenClawBin()
+  const wsUrl = `ws://127.0.0.1:${instance.port}`
 
-  const ptyProcess = pty.spawn(bin, ['--profile', instance.id, 'tui'], {
+  // node-pty cannot exec Node.js scripts directly (posix_spawnp limitation).
+  // Spawn via shell so the shebang (#!/usr/bin/env node) is interpreted correctly.
+  const ptyProcess = pty.spawn('/bin/sh', ['-c', `"${bin}" --profile ${instance.id} tui --url ${wsUrl}`], {
     name: 'xterm-color',
     cols: 80,
     rows: 24,
     cwd: process.env.HOME ?? '/',
-    env: process.env as Record<string, string>,
+    env: {
+      ...process.env,
+      // Ensure PATH includes Homebrew so `node` is resolvable
+      PATH: process.env.PATH ?? '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin',
+    } as Record<string, string>,
   })
 
   ptyProcess.onData(onData)

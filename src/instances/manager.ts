@@ -227,7 +227,7 @@ export class InstanceManager extends EventEmitter {
     if (!inst) throw new Error(`Instance not found: ${id}`)
 
     const handle = launchTui(
-      { id: inst.id, name: inst.name },
+      { id: inst.id, name: inst.name, port: inst.port },
       (data) => this.emit('tuiData', { id, data }),
       () => {
         this.tuiProcesses.delete(id)
