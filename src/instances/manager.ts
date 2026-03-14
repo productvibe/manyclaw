@@ -45,6 +45,7 @@ function toInstanceInfo(inst: InternalInstance): InstanceInfo {
     status: inst.status,
     lastError: inst.lastError,
     pid: inst.pid,
+    profileDir: inst.profileDir,
   }
 }
 
@@ -521,6 +522,7 @@ export class InstanceManager extends EventEmitter {
     const bin = getOpenClawBin()
 
     const profileArgs = id === 'default' ? [] : ['--profile', id]
+    const workspace = path.join(inst.profileDir, 'workspace')
     const result = await execa(bin, [
       ...profileArgs,
       'onboard',
@@ -534,6 +536,7 @@ export class InstanceManager extends EventEmitter {
       '--gateway-port', String(inst.port),
       '--gateway-bind', 'loopback',
       '--gateway-auth', 'token',
+      '--workspace', workspace,
       '--skip-health',
     ], {
       reject: false,
@@ -544,7 +547,31 @@ export class InstanceManager extends EventEmitter {
       return { success: false, error: result.stderr || result.stdout || 'Onboard failed' }
     }
 
+    // Fix workspace path — openclaw onboard defaults to ~/.openclaw/workspace-{id}
+    // but each profile should use its own directory: ~/.openclaw-{id}/workspace
+    if (id !== 'default') {
+      this.fixWorkspacePath(inst)
+    }
+
     return { success: true }
+  }
+
+  private fixWorkspacePath(inst: InternalInstance): void {
+    const configPath = path.join(inst.profileDir, 'openclaw.json')
+    try {
+      const raw = fs.readFileSync(configPath, 'utf8')
+      const config = JSON.parse(raw)
+      const correctWorkspace = path.join(inst.profileDir, 'workspace')
+      if (config?.agents?.defaults?.workspace !== correctWorkspace) {
+        config.agents = config.agents ?? {}
+        config.agents.defaults = config.agents.defaults ?? {}
+        config.agents.defaults.workspace = correctWorkspace
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8')
+        console.log(`[manager] Fixed workspace path for ${inst.id}: ${correctWorkspace}`)
+      }
+    } catch {
+      // Config doesn't exist yet or is malformed — skip
+    }
   }
 
   // ── Event subscriptions (convenience wrappers for main.ts) ────────────

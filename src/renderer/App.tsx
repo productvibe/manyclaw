@@ -3,10 +3,11 @@ import { useInstances } from './hooks/useInstances'
 import {
   SidebarInset,
   SidebarProvider,
+  SidebarTrigger,
 } from '@/components/ui/sidebar'
 import Sidebar from './components/Sidebar'
 import InstancePane from './components/InstancePane'
-import EmptyState from './components/EmptyState'
+import SetupWizard from './components/SetupWizard'
 
 export default function App() {
   const { instances, loading, start, stop, create, deleteInstance } = useInstances()
@@ -51,13 +52,16 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen flex-col">
-      <header className="flex h-[38px] shrink-0 items-center justify-center bg-sidebar border-b border-sidebar-border toolbar-drag">
+    <SidebarProvider className="flex-col !min-h-0 h-screen">
+      <header className="flex h-[38px] shrink-0 items-center bg-sidebar border-b border-sidebar-border toolbar-drag">
+        <SidebarTrigger className="toolbar-no-drag ml-[70px]" />
+        <div className="flex-1" />
         <span className="text-sm font-semibold toolbar-no-drag">
-          MultiClaw{selectedInstance ? ` — ${selectedInstance.name}` : ''}
+          MultiClaw{selectedId ? ` — ${sortedInstances.find(i => i.id === selectedId)?.name ?? ''}` : ''}
         </span>
+        <div className="flex-1" />
       </header>
-      <SidebarProvider className="flex-1 !min-h-0">
+      <div className="flex flex-1 min-h-0">
         <Sidebar
           instances={sortedInstances}
           selectedId={selectedId}
@@ -75,8 +79,8 @@ export default function App() {
                 Loading...
               </div>
             ) : sortedInstances.length === 0 ? (
-              <EmptyState onNewInstance={() => {}} />
-            ) : sortedInstances.length > 0 ? (
+              <SetupWizard onCreate={handleCreate} onStart={start} />
+            ) : (
               <>
                 {sortedInstances.map((inst) => (
                   <InstancePane
@@ -89,14 +93,10 @@ export default function App() {
                   />
                 ))}
               </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-                Select a profile from the sidebar
-              </div>
             )}
           </div>
         </SidebarInset>
-      </SidebarProvider>
-    </div>
+      </div>
+    </SidebarProvider>
   )
 }

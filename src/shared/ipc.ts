@@ -49,6 +49,8 @@ export interface InstanceInfo {
   status: InstanceStatus
   lastError?: string
   pid?: number
+  /** Absolute path to the profile data dir */
+  profileDir: string
 }
 
 export interface GatewayStatus {
@@ -163,6 +165,8 @@ export interface MultiClawAPI {
   shell: {
     /** Opens a URL in the default browser. Validates against https:// only. */
     openExternal(url: string): Promise<void>
+    /** Opens a folder in Finder. */
+    openPath(path: string): Promise<void>
   }
 }
 

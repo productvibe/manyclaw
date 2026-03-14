@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { Play, Square, RotateCcw, Globe, Loader2 } from 'lucide-react'
+import { Play, Square, RotateCcw, Globe, FolderOpen, Loader2 } from 'lucide-react'
 import type { InstanceInfo } from '@shared/ipc'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -59,16 +59,6 @@ export default function InstancePane({
     <div className="flex flex-col h-full absolute inset-0" style={{ visibility: visible ? 'visible' : 'hidden', zIndex: visible ? 1 : 0 }}>
       {/* Toolbar */}
       <div className="flex items-center gap-2 px-4 h-11 shrink-0 bg-muted/50 border-b border-border">
-        <span className="text-[15px] font-semibold text-foreground">{instance.name}</span>
-        <div className="flex items-center gap-1.5">
-          <StatusDot status={instance.status} size={8} />
-          <span className="text-[11px] font-medium text-muted-foreground tracking-wide">
-            {STATUS_LABELS[instance.status] ?? instance.status}
-          </span>
-        </div>
-
-        <div className="flex-1" />
-
         {/* Top-level tabs */}
         <ToggleGroup
           type="single"
@@ -78,14 +68,34 @@ export default function InstancePane({
           className="h-7"
         >
           <ToggleGroupItem value="tui" className="h-7 px-3 text-xs data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-            TUI
+            Chat
           </ToggleGroupItem>
           <ToggleGroupItem value="profile" className="h-7 px-3 text-xs data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
             Profile
           </ToggleGroupItem>
         </ToggleGroup>
 
+        <div className="flex items-center gap-1.5">
+          <StatusDot status={instance.status} size={8} />
+          <span className="text-[11px] font-medium text-muted-foreground tracking-wide">
+            {STATUS_LABELS[instance.status] ?? instance.status}
+          </span>
+        </div>
+
+        <div className="flex-1" />
+
         <Separator orientation="vertical" className="h-5 mx-1" />
+
+        {/* Always available */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={() => window.multiclaw.shell.openPath(instance.profileDir)}
+          title="Open in Finder"
+        >
+          <FolderOpen className="h-4 w-4" />
+        </Button>
 
         {/* Action buttons */}
         {isStopped && (

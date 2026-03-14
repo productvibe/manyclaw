@@ -1,10 +1,9 @@
 import { useState, useCallback, useRef } from 'react'
-import { Plus, Settings } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import type { InstanceInfo } from '@shared/ipc'
 import {
   Sidebar as ShadcnSidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupAction,
@@ -22,7 +21,6 @@ import {
 } from '@/components/ui/context-menu'
 import MacMiniIcon from './MacMiniIcon'
 import InstanceDialog from './InstanceDialog'
-import AppSettingsDialog from './AppSettingsDialog'
 
 interface SidebarProps {
   instances: InstanceInfo[]
@@ -46,7 +44,6 @@ export default function Sidebar({
   onReorder,
 }: SidebarProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const dragItemId = useRef<string | null>(null)
   const dragOverId = useRef<string | null>(null)
 
@@ -59,7 +56,7 @@ export default function Sidebar({
 
   return (
     <>
-      <ShadcnSidebar collapsible="none" className="border-r border-border">
+      <ShadcnSidebar collapsible="offcanvas" className="border-r border-border top-[38px] !h-[calc(100vh-38px)]">
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel className="mb-2">Profiles</SidebarGroupLabel>
@@ -144,22 +141,7 @@ export default function Sidebar({
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton onClick={() => setSettingsOpen(true)}>
-                <Settings className="h-4 w-4" />
-                <span>Settings</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
       </ShadcnSidebar>
-
-      <AppSettingsDialog
-        open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-      />
 
       <InstanceDialog
         open={dialogOpen}

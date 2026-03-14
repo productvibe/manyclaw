@@ -13,5 +13,5 @@ export default function TuiPane({ instance, visible }: { instance: InstanceInfo;
     [instance.id],
   )
 
-  return <div ref={containerRef} className="h-full overflow-hidden p-2" style={{ background: '#1C1C1E' }} />
+  return <div ref={containerRef} className="h-full overflow-hidden p-3" style={{ background: '#1C1C1E' }} />
 }

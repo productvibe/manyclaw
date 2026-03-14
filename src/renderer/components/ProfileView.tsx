@@ -34,11 +34,14 @@ interface ProfileViewProps {
 }
 
 function DetailsSection({ instance }: { instance: InstanceInfo }) {
+  const isDefault = instance.id === 'default'
+  const dirDisplay = isDefault ? '~/.openclaw/' : `~/.openclaw-${instance.id}/`
+
   const rows: { label: string; value: React.ReactNode }[] = [
     { label: 'Name', value: instance.name },
     { label: 'Label', value: instance.label || '—' },
     { label: 'Profile ID', value: instance.id },
-    { label: 'Directory', value: `~/.openclaw-${instance.id}/` },
+    { label: 'Directory', value: dirDisplay },
     { label: 'Port', value: `:${instance.port}` },
     {
       label: 'Color',
@@ -52,7 +55,18 @@ function DetailsSection({ instance }: { instance: InstanceInfo }) {
   ]
 
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-4">
+      {isDefault && (
+        <Card className="max-w-lg border-blue-300/50 bg-blue-50/50 dark:border-blue-800/50 dark:bg-blue-950/20">
+          <CardContent className="pt-4 pb-3">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              This is the <strong>system default</strong> profile, created outside of MultiClaw by the OpenClaw CLI.
+              It runs as a background daemon and is shared across all tools that use OpenClaw.
+              MultiClaw can monitor and interact with it, but does not manage its lifecycle.
+            </p>
+          </CardContent>
+        </Card>
+      )}
       <Card className="max-w-lg">
         <CardHeader>
           <CardTitle className="text-base">Profile Details</CardTitle>

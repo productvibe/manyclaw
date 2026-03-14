@@ -9,6 +9,7 @@
 
 import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron'
 import path from 'node:path'
+import os from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { InstanceManager } from '../instances/manager.js'
 
@@ -113,6 +114,13 @@ function setupIpc(win: BrowserWindow): void {
       url.startsWith('http://localhost')
     ) {
       shell.openExternal(url)
+    }
+  })
+
+  ipcMain.handle('shell:openPath', (_, p: string) => {
+    // Only allow opening paths under the user's home directory
+    if (p.startsWith(os.homedir())) {
+      shell.openPath(p)
     }
   })
 

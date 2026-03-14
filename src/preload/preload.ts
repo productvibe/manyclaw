@@ -123,6 +123,8 @@ const api: MultiClawAPI = {
   shell: {
     openExternal: (url) =>
       ipcRenderer.invoke('shell:openExternal', url),
+    openPath: (path) =>
+      ipcRenderer.invoke('shell:openPath', path),
   },
 }
 
