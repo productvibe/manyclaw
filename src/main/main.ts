@@ -60,34 +60,18 @@ function setupIpc(win: BrowserWindow): void {
     manager.stop(id),
   )
 
-  ipcMain.handle('instances:create', (_, opts: { name: string; color: string }) =>
+  ipcMain.handle('instances:create', (_, opts: { name: string; color: string; id?: string; port?: number }) =>
     manager.create(opts),
   )
 
-  ipcMain.handle('instances:delete', async (_, id: string) => {
+  ipcMain.handle('instances:getNextPort', () =>
+    manager.getNextPort(),
+  )
+
+  ipcMain.handle('instances:delete', async (_, id: string, opts?: { deleteData?: boolean }) => {
     const inst = manager.getInstance(id)
     if (!inst) return { error: 'Not found' }
-
-    if (inst.status === 'running' || inst.status === 'starting') {
-      return { error: 'Stop the instance before deleting it.' }
-    }
-
-    const { response, checkboxChecked } = await dialog.showMessageBox(win, {
-      type: 'warning',
-      title: 'Delete Instance',
-      message: `Delete "${inst.name}"?`,
-      detail: 'This will remove the instance from the sidebar.',
-      checkboxLabel:
-        `Also delete all data (sessions, memory, config)\n` +
-        `This will permanently remove ~/.openclaw-${id}/`,
-      checkboxChecked: false,
-      buttons: ['Cancel', 'Delete'],
-      defaultId: 0,
-      cancelId: 0,
-    })
-
-    if (response === 0) return { cancelled: true }
-    return manager.delete(id, checkboxChecked)
+    return manager.delete(id, opts?.deleteData ?? false)
   })
 
   ipcMain.handle('instances:getLogs', (_, id: string) =>
@@ -95,8 +79,8 @@ function setupIpc(win: BrowserWindow): void {
   )
 
   // Dashboard
-  ipcMain.handle('instances:getDashboardUrl', (_, id: string) =>
-    manager.getDashboardUrl(id),
+  ipcMain.handle('instances:openDashboard', (_, id: string) =>
+    manager.openDashboard(id),
   )
 
   // System gateway
@@ -106,6 +90,19 @@ function setupIpc(win: BrowserWindow): void {
 
   ipcMain.handle('gateway:start', () =>
     manager.startGateway(),
+  )
+
+  // App settings
+  ipcMain.handle('settings:get', () =>
+    manager.getSettings(),
+  )
+
+  ipcMain.handle('settings:save', (_, settings: { setupToken?: string }) =>
+    manager.saveSettings(settings),
+  )
+
+  ipcMain.handle('instances:onboard', (_, id: string, opts?: { provider?: string; token?: string }) =>
+    manager.onboardInstance(id, opts),
   )
 
   // Shell
@@ -119,6 +116,36 @@ function setupIpc(win: BrowserWindow): void {
     }
   })
 
+  // TUI — invoke/on handlers
+  ipcMain.handle('instances:launchTui', (_, id: string, cols?: number, rows?: number) =>
+    manager.launchTui(id, cols, rows),
+  )
+
+  ipcMain.on('instances:tui:input', (_, id: string, data: string) => {
+    manager.sendTuiInput(id, data)
+  })
+
+  ipcMain.on('instances:tui:resize', (_, id: string, cols: number, rows: number) => {
+    manager.resizeTui(id, cols, rows)
+  })
+
+  // Configure — invoke/on handlers
+  ipcMain.handle('instances:launchConfigure', (_, id: string) =>
+    manager.launchConfigure(id),
+  )
+
+  ipcMain.handle('instances:killConfigure', (_, id: string) =>
+    manager.killConfigure(id),
+  )
+
+  ipcMain.on('instances:configure:input', (_, id: string, data: string) => {
+    manager.sendConfigureInput(id, data)
+  })
+
+  ipcMain.on('instances:configure:resize', (_, id: string, cols: number, rows: number) => {
+    manager.resizeConfigure(id, cols, rows)
+  })
+
   // ── Forward instance events to renderer ──────────────────────────────
   manager.on('statusChanged', (inst) => {
     win.webContents.send('instance:statusChanged', inst)
@@ -126,6 +153,22 @@ function setupIpc(win: BrowserWindow): void {
 
   manager.on('log', ({ id, line }: { id: string; line: string }) => {
     win.webContents.send(`instance:logLine:${id}`, line)
+  })
+
+  manager.on('tuiData', ({ id, data }: { id: string; data: string }) => {
+    win.webContents.send(`instance:tui:data:${id}`, data)
+  })
+
+  manager.on('tuiExit', ({ id }: { id: string }) => {
+    win.webContents.send(`instance:tui:exit:${id}`)
+  })
+
+  manager.on('configureData', ({ id, data }: { id: string; data: string }) => {
+    win.webContents.send(`instance:configure:data:${id}`, data)
+  })
+
+  manager.on('configureExit', ({ id }: { id: string }) => {
+    win.webContents.send(`instance:configure:exit:${id}`)
   })
 }
 
@@ -146,6 +189,36 @@ app.whenReady().then(async () => {
 })
 
 app.on('window-all-closed', () => {
-  manager.stopAll()
   if (process.platform !== 'darwin') app.quit()
+})
+
+let forceQuit = false
+
+app.on('before-quit', async (e) => {
+  if (forceQuit) return
+
+  const running = manager.list().filter(i => i.status === 'running' || i.status === 'starting')
+  if (running.length === 0) {
+    // Nothing running — quit immediately
+    return
+  }
+
+  e.preventDefault()
+
+  const win = BrowserWindow.getAllWindows()[0]
+  const { response } = await dialog.showMessageBox(win ?? null, {
+    type: 'warning',
+    title: 'Quit MultiClaw',
+    message: `${running.length} running profile${running.length > 1 ? 's' : ''} will be stopped.`,
+    detail: running.map(i => i.name).join(', '),
+    buttons: ['Cancel', 'Quit'],
+    defaultId: 1,
+    cancelId: 0,
+  })
+
+  if (response === 0) return
+
+  await manager.stopAll()
+  forceQuit = true
+  app.quit()
 })

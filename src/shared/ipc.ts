@@ -15,7 +15,7 @@ export const IPC = {
   INSTANCES_CREATE:     'instances:create',
   INSTANCES_DELETE:     'instances:delete',
   INSTANCES_GET_LOGS:   'instances:getLogs',
-  INSTANCES_GET_DASHBOARD_URL: 'instances:getDashboardUrl',
+  INSTANCES_OPEN_DASHBOARD: 'instances:openDashboard',
 
   GATEWAY_STATUS:       'gateway:status',
   GATEWAY_START:        'gateway:start',
@@ -44,6 +44,8 @@ export interface InstanceInfo {
   port: number
   /** Hex color for sidebar status dot, e.g. "#3b82f6" */
   color: string
+  /** Optional short label/comment shown on the profile card */
+  label?: string
   status: InstanceStatus
   lastError?: string
   pid?: number
@@ -76,24 +78,29 @@ export interface MultiClawAPI {
     /** Gracefully stops the gateway process. */
     stop(id: string): Promise<InstanceInfo>
 
-    /** Creates a new instance with the given name and sidebar color. */
-    create(opts: { name: string; color: string }): Promise<InstanceInfo>
+    /** Creates a new profile with the given options. */
+    create(opts: { name: string; color: string; id?: string; port?: number; label?: string }): Promise<InstanceInfo>
+
+    /** Get the next suggested port number. */
+    getNextPort(): Promise<number>
 
     /**
-     * Deletes an instance. Shows native confirmation dialog.
-     * Returns { cancelled: true } if user cancelled.
+     * Deletes an instance.
      * Instance must be stopped first (main enforces this).
      */
-    delete(id: string): Promise<{ cancelled?: boolean }>
+    delete(id: string, opts?: { deleteData?: boolean }): Promise<{ cancelled?: boolean }>
 
     /** Returns recent log lines (up to 2000) for the given instance. */
     getLogs(id: string): Promise<string[]>
 
-    /** Get the authenticated dashboard URL via `openclaw --profile {id} dashboard --no-open` */
-    getDashboardUrl(id: string): Promise<string>
+    /** Open the dashboard in the default browser via `openclaw --profile {id} dashboard` */
+    openDashboard(id: string): Promise<void>
+
+    /** Run non-interactive onboard for this profile. */
+    onboard(id: string, opts?: { provider?: string; token?: string }): Promise<{ success: boolean; error?: string }>
 
     /** Spawn the TUI for this instance in a PTY (idempotent if already running). */
-    launchTui(id: string): Promise<{ started: boolean }>
+    launchTui(id: string, cols?: number, rows?: number): Promise<{ started: boolean }>
 
     /** Send raw input to the TUI PTY. */
     sendTuiInput(id: string, data: string): void
@@ -107,6 +114,24 @@ export interface MultiClawAPI {
     /** Subscribe to TUI exit events. */
     onTuiExit(id: string, cb: () => void): () => void
 
+    /** Spawn `openclaw --profile {id} configure` in a PTY. */
+    launchConfigure(id: string): Promise<{ started: boolean }>
+
+    /** Kill the running configure PTY for this instance. */
+    killConfigure(id: string): Promise<void>
+
+    /** Send raw input to the configure PTY. */
+    sendConfigureInput(id: string, data: string): void
+
+    /** Resize the configure PTY. */
+    resizeConfigure(id: string, cols: number, rows: number): void
+
+    /** Subscribe to raw PTY output from configure. */
+    onConfigureData(id: string, cb: (data: string) => void): () => void
+
+    /** Subscribe to configure exit events. */
+    onConfigureExit(id: string, cb: () => void): () => void
+
     /**
      * Subscribe to status changes for any instance.
      * Callback fires whenever an instance's status field changes.
@@ -119,6 +144,13 @@ export interface MultiClawAPI {
      * Returns an unsubscribe function.
      */
     onLog(id: string, cb: (line: string) => void): () => void
+  }
+
+  settings: {
+    /** Get app-level settings (setup token, etc.) */
+    get(): Promise<{ setupToken?: string }>
+    /** Save app-level settings */
+    save(settings: { setupToken?: string }): Promise<void>
   }
 
   gateway: {

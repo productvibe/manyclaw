@@ -1,101 +1,84 @@
 # OpenClaw Profile Lifecycle
 
-Complete sequence for creating, running, using, and deleting an isolated OpenClaw profile.
+Verified working sequence for creating, running, using, and deleting an isolated OpenClaw profile.
 
 ## 1. Create & Configure a Profile
 
 ```bash
-# Initialize the profile with onboarding (interactive)
-openclaw --profile mybot onboard --flow quickstart
-
-# Or non-interactive with explicit flags
+# Non-interactive with setup token (what multiclaw uses)
 # --accept-risk is REQUIRED for non-interactive mode
+# --skip-health because gateway isn't running yet
 openclaw --profile mybot onboard \
   --non-interactive \
   --accept-risk \
   --mode local \
   --flow quickstart \
-  --auth-choice anthropic \
-  --gateway-port 3100 \
+  --auth-choice token \
+  --token "sk-ant-oat01-..." \
+  --token-provider anthropic \
+  --gateway-port 40000 \
   --gateway-bind loopback \
   --gateway-auth token \
-  --install-daemon
+  --skip-health
+
+# Or interactive
+openclaw --profile mybot onboard --flow quickstart
 ```
 
 This creates isolated state at `~/.openclaw-mybot/` and configures:
-- Model provider auth (API keys)
+- Model provider auth (OAuth token via setup-token)
 - Gateway port and binding
 - Workspace directory
 
-### Minimal Setup (Skip Onboard)
-
-If you only need a gateway without full onboarding:
-
-```bash
-# Set the gateway port in profile config
-openclaw --profile mybot config set gateway.port 3100
-
-# Set model auth manually
-openclaw --profile mybot models auth add --provider anthropic
-```
+Note: `--auth-choice setup-token` requires interactive mode.
+For non-interactive, use `--auth-choice token --token-provider anthropic --token <value>`.
 
 ## 2. Start the Gateway
 
 ```bash
 # As a foreground process (what multiclaw uses)
-openclaw --profile mybot gateway --port 3100 --force --allow-unconfigured
+# Port is read from profile config (set during onboard)
+openclaw --profile mybot gateway --force
 
 # Or install as a background daemon
-openclaw --profile mybot gateway install --port 3100
+openclaw --profile mybot gateway install
 openclaw --profile mybot gateway start
 ```
 
-Verify it's running:
-
-```bash
-curl http://127.0.0.1:3100/health
-```
-
 Key flags:
-- `--port <port>` — required to avoid conflicts between profiles
-- `--force` — kill any existing gateway on this port
-- `--allow-unconfigured` — start even if onboard hasn't completed
-- `--bind <loopback|lan|tailnet|auto>` — network exposure
-- `--token <token>` — set auth token (auto-generated if omitted)
+- `--force` — kill any existing gateway on the configured port
 
 ## 3. Open the TUI
 
 Requires the gateway to be running.
 
 ```bash
-# Connects using port from profile config (set in step 1 or 2)
 openclaw --profile mybot tui
-
-# Or specify connection explicitly
-openclaw --profile mybot tui --url http://127.0.0.1:3100 --token <token>
 ```
-
-Additional TUI flags:
-- `--session <key>` — resume a specific conversation
-- `--message <text>` — send an initial message on open
-- `--thinking <level>` — set thinking mode
-- `--history-limit <n>` — limit conversation history
-- `--timeout-ms <ms>` — request timeout
 
 ## 4. Open the Dashboard
 
 Requires the gateway to be running.
 
 ```bash
-# Opens dashboard in default browser
+# Opens in default browser
 openclaw --profile mybot dashboard
 
-# Get the authenticated URL without opening (used by multiclaw for webview)
+# Get the authenticated URL without opening the browser
 openclaw --profile mybot dashboard --no-open
-# Outputs: http://127.0.0.1:3100/dashboard?token=...
+# Output: Dashboard URL: http://127.0.0.1:40000/#token=<gateway-auth-token>
 ```
 
-## 5. Stop the Gateway
+The `--no-open` variant is useful for getting the gateway auth token or embedding the URL in a webview.
+
+## 5. Configure (Edit Settings)
+
+```bash
+# Interactive settings wizard (no gateway needed)
+openclaw --profile mybot configure
+```
+
+## 6. Stop the Gateway
 
 ```bash
 # If running as daemon
@@ -104,58 +87,41 @@ openclaw --profile mybot gateway stop
 # If running as foreground process, send SIGTERM to the process
 ```
 
-## 6. Delete the Profile
+## 7. Delete the Profile
 
 ```bash
-# Reset config + credentials + sessions (keeps workspace files)
-openclaw --profile mybot reset --scope config+creds+sessions --yes
-
-# Full reset including workspace
-openclaw --profile mybot reset --scope full --yes
-
-# Or uninstall everything for this profile
 openclaw --profile mybot uninstall --all --yes
-
-# Preview what would be removed
-openclaw --profile mybot uninstall --all --dry-run
 ```
-
-Uninstall selective flags:
-- `--service` — remove daemon/service only
-- `--state` — remove config and state
-- `--workspace` — remove workspace files
-- `--all` — everything
 
 ## Dependency Chain
 
 ```
-onboard (or manual config)
-    └── gateway start
+onboard
+    └── gateway (reads port from profile config)
             ├── tui (connects via WebSocket)
             └── dashboard (web UI served by gateway)
 ```
 
 - `onboard` has no prerequisites
-- `gateway` needs config (from onboard or manual `config set`)
+- `gateway` needs config from onboard (auth + port)
 - `tui` and `dashboard` both require a running gateway
-- `--allow-unconfigured` on gateway bypasses the onboard requirement
+- `configure` works independently (no gateway needed)
 
 ## Multi-Profile Port Allocation
 
-Each profile needs a unique port. Convention used in multiclaw:
+Each profile needs a unique port, set during onboard via `--gateway-port`.
 
 | Profile | Port |
 |---------|------|
-| system (default) | 18789 |
-| dev (`--dev`) | shifted automatically |
-| custom (`--profile X`) | assign explicitly |
+| default (my-agent) | 40000 |
+| additional instances | 40001+ |
 
 ## How Multiclaw Does It
 
-The Electron app automates this sequence in `sandbox.ts`:
-
-1. `config set gateway.port` — writes port to profile config
-2. `gateway --port <port> --force --allow-unconfigured` — starts as child process
-3. Polls `/health` until gateway responds (15s timeout)
-4. `dashboard --no-open` — gets authenticated URL for embedded webview
-5. On stop: SIGTERM to gateway process
+1. **Create**: User fills in name + color in dialog
+2. **Onboard**: `onboard --non-interactive --auth-choice token --token <saved-token> --token-provider anthropic --gateway-port <port> --skip-health`
+3. **Start**: `gateway --force` — port read from profile config
+4. **Use**: TUI and dashboard via embedded terminal / browser
+5. **Configure**: `configure` — interactive settings in embedded terminal
+6. **Stop**: SIGTERM to gateway process
+7. **Delete**: `uninstall --all --yes`

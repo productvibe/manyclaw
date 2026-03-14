@@ -1,85 +1,33 @@
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
+
 interface EmptyStateProps {
   onNewInstance: () => void
 }
 
 export default function EmptyState({ onNewInstance }: EmptyStateProps) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        gap: 0,
-        padding: 24,
-      }}
-    >
-      {/* App icon placeholder */}
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 12,
-          background: 'rgba(0,122,255,0.10)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+    <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
+      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="3" width="8" height="8" rx="1.5" fill="#007AFF" />
-          <rect x="13" y="3" width="8" height="8" rx="1.5" fill="#007AFF" opacity="0.5" />
-          <rect x="3" y="13" width="8" height="8" rx="1.5" fill="#007AFF" opacity="0.5" />
-          <rect x="13" y="13" width="8" height="8" rx="1.5" fill="#007AFF" opacity="0.3" />
+          <rect x="3" y="3" width="8" height="8" rx="1.5" className="fill-primary" />
+          <rect x="13" y="3" width="8" height="8" rx="1.5" className="fill-primary opacity-50" />
+          <rect x="3" y="13" width="8" height="8" rx="1.5" className="fill-primary opacity-50" />
+          <rect x="13" y="13" width="8" height="8" rx="1.5" className="fill-primary opacity-30" />
         </svg>
       </div>
 
-      <h2
-        style={{
-          fontSize: 'var(--font-size-headline)',
-          fontWeight: 'var(--font-weight-semibold)',
-          color: 'var(--text-primary)',
-          margin: '16px 0 0',
-        }}
-      >
-        No instances yet
-      </h2>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-foreground">No profiles yet</h2>
+        <p className="text-sm text-muted-foreground max-w-[260px] mt-1.5 leading-relaxed">
+          Run multiple OpenClaw profiles side by side — dev, staging, production, or more.
+        </p>
+      </div>
 
-      <p
-        style={{
-          fontSize: 'var(--font-size-body)',
-          color: 'var(--text-secondary)',
-          maxWidth: 260,
-          textAlign: 'center',
-          lineHeight: 1.5,
-          margin: '6px 0 0',
-        }}
-      >
-        Run multiple OpenClaw profiles side by side — dev, staging, production, or more.
-      </p>
-
-      <button
-        onClick={onNewInstance}
-        style={{
-          marginTop: 20,
-          height: 32,
-          borderRadius: 8,
-          background: '#007AFF',
-          color: '#FFFFFF',
-          border: 'none',
-          padding: '0 16px',
-          fontSize: 'var(--font-size-body)',
-          fontWeight: 'var(--font-weight-medium)',
-          fontFamily: 'var(--font)',
-          cursor: 'pointer',
-          transition: 'opacity 120ms ease',
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
-        onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-      >
-        + New Instance
-      </button>
+      <Button onClick={onNewInstance} className="gap-1.5">
+        <Plus className="h-4 w-4" />
+        New Profile
+      </Button>
     </div>
   )
 }

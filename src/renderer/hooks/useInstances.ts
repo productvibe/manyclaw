@@ -6,7 +6,7 @@ export interface UseInstancesReturn {
   loading: boolean
   start: (id: string) => Promise<void>
   stop: (id: string) => Promise<void>
-  create: (opts: { name: string; color: string }) => Promise<InstanceInfo | null>
+  create: (opts: { name: string; color: string; id?: string; port?: number; label?: string }) => Promise<InstanceInfo | null>
   deleteInstance: (id: string) => Promise<boolean>
 }
 
@@ -50,7 +50,7 @@ export function useInstances(): UseInstancesReturn {
     await window.multiclaw.instances.stop(id)
   }, [])
 
-  const create = useCallback(async (opts: { name: string; color: string }) => {
+  const create = useCallback(async (opts: { name: string; color: string; id?: string; port?: number; label?: string }) => {
     try {
       const instance = await window.multiclaw.instances.create(opts)
       setInstances((prev) => {
@@ -69,14 +69,11 @@ export function useInstances(): UseInstancesReturn {
     }
   }, [])
 
-  const deleteInstance = useCallback(async (id: string) => {
+  const deleteInstance = useCallback(async (id: string, opts?: { deleteData?: boolean }) => {
     try {
-      const result = await window.multiclaw.instances.delete(id)
-      if (!result.cancelled) {
-        setInstances((prev) => prev.filter((i) => i.id !== id))
-        return true
-      }
-      return false
+      await window.multiclaw.instances.delete(id, opts)
+      setInstances((prev) => prev.filter((i) => i.id !== id))
+      return true
     } catch {
       return false
     }

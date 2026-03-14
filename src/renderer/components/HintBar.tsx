@@ -14,7 +14,7 @@ export default function HintBar({ onDismiss }: HintBarProps) {
     <div className="hint-bar">
       <span style={{ fontSize: 14 }}>ℹ</span>
       <span>
-        This is your first instance. Press <strong>Start</strong> to run it, or
+        This is your first profile. Press <strong>Start</strong> to run it, or
         create more using <strong>[+]</strong> in the sidebar.
       </span>
       <button

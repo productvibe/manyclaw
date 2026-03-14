@@ -20,22 +20,9 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu'
+import MacMiniIcon from './MacMiniIcon'
 import InstanceDialog from './InstanceDialog'
 import AppSettingsDialog from './AppSettingsDialog'
-
-function MacMiniIcon({ color, size = 36 }: { color: string; size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <rect x="4" y="14" width="32" height="16" rx="3" fill={color} opacity="0.15" />
-      <rect x="4" y="14" width="32" height="16" rx="3" stroke={color} strokeWidth="1.5" opacity="0.4" />
-      <rect x="6" y="14.5" width="28" height="1" rx="0.5" fill={color} opacity="0.15" />
-      <rect x="14" y="26" width="12" height="1" rx="0.5" fill={color} opacity="0.3" />
-      <circle cx="33" cy="27" r="1" fill={color} opacity="0.6" />
-      <rect x="8" y="30" width="4" height="1.5" rx="0.75" fill={color} opacity="0.2" />
-      <rect x="28" y="30" width="4" height="1.5" rx="0.75" fill={color} opacity="0.2" />
-    </svg>
-  )
-}
 
 interface SidebarProps {
   instances: InstanceInfo[]
@@ -44,7 +31,7 @@ interface SidebarProps {
   onStart: (id: string) => Promise<void>
   onStop: (id: string) => Promise<void>
   onCreate: (opts: { name: string; color: string; id: string; port: number; label?: string }) => Promise<void>
-  onDelete: (id: string) => Promise<boolean>
+  onDelete: (id: string, opts?: { deleteData?: boolean }) => Promise<boolean>
   onReorder: (orderedIds: string[]) => void
 }
 
@@ -72,7 +59,7 @@ export default function Sidebar({
 
   return (
     <>
-      <ShadcnSidebar collapsible="none">
+      <ShadcnSidebar collapsible="none" className="border-r border-border">
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel className="mb-2">Profiles</SidebarGroupLabel>
@@ -107,11 +94,11 @@ export default function Sidebar({
                           <SidebarMenuButton
                             isActive={selected}
                             onClick={() => onSelect(instance.id)}
-                            className="h-auto rounded-lg border border-sidebar-border bg-background p-4 shadow-sm hover:shadow-md transition-shadow data-[active=true]:border-sidebar-primary/30 data-[active=true]:shadow-md"
+                            className="h-auto rounded-lg border border-sidebar-border bg-background p-4 shadow-sm hover:shadow-md transition-shadow data-[active=true]:bg-green-100 dark:data-[active=true]:bg-green-950/40 data-[active=true]:border-green-400/50 dark:data-[active=true]:border-green-700/50 data-[active=true]:shadow-md"
                           >
                             <div className="flex items-start gap-3 w-full">
                               <span className="cursor-grab active:cursor-grabbing shrink-0">
-                                <MacMiniIcon color={instance.status === 'running' ? '#34C759' : '#8E8E93'} size={48} />
+                                <MacMiniIcon color={instance.status === 'running' ? (selected ? '#2DA44E' : '#34C759') : '#8E8E93'} size={48} />
                               </span>
                               <div className="min-w-0 flex-1 pb-2">
                                 <div className="text-sm font-medium truncate">

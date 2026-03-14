@@ -9,7 +9,6 @@ import { execa, type ResultPromise } from 'execa'
 import * as pty from 'node-pty'
 import fs from 'node:fs'
 import path from 'node:path'
-import os from 'node:os'
 
 export function getOpenClawBin(): string {
   // 1. Explicit override (e.g. CI or integration tests)
@@ -59,27 +58,13 @@ export async function launchInstance(
 ): Promise<ProcessHandle> {
   const bin = getOpenClawBin()
 
-  // Write gateway.port into the profile config so `--profile {id} tui`
-  // connects to the right port without needing --url.
-  await execa(
-    bin,
-    ['--profile', instance.id, 'config', 'set', 'gateway.port', String(instance.port)],
-    { reject: false, env: { ...process.env } },
-  )
+  pushLog(`[instance] Starting ${instance.name} (${instance.id === 'default' ? 'default' : '--profile ' + instance.id}) on port ${instance.port}...`)
 
-  pushLog(`[instance] Starting ${instance.name} (--profile ${instance.id}) on port ${instance.port}...`)
+  const gatewayArgs = instance.id === 'default'
+    ? ['gateway', '--force']
+    : ['--profile', instance.id, 'gateway', '--force']
 
-  const child = execa(
-    bin,
-    [
-      '--profile', instance.id,
-      'gateway',
-      '--port', String(instance.port),
-      '--force',
-      '--allow-unconfigured',
-    ],
-    { env: { ...process.env }, reject: false },
-  )
+  const child = execa(bin, gatewayArgs, { env: { ...process.env }, reject: false })
 
   child.stdout?.on('data', (d: Buffer) =>
     d.toString().split('\n').filter(Boolean).forEach(pushLog),
@@ -103,46 +88,32 @@ export async function killInstance(handle: ProcessHandle): Promise<void> {
   await new Promise(r => setTimeout(r, 1000))
 }
 
-// ── TUI (PTY) ──────────────────────────────────────────────────────────────
+// ── PTY processes (TUI, configure) ──────────────────────────────────────────
 
-export interface TuiHandle {
+export interface PtyHandle {
   ptyProcess: pty.IPty
 }
 
-/**
- * Read the gateway token from a profile's config file.
- * Returns undefined if missing (gateway will prompt for auth).
- */
-export function readProfileToken(id: string): string | undefined {
-  try {
-    const configPath = path.join(os.homedir(), `.openclaw-${id}`, 'openclaw.json')
-    const raw = fs.readFileSync(configPath, 'utf8')
-    const config = JSON.parse(raw) as { gateway?: { auth?: { token?: string } } }
-    return config.gateway?.auth?.token
-  } catch {
-    return undefined
-  }
-}
+// Keep old name for backward compat with manager imports
+export type TuiHandle = PtyHandle
 
-/**
- * Spawns `openclaw --profile {id} tui --url ws://127.0.0.1:{port} --token {token}` in a PTY.
- *
- * --profile isolates state/identity. --url + --token are required because
- * `tui` defaults to ws://127.0.0.1:18789 regardless of gateway.port in config.
- */
-export function launchTui(
-  instance: { id: string; name: string; port: number },
+function spawnProfilePty(
+  profileId: string,
+  command: string[],
   onData: (data: string) => void,
   onExit: () => void,
-): TuiHandle {
+): PtyHandle {
   const bin = getOpenClawBin()
-  const token = readProfileToken(instance.id)
-  const url = `ws://127.0.0.1:${instance.port}`
+  const args = profileId === 'default'
+    ? [...command]
+    : ['--profile', profileId, ...command]
 
-  const args = ['--profile', instance.id, 'tui', '--url', url]
-  if (token) args.push('--token', token)
+  // Spawn through the user's shell so shebangs and PATH are resolved correctly.
+  // posix_spawnp (used by node-pty) can fail on script files with shebangs.
+  const shell = process.env.SHELL ?? '/bin/zsh'
+  const shellCmd = [bin, ...args].map(a => `'${a}'`).join(' ')
 
-  const ptyProcess = pty.spawn('/bin/sh', ['-c', `"${bin}" ${args.join(' ')}`], {
+  const ptyProcess = pty.spawn(shell, ['-l', '-c', shellCmd], {
     name: 'xterm-color',
     cols: 80,
     rows: 24,
@@ -159,7 +130,23 @@ export function launchTui(
   return { ptyProcess }
 }
 
-export function killTui(handle: TuiHandle): void {
+export function launchTui(
+  instance: { id: string; name: string },
+  onData: (data: string) => void,
+  onExit: () => void,
+): PtyHandle {
+  return spawnProfilePty(instance.id, ['tui'], onData, onExit)
+}
+
+export function launchConfigure(
+  instance: { id: string },
+  onData: (data: string) => void,
+  onExit: () => void,
+): PtyHandle {
+  return spawnProfilePty(instance.id, ['configure'], onData, onExit)
+}
+
+export function killTui(handle: PtyHandle): void {
   try {
     handle.ptyProcess.kill()
   } catch {

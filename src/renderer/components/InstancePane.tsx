@@ -1,155 +1,55 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { Play, Square, RotateCcw, Globe, Loader2 } from 'lucide-react'
 import type { InstanceInfo } from '@shared/ipc'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import StatusDot from './StatusDot'
-import HintBar from './HintBar'
+import TuiView from './TuiView'
+import ProfileView from './ProfileView'
 
-// ── Logs pane ─────────────────────────────────────────────────────────────────
+type TopTab = 'tui' | 'profile'
 
-interface LogsPaneProps {
-  instance: InstanceInfo
+const STATUS_LABELS: Record<string, string> = {
+  running: 'Running',
+  stopped: 'Stopped',
+  starting: 'Starting...',
+  error: 'Error',
 }
-
-function LogsPane({ instance }: LogsPaneProps) {
-  const [logs, setLogs] = useState<string[]>([])
-  const [loadingLogs, setLoadingLogs] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  // Load existing logs on instance change
-  useEffect(() => {
-    setLogs([])
-    if (instance.status === 'running' || instance.status === 'error') {
-      setLoadingLogs(true)
-      window.multiclaw.instances
-        .getLogs(instance.id)
-        .then((lines) => {
-          setLogs(lines)
-          setLoadingLogs(false)
-        })
-        .catch(() => setLoadingLogs(false))
-    }
-  }, [instance.id])
-
-  // Subscribe to live log lines
-  useEffect(() => {
-    const unsubscribe = window.multiclaw.instances.onLog(instance.id, (line) => {
-      setLogs((prev) => [...prev, line])
-    })
-    return () => unsubscribe()
-  }, [instance.id])
-
-  // Auto-scroll to bottom
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight
-    }
-  }, [logs])
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        flex: 1,
-        background: 'var(--terminal-bg)',
-        color: 'var(--text-terminal)',
-        fontFamily: 'var(--font-mono)',
-        fontSize: 'var(--font-size-mono)',
-        lineHeight: 'var(--line-height-terminal)',
-        padding: '12px 16px',
-        overflowY: 'auto',
-        scrollbarWidth: 'thin',
-      }}
-    >
-      {/* Stopped empty state */}
-      {instance.status === 'stopped' && logs.length === 0 && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-            gap: 8,
-            color: 'var(--text-terminal-dim)',
-          }}
-        >
-          <div style={{ opacity: 0.4 }}>─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-          <div>Instance is stopped.</div>
-          <div>Press Start to run it.</div>
-          <div style={{ opacity: 0.4 }}>─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-        </div>
-      )}
-
-      {/* Error state */}
-      {instance.status === 'error' && (
-        <div style={{ marginBottom: 16, color: '#FF9500' }}>
-          ⚠ Instance exited with error
-          {instance.lastError && (
-            <div style={{ color: 'var(--text-terminal)', marginTop: 4 }}>
-              {instance.lastError}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Loading */}
-      {loadingLogs && (
-        <div style={{ color: 'var(--text-terminal-dim)' }}>Loading logs…</div>
-      )}
-
-      {/* Log lines */}
-      {logs.map((line, i) => (
-        <div key={i} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-          {line}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ── InstancePane ──────────────────────────────────────────────────────────────
 
 interface InstancePaneProps {
   instance: InstanceInfo
-  showHint: boolean
-  onHintDismiss: () => void
   onStart: (id: string) => Promise<void>
   onStop: (id: string) => Promise<void>
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  running:  'Running',
-  stopped:  'Stopped',
-  starting: 'Starting…',
-  error:    'Error',
+  onDelete: (id: string, opts?: { deleteData?: boolean }) => Promise<boolean>
 }
 
 export default function InstancePane({
-  instance,
-  showHint,
-  onHintDismiss,
-  onStart,
-  onStop,
+  instance, onStart, onStop, onDelete,
 }: InstancePaneProps) {
   const [actionPending, setActionPending] = useState(false)
+  const [topTab, setTopTab] = useState<TopTab>('tui')
+  const [tuiMounted, setTuiMounted] = useState(false)
+
+  useEffect(() => {
+    setTopTab('tui')
+    setTuiMounted(instance.status === 'running')
+  }, [instance.id])
+
+  const handleMountTui = useCallback(() => {
+    setTuiMounted(true)
+    setTopTab('tui')
+  }, [])
 
   async function handleStart() {
     if (actionPending) return
     setActionPending(true)
-    try {
-      await onStart(instance.id)
-    } finally {
-      setActionPending(false)
-    }
+    try { await onStart(instance.id) } finally { setActionPending(false) }
   }
 
   async function handleStop() {
     if (actionPending) return
     setActionPending(true)
-    try {
-      await onStop(instance.id)
-    } finally {
-      setActionPending(false)
-    }
+    try { await onStop(instance.id) } finally { setActionPending(false) }
   }
 
   const isRunning = instance.status === 'running'
@@ -157,191 +57,118 @@ export default function InstancePane({
   const isTransitioning = instance.status === 'starting'
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Hint bar (first launch only) */}
-      {showHint && <HintBar onDismiss={onHintDismiss} />}
-
-      {/* Instance toolbar */}
-      <div
-        style={{
-          height: 'var(--instance-toolbar-height)',
-          background: 'var(--instance-toolbar-bg)',
-          borderBottom: '1px solid rgba(0,0,0,0.08)',
-          padding: '0 16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          flexShrink: 0,
-        }}
-      >
-        {/* Instance name */}
-        <span
-          style={{
-            fontSize: 'var(--font-size-title)',
-            fontWeight: 'var(--font-weight-semibold)',
-            color: 'var(--text-primary)',
-          }}
-        >
-          {instance.name}
-        </span>
-
-        {/* Status badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    <div className="flex flex-col h-full">
+      {/* Toolbar */}
+      <div className="flex items-center gap-2 px-4 h-11 shrink-0 bg-muted/50 border-b border-border">
+        <span className="text-[15px] font-semibold text-foreground">{instance.name}</span>
+        <div className="flex items-center gap-1.5">
           <StatusDot status={instance.status} size={8} />
-          <span
-            style={{
-              fontSize: 'var(--font-size-label)',
-              fontWeight: 'var(--font-weight-medium)',
-              color: 'var(--text-secondary)',
-              letterSpacing: '0.02em',
-            }}
-          >
+          <span className="text-[11px] font-medium text-muted-foreground tracking-wide">
             {STATUS_LABELS[instance.status] ?? instance.status}
           </span>
         </div>
 
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
+        <div className="flex-1" />
+
+        {/* Top-level tabs */}
+        <div className="flex items-center gap-1">
+          <Button
+            variant={topTab === 'tui' ? 'secondary' : 'ghost'}
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => setTopTab('tui')}
+          >
+            TUI
+          </Button>
+          <Button
+            variant={topTab === 'profile' ? 'secondary' : 'ghost'}
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => setTopTab('profile')}
+          >
+            Profile
+          </Button>
+        </div>
+
+        <Separator orientation="vertical" className="h-5 mx-1" />
 
         {/* Action buttons */}
         {isStopped && (
-          <TintButton variant="success" onClick={handleStart} disabled={actionPending}>
-            ▶ Start
-          </TintButton>
+          <Button size="sm" className="h-7 text-xs gap-1.5" onClick={handleStart} disabled={actionPending}>
+            <Play className="h-3.5 w-3.5" />
+            Start
+          </Button>
         )}
+
         {isRunning && (
           <>
-            <GhostButton
-              onClick={async () => {
-                const url = await window.multiclaw.instances.getDashboardUrl(instance.id)
-                window.multiclaw.shell.openExternal(url)
-              }}
-              title="Open in browser"
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 text-xs gap-1.5"
+              onClick={() => window.multiclaw.instances.openDashboard(instance.id)}
             >
-              🌐 Open in Browser ↗
-            </GhostButton>
-            <TintButton variant="destructive" onClick={handleStop} disabled={actionPending}>
-              ■ Stop
-            </TintButton>
-            <TintButton variant="warning" onClick={handleStart} disabled={actionPending}>
-              ↺ Restart
-            </TintButton>
+              <Globe className="h-3.5 w-3.5" />
+              Browser
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="h-7 text-xs gap-1.5"
+              onClick={handleStop}
+              disabled={actionPending}
+            >
+              <Square className="h-3 w-3" />
+              Stop
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 text-xs gap-1.5"
+              onClick={handleStart}
+              disabled={actionPending}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Restart
+            </Button>
           </>
         )}
+
         {isTransitioning && (
-          <TintButton variant="warning" disabled>
-            {instance.status === 'starting' ? 'Starting…' : 'Stopping…'}
-          </TintButton>
+          <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" disabled>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Starting...
+          </Button>
         )}
       </div>
 
-      {/* Content — logs only */}
-      <LogsPane instance={instance} />
+      {/* Content */}
+      <div className="flex-1 relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-background"
+          style={{
+            zIndex: topTab === 'tui' ? 1 : 0,
+            visibility: topTab === 'tui' ? 'visible' : 'hidden',
+          }}
+        >
+          <TuiView
+            instance={instance}
+            tuiMounted={tuiMounted}
+            visible={topTab === 'tui'}
+            onMountTui={handleMountTui}
+            onStart={onStart}
+          />
+        </div>
+        <div
+          className="absolute inset-0 bg-background"
+          style={{
+            zIndex: topTab === 'profile' ? 1 : 0,
+            visibility: topTab === 'profile' ? 'visible' : 'hidden',
+          }}
+        >
+          <ProfileView instance={instance} onDelete={onDelete} />
+        </div>
+      </div>
     </div>
-  )
-}
-
-// ── Buttons ───────────────────────────────────────────────────────────────────
-
-interface GhostButtonProps {
-  onClick: () => void
-  title?: string
-  children: React.ReactNode
-}
-
-function GhostButton({ onClick, title, children }: GhostButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      title={title}
-      style={{
-        height: 28,
-        borderRadius: 'var(--radius-md)',
-        padding: '0 10px',
-        fontSize: 12,
-        fontWeight: 'var(--font-weight-medium)',
-        fontFamily: 'var(--font)',
-        background: 'transparent',
-        color: 'var(--text-secondary)',
-        border: '1px solid rgba(0,0,0,0.12)',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 4,
-        whiteSpace: 'nowrap',
-        transition: 'background var(--transition-fast), color var(--transition-fast)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
-        e.currentTarget.style.color = 'var(--text-primary)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'transparent'
-        e.currentTarget.style.color = 'var(--text-secondary)'
-      }}
-    >
-      {children}
-    </button>
-  )
-}
-
-interface TintButtonProps {
-  variant: 'success' | 'destructive' | 'warning'
-  onClick?: () => void
-  disabled?: boolean
-  children: React.ReactNode
-}
-
-const TINT_STYLES: Record<
-  TintButtonProps['variant'],
-  { bg: string; color: string; border: string }
-> = {
-  success: {
-    bg: 'rgba(52,199,89,0.12)',
-    color: '#34C759',
-    border: '1px solid rgba(52,199,89,0.30)',
-  },
-  destructive: {
-    bg: 'rgba(255,59,48,0.10)',
-    color: '#FF3B30',
-    border: '1px solid rgba(255,59,48,0.25)',
-  },
-  warning: {
-    bg: 'rgba(255,149,0,0.10)',
-    color: '#FF9500',
-    border: '1px solid rgba(255,149,0,0.25)',
-  },
-}
-
-function TintButton({ variant, onClick, disabled, children }: TintButtonProps) {
-  const s = TINT_STYLES[variant]
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        height: 28,
-        borderRadius: 'var(--radius-md)',
-        padding: '0 10px',
-        fontSize: 12,
-        fontWeight: 'var(--font-weight-medium)',
-        fontFamily: 'var(--font)',
-        background: s.bg,
-        color: s.color,
-        border: s.border,
-        cursor: disabled ? 'default' : 'pointer',
-        opacity: disabled ? 0.6 : 1,
-        transition: 'opacity 120ms ease',
-        whiteSpace: 'nowrap',
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) e.currentTarget.style.opacity = '0.8'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.opacity = disabled ? '0.6' : '1'
-      }}
-    >
-      {children}
-    </button>
   )
 }

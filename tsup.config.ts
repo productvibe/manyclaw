@@ -8,7 +8,7 @@ export default defineConfig([
     format: ['esm'],
     target: 'node20',
     platform: 'node',
-    external: ['electron'],
+    external: ['electron', 'node-pty'],
     sourcemap: true,
     clean: true,
   },

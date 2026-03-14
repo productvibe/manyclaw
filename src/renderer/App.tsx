@@ -50,8 +50,8 @@ export default function App() {
     if (instance) setSelectedId(instance.id)
   }
 
-  async function handleDelete(id: string) {
-    return await deleteInstance(id)
+  async function handleDelete(id: string, opts?: { deleteData?: boolean }) {
+    return await deleteInstance(id, opts)
   }
 
   return (

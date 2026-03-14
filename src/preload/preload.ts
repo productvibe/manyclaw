@@ -21,20 +21,26 @@ const api: MultiClawAPI = {
     stop: (id) =>
       ipcRenderer.invoke('instances:stop', id),
 
-    create: (opts: { name: string; color: string }) =>
+    create: (opts: { name: string; color: string; id?: string; port?: number }) =>
       ipcRenderer.invoke('instances:create', opts),
 
-    delete: (id) =>
-      ipcRenderer.invoke('instances:delete', id),
+    getNextPort: () =>
+      ipcRenderer.invoke('instances:getNextPort'),
+
+    delete: (id, opts) =>
+      ipcRenderer.invoke('instances:delete', id, opts),
 
     getLogs: (id) =>
       ipcRenderer.invoke('instances:getLogs', id),
 
-    getDashboardUrl: (id) =>
-      ipcRenderer.invoke('instances:getDashboardUrl', id),
+    openDashboard: (id) =>
+      ipcRenderer.invoke('instances:openDashboard', id),
 
-    launchTui: (id) =>
-      ipcRenderer.invoke('instances:launchTui', id),
+    onboard: (id, opts) =>
+      ipcRenderer.invoke('instances:onboard', id, opts),
+
+    launchTui: (id, cols?, rows?) =>
+      ipcRenderer.invoke('instances:launchTui', id, cols, rows),
 
     sendTuiInput: (id: string, data: string) =>
       ipcRenderer.send('instances:tui:input', id, data),
@@ -56,6 +62,32 @@ const api: MultiClawAPI = {
       return () => ipcRenderer.removeListener(channel, handler)
     },
 
+    launchConfigure: (id) =>
+      ipcRenderer.invoke('instances:launchConfigure', id),
+
+    killConfigure: (id) =>
+      ipcRenderer.invoke('instances:killConfigure', id),
+
+    sendConfigureInput: (id: string, data: string) =>
+      ipcRenderer.send('instances:configure:input', id, data),
+
+    resizeConfigure: (id: string, cols: number, rows: number) =>
+      ipcRenderer.send('instances:configure:resize', id, cols, rows),
+
+    onConfigureData: (id: string, cb: (data: string) => void) => {
+      const channel = `instance:configure:data:${id}`
+      const handler = (_: unknown, data: string) => cb(data)
+      ipcRenderer.on(channel, handler)
+      return () => ipcRenderer.removeListener(channel, handler)
+    },
+
+    onConfigureExit: (id: string, cb: () => void) => {
+      const channel = `instance:configure:exit:${id}`
+      const handler = () => cb()
+      ipcRenderer.on(channel, handler)
+      return () => ipcRenderer.removeListener(channel, handler)
+    },
+
     onStatusChange: (cb) => {
       const handler = (_: unknown, inst: unknown) =>
         cb(inst as Parameters<typeof cb>[0])
@@ -70,6 +102,14 @@ const api: MultiClawAPI = {
       return () => ipcRenderer.removeListener(channel, handler)
     },
 
+  },
+
+  settings: {
+    get: () =>
+      ipcRenderer.invoke('settings:get'),
+
+    save: (settings: { setupToken?: string }) =>
+      ipcRenderer.invoke('settings:save', settings),
   },
 
   gateway: {

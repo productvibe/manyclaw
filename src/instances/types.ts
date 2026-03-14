@@ -16,6 +16,7 @@ export interface InternalInstance {
   name: string
   port: number
   color: string
+  label?: string
   status: import('../shared/ipc.js').InstanceStatus
   lastError?: string
   pid?: number
@@ -37,4 +38,5 @@ export interface PersistedInstance {
   name: string
   port: number
   color: string
+  label?: string
 }
