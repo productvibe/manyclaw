@@ -94,22 +94,10 @@ function setupIpc(win: BrowserWindow): void {
     manager.getLogs(id),
   )
 
+  // Dashboard
   ipcMain.handle('instances:getDashboardUrl', (_, id: string) =>
     manager.getDashboardUrl(id),
   )
-
-  // TUI
-  ipcMain.handle('instances:launchTui', (_, id: string) =>
-    manager.launchTui(id),
-  )
-
-  ipcMain.handle('instances:tui:input', (_, id: string, data: string) => {
-    manager.sendTuiInput(id, data)
-  })
-
-  ipcMain.handle('instances:tui:resize', (_, id: string, cols: number, rows: number) => {
-    manager.resizeTui(id, cols, rows)
-  })
 
   // System gateway
   ipcMain.handle('gateway:status', () =>
@@ -138,10 +126,6 @@ function setupIpc(win: BrowserWindow): void {
 
   manager.on('log', ({ id, line }: { id: string; line: string }) => {
     win.webContents.send(`instance:logLine:${id}`, line)
-  })
-
-  manager.on('tuiData', ({ id, data }: { id: string; data: string }) => {
-    win.webContents.send(`instance:tui:data:${id}`, data)
   })
 }
 

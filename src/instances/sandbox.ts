@@ -57,6 +57,15 @@ export async function launchInstance(
   pushLog: (line: string) => void,
 ): Promise<ProcessHandle> {
   const bin = getOpenClawBin()
+
+  // Write gateway.port into the profile config so `--profile {id} tui`
+  // connects to the right port without needing --url.
+  await execa(
+    bin,
+    ['--profile', instance.id, 'config', 'set', 'gateway.port', String(instance.port)],
+    { reject: false, env: { ...process.env } },
+  )
+
   pushLog(`[instance] Starting ${instance.name} (--profile ${instance.id}) on port ${instance.port}...`)
 
   const child = execa(
@@ -101,7 +110,8 @@ export interface TuiHandle {
 
 /**
  * Spawns `openclaw --profile {id} tui` in a PTY.
- * The caller owns the handle and is responsible for calling kill().
+ * gateway.port is already written into the profile config by launchInstance,
+ * so --profile alone is sufficient — no --url needed.
  */
 export function launchTui(
   instance: { id: string; name: string },
@@ -110,8 +120,6 @@ export function launchTui(
 ): TuiHandle {
   const bin = getOpenClawBin()
 
-  // Spawn via /bin/sh so the Node.js shebang is interpreted correctly.
-  // --profile isolates config, token, and gateway port automatically.
   const ptyProcess = pty.spawn('/bin/sh', ['-c', `"${bin}" --profile ${instance.id} tui`], {
     name: 'xterm-color',
     cols: 80,
@@ -119,7 +127,6 @@ export function launchTui(
     cwd: process.env.HOME ?? '/',
     env: {
       ...process.env,
-      // Ensure PATH includes Homebrew so `node` is resolvable
       PATH: process.env.PATH ?? '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin',
     } as Record<string, string>,
   })

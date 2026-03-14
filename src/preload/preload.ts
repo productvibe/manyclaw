@@ -33,6 +33,29 @@ const api: MultiClawAPI = {
     getDashboardUrl: (id) =>
       ipcRenderer.invoke('instances:getDashboardUrl', id),
 
+    launchTui: (id) =>
+      ipcRenderer.invoke('instances:launchTui', id),
+
+    sendTuiInput: (id: string, data: string) =>
+      ipcRenderer.send('instances:tui:input', id, data),
+
+    resizeTui: (id: string, cols: number, rows: number) =>
+      ipcRenderer.send('instances:tui:resize', id, cols, rows),
+
+    onTuiData: (id: string, cb: (data: string) => void) => {
+      const channel = `instance:tui:data:${id}`
+      const handler = (_: unknown, data: string) => cb(data)
+      ipcRenderer.on(channel, handler)
+      return () => ipcRenderer.removeListener(channel, handler)
+    },
+
+    onTuiExit: (id: string, cb: () => void) => {
+      const channel = `instance:tui:exit:${id}`
+      const handler = () => cb()
+      ipcRenderer.on(channel, handler)
+      return () => ipcRenderer.removeListener(channel, handler)
+    },
+
     onStatusChange: (cb) => {
       const handler = (_: unknown, inst: unknown) =>
         cb(inst as Parameters<typeof cb>[0])
@@ -47,21 +70,6 @@ const api: MultiClawAPI = {
       return () => ipcRenderer.removeListener(channel, handler)
     },
 
-    launchTui: (id) =>
-      ipcRenderer.invoke('instances:launchTui', id),
-
-    sendTuiInput: (id, data) =>
-      ipcRenderer.invoke('instances:tui:input', id, data),
-
-    resizeTui: (id, cols, rows) =>
-      ipcRenderer.invoke('instances:tui:resize', id, cols, rows),
-
-    onTuiData: (id, cb) => {
-      const channel = `instance:tui:data:${id}`
-      const handler = (_: unknown, data: string) => cb(data)
-      ipcRenderer.on(channel, handler)
-      return () => ipcRenderer.removeListener(channel, handler)
-    },
   },
 
   gateway: {

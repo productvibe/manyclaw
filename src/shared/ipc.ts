@@ -22,14 +22,9 @@ export const IPC = {
 
   SHELL_OPEN_EXTERNAL:  'shell:openExternal',
 
-  INSTANCES_LAUNCH_TUI: 'instances:launchTui',
-  INSTANCES_TUI_INPUT:  'instances:tui:input',
-  INSTANCES_TUI_RESIZE: 'instances:tui:resize',
-
   // events (main → renderer, via ipcRenderer.on)
   INSTANCE_STATUS_CHANGED: 'instance:statusChanged',
   INSTANCE_LOG_LINE:       'instance:logLine',   // channel is `instance:logLine:{id}`
-  INSTANCE_TUI_DATA:       'instance:tui:data',  // channel is `instance:tui:data:{id}`
 } as const
 
 // ── Core types ─────────────────────────────────────────────────────────────
@@ -97,6 +92,21 @@ export interface MultiClawAPI {
     /** Get the authenticated dashboard URL via `openclaw --profile {id} dashboard --no-open` */
     getDashboardUrl(id: string): Promise<string>
 
+    /** Spawn the TUI for this instance in a PTY (idempotent if already running). */
+    launchTui(id: string): Promise<{ started: boolean }>
+
+    /** Send raw input to the TUI PTY. */
+    sendTuiInput(id: string, data: string): void
+
+    /** Resize the TUI PTY. */
+    resizeTui(id: string, cols: number, rows: number): void
+
+    /** Subscribe to raw PTY output from the TUI. */
+    onTuiData(id: string, cb: (data: string) => void): () => void
+
+    /** Subscribe to TUI exit events. */
+    onTuiExit(id: string, cb: () => void): () => void
+
     /**
      * Subscribe to status changes for any instance.
      * Callback fires whenever an instance's status field changes.
@@ -109,26 +119,6 @@ export interface MultiClawAPI {
      * Returns an unsubscribe function.
      */
     onLog(id: string, cb: (line: string) => void): () => void
-
-    /**
-     * Launch the TUI for an instance (opens `openclaw --profile {id} tui` as a PTY).
-     * Idempotent — if the TUI is already running, returns { started: false }.
-     */
-    launchTui(id: string): Promise<{ started: boolean }>
-
-    /**
-     * Send raw keystroke data to the instance's TUI PTY.
-     */
-    sendTuiInput(id: string, data: string): Promise<void>
-
-    /**
-     * Subscribe to PTY output for a specific instance's TUI.
-     * Returns an unsubscribe function.
-     */
-    /** Notify main that the terminal view resized so the PTY can be resized too */
-    resizeTui(id: string, cols: number, rows: number): Promise<void>
-
-    onTuiData(id: string, cb: (data: string) => void): () => void
   }
 
   gateway: {
