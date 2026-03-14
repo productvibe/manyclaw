@@ -1,7 +1,7 @@
 ---
 title: Running Multiple Instances
 slug: multiple-instances
-order: 4
+order: 5
 section: Concepts
 description: Create, manage, and switch between multiple isolated agents.
 date: 2026-03-14

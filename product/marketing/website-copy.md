@@ -1,6 +1,6 @@
 # MultiClaw — Website Copy
 
-**Version:** 1.0 — 2026-03-15
+**Version:** 1.1 — 2026-03-15
 **Page coverage:** Homepage, Download
 
 ---
@@ -15,17 +15,17 @@
 
 **Links:** Download · Docs · Blog · GitHub
 
-**Tagline (optional, beside logo):** Multiple agents. One window.
+**Tagline (optional, beside logo):** One machine. Multiple agents.
 
 ---
 
 ### Hero
 
 **Headline:**
-Your agents, side by side.
+You don't need three Mac Minis.
 
 **Subheading:**
-MultiClaw is a native macOS app for running multiple OpenClaw instances in parallel. Named profiles. Full isolation. No terminal required.
+MultiClaw runs multiple isolated OpenClaw agents on a single machine. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
 
 **CTA button:**
 Download for macOS
@@ -40,52 +40,54 @@ brew install --cask multiclaw
 ### Problem
 
 **Heading:**
-One agent is fine. Two is a mess.
+Isolation shouldn't cost $2,000.
 
 **Body:**
-The moment you want a dev agent and a production agent, or a work agent that knows nothing about your personal projects, you're on your own. Terminal tabs. Manual `--profile` flags. Port numbers you have to remember. An instance that silently fails and you only notice when nothing responds.
+If you've spent time in the OpenClaw community, you've seen the workaround: buy a second Mac Mini. Or a third. One per agent, fully isolated, no risk of context bleed between your dev setup and your production one.
 
-OpenClaw's isolation model is solid. The management layer isn't there yet.
+It works. It's also expensive, power-hungry, and absurd when the software could handle it.
 
-MultiClaw is the management layer.
+OpenClaw's `--profile` flag creates genuine isolation at the process level — separate memory, sessions, workspace, and port per instance. The capability is already there. What's missing is a way to manage it without living in the terminal.
+
+That's MultiClaw.
 
 ---
 
 ### Features Bento
 
 **Card 1**
-**Title:** Named profiles, always visible
-**Description:** A sidebar of colour-coded agents — green for running, grey for stopped. Start, stop, or restart any instance with one click. Drag to reorder.
+**Title:** Named profiles in a sidebar
+**Description:** Colour-coded agents — green for running, grey for stopped. Start, stop, or restart any instance with one click. Drag to reorder. Status at a glance.
 
 ---
 
 **Card 2**
-**Title:** Real isolation
-**Description:** Each agent runs in its own OpenClaw profile. Separate memory, sessions, workspace, and API auth. What happens in Dev stays in Dev.
+**Title:** Real isolation, per instance
+**Description:** Each agent is a separate OpenClaw profile. Independent memory, sessions, workspace, and API auth. Your dev agent and your production agent don't know each other exist.
 
 ---
 
 **Card 3**
-**Title:** Live console, per instance
-**Description:** Console output for each agent, in-app. Switch to the full interactive TUI when you need it — same toolbar, one click.
+**Title:** Clone a working instance
+**Description:** Spin up an exact copy of any agent in seconds. Test a configuration change, try a different model, or branch a working setup — without touching the original.
 
 ---
 
 **Card 4**
-**Title:** In-app chat
-**Description:** Send a message to any running instance and read the reply inline. No browser, no tab switching, no authentication step.
+**Title:** Live console and TUI
+**Description:** Console output per instance, in-app. Switch to the full interactive TUI in one click when you need it — same toolbar, same window.
 
 ---
 
 **Card 5**
-**Title:** Open in browser
-**Description:** One click opens the full OpenClaw web dashboard for that instance, pre-authenticated. For when you need the complete UI.
+**Title:** In-app chat
+**Description:** Message any running instance directly and read replies inline. No browser tab, no authentication step, no switching contexts.
 
 ---
 
 **Card 6**
 **Title:** Zero setup on first run
-**Description:** Opens with a default instance already created. Press Start. That's it. No wizard, no onboarding flow, nothing to configure before you can use it.
+**Description:** Opens with a default instance already created. Press Start. No wizard, no configuration required before you can use it.
 
 ---
 
@@ -93,7 +95,7 @@ MultiClaw is the management layer.
 
 **Item 1**
 **Title:** Local-first
-**Body:** No cloud, no accounts, no telemetry. Your agents run on your machine. Nothing leaves.
+**Body:** No cloud, no accounts, no telemetry. Every agent runs on your machine. Nothing leaves.
 
 ---
 
@@ -105,17 +107,17 @@ MultiClaw is the management layer.
 
 **Item 3**
 **Title:** Bundled runtime
-**Body:** Ships with the OpenClaw binary included. No version mismatches, no separate install, no setup friction.
+**Body:** Ships with the OpenClaw binary included. No version mismatches, no separate install, no setup to get through before the app works.
 
 ---
 
 ### CTA Section
 
 **Heading:**
-Stop managing terminals. Start managing agents.
+One machine. As many agents as you need.
 
 **Subheading:**
-MultiClaw is free, open source, and runs entirely on your machine.
+MultiClaw is free, open source, and runs entirely on your hardware.
 
 **Button:**
 Download for macOS
@@ -124,7 +126,7 @@ Download for macOS
 
 ### Footer
 
-**Tagline:** MultiClaw — Multiple agents. One window.
+**Tagline:** MultiClaw — One machine. Multiple agents.
 
 **Links:** Download · Docs · Blog · GitHub · License
 
@@ -139,7 +141,7 @@ Download for macOS
 Download MultiClaw
 
 **Subheading:**
-Free and open source. Runs entirely on your machine.
+Free and open source. Everything runs on your machine.
 
 **Button:**
 Download MultiClaw 0.1 (.dmg)

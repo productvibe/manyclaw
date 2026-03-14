@@ -1,7 +1,7 @@
 ---
 title: Understanding Profiles
 slug: profiles
-order: 3
+order: 4
 section: Concepts
 description: How MultiClaw uses OpenClaw's profile system for true agent isolation.
 date: 2026-03-14

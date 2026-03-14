@@ -1,7 +1,7 @@
 ---
 title: FAQ
 slug: faq
-order: 5
+order: 6
 section: Reference
 description: Common questions about MultiClaw.
 date: 2026-03-14
