@@ -19,24 +19,20 @@ This is the actual experience of running multiple OpenClaw instances today. Not 
 
 The frustrating part is that the underlying capability is already there. OpenClaw's profile system handles true isolation — separate memory, sessions, workspaces, API auth. Each profile is its own contained environment. The hard part isn't the isolation. It's the management layer on top. There isn't one.
 
-So we built it.
-
-MultiClaw is a native macOS app that wraps OpenClaw's profile system in a proper interface. A sidebar of named, colour-coded agents. One click to start, stop, or restart. Status visible at a glance — green is running, grey is stopped. No terminal required.
+That's the gap MultiClaw fills. A native macOS app that wraps OpenClaw's profile system in a proper interface — a sidebar of named, colour-coded agents, one click to start or stop, status visible at a glance. No terminal juggling. No port arithmetic. No guessing which tab is which.
 
 ![A running instance with console output](/images/blog/multiclaw-running.png)
 
-Each agent is fully isolated. What happens in your dev agent stays in your dev agent. Your personal agent doesn't know what your work agent is working on. If an instance crashes, the others don't care.
+Each agent stays fully isolated. Your dev agent doesn't know what your personal agent is working on. If one crashes, the others don't notice.
 
-For the people who want it, the full interactive TUI is one click away — same toolbar, same window.
+For the times you want the full experience, the interactive TUI is one click away — same window, same toolbar.
 
 ![The TUI view for a running instance](/images/blog/multiclaw-tui.png)
 
-There's also an in-app chat view. Send a message to any running instance, get a response inline. No browser, no switching contexts. For quick back-and-forth it's fast enough that you stop thinking about the plumbing entirely.
+There's an in-app chat view too. Send a message to any running instance, read the reply inline. No browser, no context switching — fast enough that the plumbing disappears.
 
 ![In-app chat with a running instance](/images/blog/multiclaw-chat.png)
 
-MultiClaw is open source. It opens with a default instance already created. Press start. That's the whole first-run experience.
-
-We built it because we needed it and it didn't exist. If you've ever had three terminal tabs open trying to manage multiple agents, you'll understand immediately why it does.
+If you've ever sat with three terminal tabs open trying to keep track of which agent is which, you already understand the problem. The fix should have existed a long time ago.
 
 [Download MultiClaw →](/download)

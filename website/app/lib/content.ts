@@ -45,6 +45,22 @@ export function listPosts(dir: "blog" | "docs"): PostMeta[] {
   return posts.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/<[^>]+>/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+// Renderer that adds id= to h2/h3 so TOC anchor links work
+const renderer = new marked.Renderer();
+renderer.heading = function ({ text, depth }: { text: string; depth: number }) {
+  const id = slugify(text);
+  return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+};
+
 export async function getPost(dir: "blog" | "docs", slug: string): Promise<Post | null> {
   const folder = path.join(contentRoot, dir);
   if (!fs.existsSync(folder)) return null;
@@ -54,7 +70,7 @@ export async function getPost(dir: "blog" | "docs", slug: string): Promise<Post 
     const { data, content } = matter(raw);
     const fileSlug = data.slug ?? file.replace(/\.md$/, "");
     if (fileSlug === slug) {
-      const html = await marked(content);
+      const html = await marked(content, { renderer });
       return {
         slug: fileSlug,
         title: data.title ?? fileSlug,
