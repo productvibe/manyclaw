@@ -227,7 +227,7 @@ export class InstanceManager extends EventEmitter {
     if (!inst) throw new Error(`Instance not found: ${id}`)
 
     const handle = launchTui(
-      { id: inst.id, name: inst.name },
+      { id: inst.id, name: inst.name, port: inst.port },
       (data) => this.emit('tuiData', { id, data }),
       () => {
         this.tuiProcesses.delete(id)
@@ -282,25 +282,12 @@ export class InstanceManager extends EventEmitter {
     const inst = this.instances.get(id)
     if (!inst) throw new Error(`Instance not found: ${id}`)
 
-    const { execa } = await import('execa')
-    const { getOpenClawBin } = await import('./sandbox.js')
-    const bin = getOpenClawBin()
-
-    const result = await execa(
-      bin,
-      ['--profile', id, 'dashboard', '--no-open'],
-      {
-        reject: false,
-        env: {
-          ...process.env,
-          PATH: process.env.PATH ?? '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin',
-        },
-      },
-    )
-
-    const url = result.stdout.split('\n').map(l => l.trim()).find(l => l.startsWith('http'))
-    if (!url) throw new Error(`dashboard --no-open returned no URL. stderr: ${result.stderr}`)
-    return url
+    // `openclaw dashboard --no-open` ignores gateway.port in the profile config —
+    // it always returns port 18789. Build the URL directly from the known port + token.
+    const { readProfileToken } = await import('./sandbox.js')
+    const token = readProfileToken(id)
+    const base = `http://127.0.0.1:${inst.port}/`
+    return token ? `${base}#token=${token}` : base
   }
 
   // ── Event subscriptions (convenience wrappers for main.ts) ────────────

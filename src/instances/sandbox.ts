@@ -9,6 +9,7 @@ import { execa, type ResultPromise } from 'execa'
 import * as pty from 'node-pty'
 import fs from 'node:fs'
 import path from 'node:path'
+import os from 'node:os'
 
 export function getOpenClawBin(): string {
   // 1. Explicit override (e.g. CI or integration tests)
@@ -109,18 +110,39 @@ export interface TuiHandle {
 }
 
 /**
- * Spawns `openclaw --profile {id} tui` in a PTY.
- * gateway.port is already written into the profile config by launchInstance,
- * so --profile alone is sufficient — no --url needed.
+ * Read the gateway token from a profile's config file.
+ * Returns undefined if missing (gateway will prompt for auth).
+ */
+export function readProfileToken(id: string): string | undefined {
+  try {
+    const configPath = path.join(os.homedir(), `.openclaw-${id}`, 'openclaw.json')
+    const raw = fs.readFileSync(configPath, 'utf8')
+    const config = JSON.parse(raw) as { gateway?: { auth?: { token?: string } } }
+    return config.gateway?.auth?.token
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Spawns `openclaw --profile {id} tui --url ws://127.0.0.1:{port} --token {token}` in a PTY.
+ *
+ * --profile isolates state/identity. --url + --token are required because
+ * `tui` defaults to ws://127.0.0.1:18789 regardless of gateway.port in config.
  */
 export function launchTui(
-  instance: { id: string; name: string },
+  instance: { id: string; name: string; port: number },
   onData: (data: string) => void,
   onExit: () => void,
 ): TuiHandle {
   const bin = getOpenClawBin()
+  const token = readProfileToken(instance.id)
+  const url = `ws://127.0.0.1:${instance.port}`
 
-  const ptyProcess = pty.spawn('/bin/sh', ['-c', `"${bin}" --profile ${instance.id} tui`], {
+  const args = ['--profile', instance.id, 'tui', '--url', url]
+  if (token) args.push('--token', token)
+
+  const ptyProcess = pty.spawn('/bin/sh', ['-c', `"${bin}" ${args.join(' ')}`], {
     name: 'xterm-color',
     cols: 80,
     rows: 24,
