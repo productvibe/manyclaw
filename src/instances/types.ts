@@ -5,7 +5,7 @@
  * fields that must never cross the contextBridge boundary.
  */
 
-export type { InstanceInfo, InstanceStatus, GatewayStatus, ChatResult } from '../shared/ipc.js'
+export type { InstanceInfo, InstanceStatus, GatewayStatus } from '../shared/ipc.js'
 
 /**
  * Internal representation of an instance — extends InstanceInfo with

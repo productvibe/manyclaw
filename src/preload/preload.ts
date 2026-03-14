@@ -21,7 +21,7 @@ const api: MultiClawAPI = {
     stop: (id) =>
       ipcRenderer.invoke('instances:stop', id),
 
-    create: (opts) =>
+    create: (opts: { name: string; color: string }) =>
       ipcRenderer.invoke('instances:create', opts),
 
     delete: (id) =>
@@ -43,11 +43,19 @@ const api: MultiClawAPI = {
       ipcRenderer.on(channel, handler)
       return () => ipcRenderer.removeListener(channel, handler)
     },
-  },
 
-  chat: {
-    send: (opts) =>
-      ipcRenderer.invoke('chat:send', opts),
+    launchTui: (id) =>
+      ipcRenderer.invoke('instances:launchTui', id),
+
+    sendTuiInput: (id, data) =>
+      ipcRenderer.invoke('instances:tui:input', id, data),
+
+    onTuiData: (id, cb) => {
+      const channel = `instance:tui:data:${id}`
+      const handler = (_: unknown, data: string) => cb(data)
+      ipcRenderer.on(channel, handler)
+      return () => ipcRenderer.removeListener(channel, handler)
+    },
   },
 
   gateway: {

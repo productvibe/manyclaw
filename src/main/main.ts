@@ -94,13 +94,14 @@ function setupIpc(win: BrowserWindow): void {
     manager.getLogs(id),
   )
 
-  // Chat
-  ipcMain.handle('chat:send', (_, opts: {
-    content: string
-    instanceId: string
-    conversationId?: string
-  }) => manager.sendChat(opts),
+  // TUI
+  ipcMain.handle('instances:launchTui', (_, id: string) =>
+    manager.launchTui(id),
   )
+
+  ipcMain.handle('instances:tui:input', (_, id: string, data: string) => {
+    manager.sendTuiInput(id, data)
+  })
 
   // System gateway
   ipcMain.handle('gateway:status', () =>
@@ -129,6 +130,10 @@ function setupIpc(win: BrowserWindow): void {
 
   manager.on('log', ({ id, line }: { id: string; line: string }) => {
     win.webContents.send(`instance:logLine:${id}`, line)
+  })
+
+  manager.on('tuiData', ({ id, data }: { id: string; data: string }) => {
+    win.webContents.send(`instance:tui:data:${id}`, data)
   })
 }
 

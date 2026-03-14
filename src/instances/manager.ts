@@ -9,9 +9,9 @@ import { EventEmitter } from 'node:events'
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
-import { launchInstance, killInstance, type ProcessHandle } from './sandbox.js'
+import { launchInstance, killInstance, launchTui, killTui, type ProcessHandle, type TuiHandle } from './sandbox.js'
 import type { InternalInstance, PersistedState, PersistedInstance } from './types.js'
-import type { InstanceInfo, GatewayStatus, ChatResult } from '../shared/ipc.js'
+import type { InstanceInfo, GatewayStatus } from '../shared/ipc.js'
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -50,6 +50,7 @@ function toInstanceInfo(inst: InternalInstance): InstanceInfo {
 export class InstanceManager extends EventEmitter {
   private instances = new Map<string, InternalInstance>()
   private processes = new Map<string, ProcessHandle>()
+  private tuiProcesses = new Map<string, TuiHandle>()
   private logs = new Map<string, string[]>()
   private nextPort = BASE_PORT + 1  // 40000 is reserved for default instance
   private releasedPorts: number[] = []
@@ -150,6 +151,9 @@ export class InstanceManager extends EventEmitter {
     if (!inst) throw new Error(`Instance not found: ${id}`)
     if (inst.status === 'stopped') return toInstanceInfo(inst)
 
+    // Kill TUI first — it depends on the gateway being alive
+    this.killTuiById(id)
+
     const handle = this.processes.get(id)
     if (handle) {
       await killInstance(handle)
@@ -214,77 +218,29 @@ export class InstanceManager extends EventEmitter {
     return {}
   }
 
-  // ── Chat ──────────────────────────────────────────────────────────────
+  // ── TUI ───────────────────────────────────────────────────────────────
 
-  async sendChat(opts: {
-    content: string
-    instanceId: string
-    conversationId?: string
-  }): Promise<ChatResult> {
-    const inst = this.instances.get(opts.instanceId)
-    if (!inst) {
-      return {
-        conversationId: opts.conversationId ?? '',
-        response: '',
-        instanceId: opts.instanceId,
-        error: `Instance not found: ${opts.instanceId}`,
-      }
-    }
-    if (inst.status !== 'running') {
-      return {
-        conversationId: opts.conversationId ?? '',
-        response: '',
-        instanceId: opts.instanceId,
-        error: `Instance is not running (status: ${inst.status})`,
-      }
-    }
+  launchTui(id: string): { started: boolean } {
+    if (this.tuiProcesses.has(id)) return { started: false }
 
-    // Read auth token from ~/.openclaw-{id}/openclaw.json
-    const apiKey = this.readProfileToken(opts.instanceId)
+    const inst = this.instances.get(id)
+    if (!inst) throw new Error(`Instance not found: ${id}`)
 
-    try {
-      const body: Record<string, unknown> = { content: opts.content }
-      if (opts.conversationId) body.conversationId = opts.conversationId
+    const handle = launchTui(
+      { id: inst.id, name: inst.name },
+      (data) => this.emit('tuiData', { id, data }),
+      () => {
+        this.tuiProcesses.delete(id)
+        this.emit('tuiExit', { id })
+      },
+    )
 
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`
+    this.tuiProcesses.set(id, handle)
+    return { started: true }
+  }
 
-      const res = await fetch(`http://127.0.0.1:${inst.port}/v1/chat/completions`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(120_000),
-      })
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => res.statusText)
-        return {
-          conversationId: opts.conversationId ?? '',
-          response: '',
-          instanceId: opts.instanceId,
-          error: `Gateway returned ${res.status}: ${text}`,
-        }
-      }
-
-      const data = await res.json() as {
-        conversationId?: string
-        response?: string
-        content?: string
-      }
-
-      return {
-        conversationId: data.conversationId ?? opts.conversationId ?? '',
-        response: data.response ?? data.content ?? '',
-        instanceId: opts.instanceId,
-      }
-    } catch (err) {
-      return {
-        conversationId: opts.conversationId ?? '',
-        response: '',
-        instanceId: opts.instanceId,
-        error: err instanceof Error ? err.message : String(err),
-      }
-    }
+  sendTuiInput(id: string, data: string): void {
+    this.tuiProcesses.get(id)?.ptyProcess.write(data)
   }
 
   // ── Gateway (system openclaw, port 18789) ─────────────────────────────
@@ -347,17 +303,11 @@ export class InstanceManager extends EventEmitter {
     this.emit('log', { id, line })
   }
 
-  private readProfileToken(id: string): string | undefined {
-    try {
-      const configPath = path.join(profileDir(id), 'openclaw.json')
-      const raw = fs.readFileSync(configPath, 'utf8')
-      const config = JSON.parse(raw) as Record<string, unknown>
-      // Token lives at gateway.auth.token in openclaw profile config
-      const gateway = (config.gateway as Record<string, unknown> | undefined) ?? {}
-      const auth = (gateway.auth as Record<string, unknown> | undefined) ?? {}
-      return typeof auth.token === 'string' ? auth.token : undefined
-    } catch {
-      return undefined
+  private killTuiById(id: string): void {
+    const handle = this.tuiProcesses.get(id)
+    if (handle) {
+      killTui(handle)
+      this.tuiProcesses.delete(id)
     }
   }
 

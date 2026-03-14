@@ -16,16 +16,18 @@ export const IPC = {
   INSTANCES_DELETE:     'instances:delete',
   INSTANCES_GET_LOGS:   'instances:getLogs',
 
-  CHAT_SEND:            'chat:send',
-
   GATEWAY_STATUS:       'gateway:status',
   GATEWAY_START:        'gateway:start',
 
   SHELL_OPEN_EXTERNAL:  'shell:openExternal',
 
+  INSTANCES_LAUNCH_TUI: 'instances:launchTui',
+  INSTANCES_TUI_INPUT:  'instances:tui:input',
+
   // events (main → renderer, via ipcRenderer.on)
   INSTANCE_STATUS_CHANGED: 'instance:statusChanged',
   INSTANCE_LOG_LINE:       'instance:logLine',   // channel is `instance:logLine:{id}`
+  INSTANCE_TUI_DATA:       'instance:tui:data',  // channel is `instance:tui:data:{id}`
 } as const
 
 // ── Core types ─────────────────────────────────────────────────────────────
@@ -53,18 +55,6 @@ export interface InstanceInfo {
 export interface GatewayStatus {
   running: boolean
   port?: number
-}
-
-/**
- * Result from chat.send(). The gateway streams but we return the full
- * response once complete. Streaming support can be added later via IPC events.
- */
-export interface ChatResult {
-  conversationId: string
-  response: string
-  instanceId: string
-  /** Present when the request failed */
-  error?: string
 }
 
 // ── window.multiclaw API contract ─────────────────────────────────────────
@@ -114,18 +104,23 @@ export interface MultiClawAPI {
      * Returns an unsubscribe function.
      */
     onLog(id: string, cb: (line: string) => void): () => void
-  }
 
-  chat: {
     /**
-     * Sends a message to an instance's gateway and returns the full response.
-     * Pass conversationId to continue an existing conversation.
+     * Launch the TUI for an instance (opens `openclaw --profile {id} tui` as a PTY).
+     * Idempotent — if the TUI is already running, returns { started: false }.
      */
-    send(opts: {
-      content: string
-      instanceId: string
-      conversationId?: string
-    }): Promise<ChatResult>
+    launchTui(id: string): Promise<{ started: boolean }>
+
+    /**
+     * Send raw keystroke data to the instance's TUI PTY.
+     */
+    sendTuiInput(id: string, data: string): Promise<void>
+
+    /**
+     * Subscribe to PTY output for a specific instance's TUI.
+     * Returns an unsubscribe function.
+     */
+    onTuiData(id: string, cb: (data: string) => void): () => void
   }
 
   gateway: {

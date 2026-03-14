@@ -1,11 +1,12 @@
 /**
- * sandbox.ts — spawn and kill openclaw gateway processes.
+ * sandbox.ts — spawn and kill openclaw gateway and TUI processes.
  *
  * Nothing else lives here. InstanceManager calls these functions;
  * this module has no state of its own.
  */
 
 import { execa, type ResultPromise } from 'execa'
+import * as pty from 'node-pty'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -90,4 +91,43 @@ export async function launchInstance(
 export async function killInstance(handle: ProcessHandle): Promise<void> {
   handle.process.kill('SIGTERM')
   await new Promise(r => setTimeout(r, 1000))
+}
+
+// ── TUI (PTY) ──────────────────────────────────────────────────────────────
+
+export interface TuiHandle {
+  ptyProcess: pty.IPty
+}
+
+/**
+ * Spawns `openclaw --profile {id} tui` in a PTY.
+ * The caller owns the handle and is responsible for calling kill().
+ */
+export function launchTui(
+  instance: { id: string; name: string },
+  onData: (data: string) => void,
+  onExit: () => void,
+): TuiHandle {
+  const bin = getOpenClawBin()
+
+  const ptyProcess = pty.spawn(bin, ['--profile', instance.id, 'tui'], {
+    name: 'xterm-color',
+    cols: 80,
+    rows: 24,
+    cwd: process.env.HOME ?? '/',
+    env: process.env as Record<string, string>,
+  })
+
+  ptyProcess.onData(onData)
+  ptyProcess.onExit(onExit)
+
+  return { ptyProcess }
+}
+
+export function killTui(handle: TuiHandle): void {
+  try {
+    handle.ptyProcess.kill()
+  } catch {
+    // already dead
+  }
 }

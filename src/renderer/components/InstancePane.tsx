@@ -3,14 +3,8 @@ import type { InstanceInfo } from '@shared/ipc'
 import StatusDot from './StatusDot'
 import HintBar from './HintBar'
 
-// ── TUI IPC extensions (not yet in @shared/ipc — Brook will add) ─────────────
-interface TuiApi {
-  launchTui(id: string): Promise<void>
-  onTuiData(id: string, cb: (data: string) => void): () => void
-  tuiInput(id: string, data: string): Promise<void>
-}
-function tuiApi(): TuiApi {
-  return window.multiclaw.instances as typeof window.multiclaw.instances & TuiApi
+function tuiApi() {
+  return window.multiclaw.instances
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -164,7 +158,7 @@ function TuiPane({ instanceId }: TuiPaneProps) {
       if (data === null) return
       e.preventDefault()
       e.stopPropagation()
-      tuiApi().tuiInput(instanceId, data).catch(() => {/* IPC errors are non-fatal */})
+      tuiApi().sendTuiInput(instanceId, data).catch(() => {/* IPC errors are non-fatal */})
     },
     [instanceId],
   )
