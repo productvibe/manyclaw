@@ -168,13 +168,13 @@ function getOpenClawBin(): string {
 
 For distribution, the openclaw CLI binary is placed in `resources/openclaw` before building. electron-builder copies it to `Resources/openclaw` inside the `.app`, outside the ASAR archive (so it can be executed).
 
-Setup (one-time, developer machine):
-```bash
-cp $(which openclaw) resources/openclaw
-chmod +x resources/openclaw
-```
+### Building for distribution
 
-The binary in `resources/` is gitignored. CI will need to fetch it separately.
+1. **Bundle the binary**: `pnpm copy-openclaw` finds the installed openclaw binary and copies it to `resources/openclaw`
+2. **Build the DMG**: `pnpm dist:mac` compiles the app and packages it
+3. The `prepack` script runs `copy-openclaw` automatically before `electron-builder`, so the binary is always fresh
+
+The binary in `resources/` is gitignored (large, platform-specific). CI will need to fetch it separately.
 
 ## What This App Does NOT Do
 
