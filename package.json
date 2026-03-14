@@ -12,10 +12,8 @@
     "build": "pnpm build:main && pnpm build:renderer",
     "build:main": "tsup",
     "build:renderer": "vite build",
-    "prepack": "node scripts/copy-openclaw.mjs",
-    "copy-openclaw": "node scripts/copy-openclaw.mjs",
-    "dist": "pnpm build && electron-builder",
-    "dist:mac": "pnpm build && electron-builder --mac",
+    "dist": "pnpm build && electron-builder && npx electron-rebuild -o node-pty",
+    "dist:mac": "pnpm build && electron-builder --mac && npx electron-rebuild -o node-pty",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.renderer.json --noEmit"
   },
   "dependencies": {

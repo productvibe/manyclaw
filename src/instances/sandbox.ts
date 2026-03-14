@@ -14,19 +14,27 @@ export function getOpenClawBin(): string {
   // 1. Explicit override (e.g. CI or integration tests)
   if (process.env.OPENCLAW_BIN) return process.env.OPENCLAW_BIN
 
-  // 2. Bundled binary inside the .app (production)
-  if (process.resourcesPath) {
-    const bundled = path.join(process.resourcesPath, 'openclaw')
-    if (fs.existsSync(bundled)) return bundled
-  }
-
-  // 3. Common system locations (dev)
+  // 2. Common system locations
   for (const p of ['/opt/homebrew/bin/openclaw', '/usr/local/bin/openclaw']) {
     if (fs.existsSync(p)) return p
   }
 
-  // 4. Fall back to PATH
+  // 3. Fall back to PATH
   return 'openclaw'
+}
+
+/** Check if openclaw CLI is installed and reachable. */
+export function isOpenClawInstalled(): boolean {
+  for (const p of [process.env.OPENCLAW_BIN, '/opt/homebrew/bin/openclaw', '/usr/local/bin/openclaw'].filter(Boolean)) {
+    if (p && fs.existsSync(p)) return true
+  }
+  try {
+    const { execSync } = require('node:child_process')
+    execSync('which openclaw', { stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
 }
 
 async function waitForHealth(port: number, timeoutMs = 15000): Promise<boolean> {

@@ -1,41 +1,36 @@
-# Decision 001: Bundle openclaw binary at build time, not runtime
+# Decision 001: Require system-installed openclaw
 
-**Date:** 2026-03-14
+**Date:** 2026-03-14 (updated)
 **Status:** Decided
 
 ## Context
 
-MultiClaw depends on the `openclaw` CLI binary. We needed to decide how the app obtains and manages this dependency.
+MultiClaw depends on the `openclaw` CLI. We needed to decide how the app obtains this dependency.
 
 ## Decision
 
-**Bundle openclaw inside the `.app` at build time. Ship it. No runtime downloads.**
+**Require users to install openclaw themselves.** The app looks for it in standard locations (`/opt/homebrew/bin/openclaw`, `/usr/local/bin/openclaw`, PATH).
 
-`pnpm copy-openclaw` downloads the latest binary from `https://openclaw.ai/install.sh` into `resources/openclaw` during the build. The packaged `.app` contains everything. No network calls at runtime.
+Install: `curl -fsSL https://openclaw.ai/install.sh | bash`
 
 ## Rejected Alternatives
 
-### 1. Runtime download on first launch + background auto-update
-Download openclaw into `~/.multiclaw/bin/` at first launch, check for updates every 24h in the background.
+### 1. Bundle openclaw inside the .app at build time
+Previously decided, then reversed. openclaw is an npm package (~677MB with node_modules). Bundling it would make the DMG ~800MB. The CLI binary is a Node.js script shim, not a standalone executable — it needs the full node_modules tree to run.
 
-**Why rejected:** Sprays files across the user's system. Contradicts our trust pitch — users should be able to delete the app and it's gone. Hidden background downloads erode trust. Technically sophisticated but wrong for the user.
+### 2. Runtime download on first launch
+Sprays files across the user's system. Contradicts trust pitch.
 
-### 2. Require system-installed openclaw
-Expect users to `brew install openclaw` or `curl | bash` separately.
-
-**Why rejected:** Extra step before the app works. Bad first-run experience for a dev tool that's supposed to be "download and go."
-
-### 3. Runtime download into `~/.multiclaw/bin/` with auto-update
-Same as #1 but with the rationale that `~/.multiclaw/` gets wiped on uninstall anyway.
-
-**Why rejected:** Still creates hidden state outside the `.app`. Users trying openclaw for the first time don't want to wonder what else got installed. Trust matters more than convenience.
+### 3. Bundle as standalone binary
+openclaw is not distributed as a standalone binary. It's an npm package with native dependencies.
 
 ## Consequences
 
-- **New app release required** when openclaw updates. This is fine — openclaw updates daily, we can automate the build.
-- **Build machine needs internet** to run `pnpm copy-openclaw`. Offline builds can use `OPENCLAW_BIN=/path/to/binary`.
-- **Dev mode** falls back to system-installed openclaw via PATH (no bundling needed for `pnpm dev`).
+- Users must install openclaw before using MultiClaw
+- The setup wizard should check for openclaw and show install instructions if missing
+- App uses whatever version is installed — always up to date with the user's system
+- Uninstall: delete the .app + `rm -rf ~/.multiclaw` + `npm uninstall -g openclaw`
 
 ## Principle
 
-When choosing between technical elegance and user trust, choose trust. The app should behave like a simple Mac app: download it, use it, delete it, it's gone. No hidden processes, no scattered files, no surprises.
+Keep the app lightweight. Don't bundle what you can't own. The 677MB npm package is openclaw's responsibility to distribute — MultiClaw is the GUI layer on top.
