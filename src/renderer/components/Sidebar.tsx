@@ -1,17 +1,40 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
+import { Plus, Settings } from 'lucide-react'
 import type { InstanceInfo } from '@shared/ipc'
-import StatusDot from './StatusDot'
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from '@/components/ui/sidebar'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
 import InstanceDialog from './InstanceDialog'
+import AppSettingsDialog from './AppSettingsDialog'
 
-interface ContextMenuState {
-  x: number
-  y: number
-  instanceId: string
-}
-
-interface DeleteConfirmState {
-  id: string
-  name: string
+function MacMiniIcon({ color, size = 36 }: { color: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <rect x="4" y="14" width="32" height="16" rx="3" fill={color} opacity="0.15" />
+      <rect x="4" y="14" width="32" height="16" rx="3" stroke={color} strokeWidth="1.5" opacity="0.4" />
+      <rect x="6" y="14.5" width="28" height="1" rx="0.5" fill={color} opacity="0.15" />
+      <rect x="14" y="26" width="12" height="1" rx="0.5" fill={color} opacity="0.3" />
+      <circle cx="33" cy="27" r="1" fill={color} opacity="0.6" />
+      <rect x="8" y="30" width="4" height="1.5" rx="0.75" fill={color} opacity="0.2" />
+      <rect x="28" y="30" width="4" height="1.5" rx="0.75" fill={color} opacity="0.2" />
+    </svg>
+  )
 }
 
 interface SidebarProps {
@@ -20,8 +43,9 @@ interface SidebarProps {
   onSelect: (id: string) => void
   onStart: (id: string) => Promise<void>
   onStop: (id: string) => Promise<void>
-  onCreate: (opts: { name: string; color: string }) => Promise<void>
+  onCreate: (opts: { name: string; color: string; id: string; port: number; label?: string }) => Promise<void>
   onDelete: (id: string) => Promise<boolean>
+  onReorder: (orderedIds: string[]) => void
 }
 
 export default function Sidebar({
@@ -32,283 +56,129 @@ export default function Sidebar({
   onStop,
   onCreate,
   onDelete,
+  onReorder,
 }: SidebarProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
-  const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState | null>(null)
-  const contextMenuRef = useRef<HTMLDivElement>(null)
-
-  // Close context menu on outside click
-  useEffect(() => {
-    if (!contextMenu) return
-    function handler(e: MouseEvent) {
-      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
-        setContextMenu(null)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [contextMenu])
-
-  // Close context menu on Escape
-  useEffect(() => {
-    if (!contextMenu) return
-    function handler(e: KeyboardEvent) {
-      if (e.key === 'Escape') setContextMenu(null)
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [contextMenu])
-
-  function handleContextMenu(e: React.MouseEvent, id: string) {
-    e.preventDefault()
-    setContextMenu({ x: e.clientX, y: e.clientY, instanceId: id })
-  }
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const dragItemId = useRef<string | null>(null)
+  const dragOverId = useRef<string | null>(null)
 
   const handleCreate = useCallback(
-    async (opts: { name: string; color: string }) => {
+    async (opts: { name: string; color: string; id: string; port: number; label?: string }) => {
       await onCreate(opts)
     },
     [onCreate],
   )
 
-  async function handleDeleteConfirmed() {
-    if (!deleteConfirm) return
-    await onDelete(deleteConfirm.id)
-    setDeleteConfirm(null)
-  }
-
-  const ctxInstance = contextMenu
-    ? instances.find((i) => i.id === contextMenu.instanceId)
-    : null
-
   return (
-    <aside
-      style={{
-        width: 'var(--sidebar-width)',
-        minWidth: 'var(--sidebar-width)',
-        height: '100%',
-        background: 'var(--sidebar-bg)',
-        borderRight: '1px solid var(--border-color)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Section header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 12px',
-          height: 24,
-          marginTop: 16,
-          marginBottom: 4,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 'var(--font-size-label)',
-            fontWeight: 'var(--font-weight-semibold)',
-            letterSpacing: 'var(--letter-spacing-label)',
-            color: 'var(--text-secondary)',
-            textTransform: 'uppercase',
-          }}
-        >
-          Instances
-        </span>
-        <button
-          onClick={() => setDialogOpen(true)}
-          title="New Instance"
-          style={{
-            width: 16,
-            height: 16,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-secondary)',
-            padding: 0,
-            borderRadius: 3,
-            transition: 'color var(--transition-fast)',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-secondary)')}
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path
-              d="M6 1v10M1 6h10"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-      </div>
+    <>
+      <ShadcnSidebar collapsible="none">
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel className="mb-2">Profiles</SidebarGroupLabel>
+            <SidebarGroupAction title="New Profile" onClick={() => setDialogOpen(true)}>
+              <Plus className="h-4 w-4" />
+            </SidebarGroupAction>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-2">
+                {instances.map((instance) => {
+                  const selected = selectedId === instance.id
+                  return (
+                    <SidebarMenuItem
+                      key={instance.id}
+                      draggable
+                      onDragStart={() => { dragItemId.current = instance.id }}
+                      onDragOver={(e) => { e.preventDefault(); dragOverId.current = instance.id }}
+                      onDragEnd={() => {
+                        if (dragItemId.current && dragOverId.current && dragItemId.current !== dragOverId.current) {
+                          const ids = instances.map((i) => i.id)
+                          const fromIdx = ids.indexOf(dragItemId.current)
+                          const toIdx = ids.indexOf(dragOverId.current)
+                          ids.splice(fromIdx, 1)
+                          ids.splice(toIdx, 0, dragItemId.current)
+                          onReorder(ids)
+                        }
+                        dragItemId.current = null
+                        dragOverId.current = null
+                      }}
+                    >
+                      <ContextMenu>
+                        <ContextMenuTrigger asChild>
+                          <SidebarMenuButton
+                            isActive={selected}
+                            onClick={() => onSelect(instance.id)}
+                            className="h-auto rounded-lg border border-sidebar-border bg-background p-4 shadow-sm hover:shadow-md transition-shadow data-[active=true]:border-sidebar-primary/30 data-[active=true]:shadow-md"
+                          >
+                            <div className="flex items-start gap-3 w-full">
+                              <span className="cursor-grab active:cursor-grabbing shrink-0">
+                                <MacMiniIcon color={instance.status === 'running' ? '#34C759' : '#8E8E93'} size={48} />
+                              </span>
+                              <div className="min-w-0 flex-1 pb-2">
+                                <div className="text-sm font-medium truncate">
+                                  {instance.name}
+                                </div>
+                                {instance.label && (
+                                  <div className="text-xs text-foreground/60 break-words">
+                                    {instance.label}
+                                  </div>
+                                )}
+                                <div className="text-xs text-foreground/60 mt-0.5">
+                                  Port :{instance.port}
+                                </div>
+                              </div>
+                            </div>
+                          </SidebarMenuButton>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          {(instance.status === 'stopped' || instance.status === 'error') && (
+                            <ContextMenuItem onClick={() => onStart(instance.id)}>
+                              Start
+                            </ContextMenuItem>
+                          )}
+                          {instance.status === 'running' && (
+                            <ContextMenuItem onClick={() => onStop(instance.id)}>
+                              Stop
+                            </ContextMenuItem>
+                          )}
+                          <ContextMenuSeparator />
+                          <ContextMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => onDelete(instance.id)}
+                          >
+                            Delete...
+                          </ContextMenuItem>
+                        </ContextMenuContent>
+                      </ContextMenu>
+                    </SidebarMenuItem>
+                  )
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
 
-      {/* Instance list */}
-      <nav
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '2px 0',
-        }}
-      >
-        {instances.map((instance) => (
-          <div
-            key={instance.id}
-            className="instance-row"
-            data-selected={selectedId === instance.id ? 'true' : 'false'}
-            onClick={() => onSelect(instance.id)}
-            onContextMenu={(e) => handleContextMenu(e, instance.id)}
-          >
-            <StatusDot status={instance.status} size={8} />
-            <span
-              className="row-name"
-              style={{
-                flex: 1,
-                fontSize: 'var(--font-size-body)',
-                color: 'var(--text-primary)',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {instance.name}
-            </span>
-            <span
-              className="accent-dot"
-              style={{ background: instance.color }}
-            />
-          </div>
-        ))}
-      </nav>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={() => setSettingsOpen(true)}>
+                <Settings className="h-4 w-4" />
+                <span>Settings</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </ShadcnSidebar>
 
-      {/* Context menu */}
-      {contextMenu && ctxInstance && (
-        <div
-          ref={contextMenuRef}
-          className="context-menu"
-          style={{ left: contextMenu.x, top: contextMenu.y }}
-        >
-          {ctxInstance.status === 'stopped' || ctxInstance.status === 'error' ? (
-            <div
-              className="context-menu-item"
-              onClick={() => {
-                onStart(contextMenu.instanceId)
-                setContextMenu(null)
-              }}
-            >
-              Start
-            </div>
-          ) : ctxInstance.status === 'running' ? (
-            <div
-              className="context-menu-item"
-              onClick={() => {
-                onStop(contextMenu.instanceId)
-                setContextMenu(null)
-              }}
-            >
-              Stop
-            </div>
-          ) : null}
-          <div className="context-menu-separator" />
-          <div
-            className="context-menu-item context-menu-item--destructive"
-            onClick={() => {
-              setDeleteConfirm({ id: ctxInstance.id, name: ctxInstance.name })
-              setContextMenu(null)
-            }}
-          >
-            Delete…
-          </div>
-        </div>
-      )}
+      <AppSettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
 
-      {/* Delete confirmation dialog */}
-      {deleteConfirm && (
-        <div
-          className="dialog-overlay"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setDeleteConfirm(null)
-          }}
-        >
-          <div className="dialog-content" style={{ width: 320 }}>
-            <h2
-              style={{
-                fontSize: 15,
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                margin: '0 0 8px',
-              }}
-            >
-              Delete &quot;{deleteConfirm.name}&quot;?
-            </h2>
-            <p
-              style={{
-                fontSize: 'var(--font-size-body)',
-                color: 'var(--text-secondary)',
-                margin: '0 0 20px',
-                lineHeight: 1.5,
-              }}
-            >
-              This will remove the instance and its configuration. OpenClaw data
-              (memory, settings) is not affected.
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-              <button
-                onClick={() => setDeleteConfirm(null)}
-                style={{
-                  height: 28,
-                  padding: '0 12px',
-                  fontSize: 'var(--font-size-body)',
-                  fontFamily: 'var(--font)',
-                  background: 'transparent',
-                  color: 'var(--text-primary)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-md)',
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = 'rgba(0,0,0,0.04)')
-                }
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteConfirmed}
-                style={{
-                  height: 28,
-                  padding: '0 12px',
-                  fontSize: 'var(--font-size-body)',
-                  fontFamily: 'var(--font)',
-                  background: '#FF3B30',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: 'var(--radius-md)',
-                  cursor: 'pointer',
-                  transition: 'opacity 120ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* New Instance dialog */}
       <InstanceDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onCreate={handleCreate}
       />
-    </aside>
+    </>
   )
 }

@@ -1,175 +1,98 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useInstances } from './hooks/useInstances'
+import {
+  SidebarInset,
+  SidebarProvider,
+} from '@/components/ui/sidebar'
 import Sidebar from './components/Sidebar'
 import InstancePane from './components/InstancePane'
 import EmptyState from './components/EmptyState'
-import { HINT_DISMISSED_KEY } from './components/HintBar'
 
 export default function App() {
   const { instances, loading, start, stop, create, deleteInstance } = useInstances()
-
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [showHint, setShowHint] = useState(
-    () => !localStorage.getItem(HINT_DISMISSED_KEY),
-  )
-  const [newInstanceOpen, setNewInstanceOpen] = useState(false)
+  const [order, setOrder] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('multiclaw_profile_order') || '[]') } catch { return [] }
+  })
 
-  // Auto-select first instance on load
+  const sortedInstances = useMemo(() => {
+    const orderMap = new Map(order.map((id, i) => [id, i]))
+    return [...instances].sort((a, b) => {
+      const ai = orderMap.get(a.id) ?? Infinity
+      const bi = orderMap.get(b.id) ?? Infinity
+      return ai - bi
+    })
+  }, [instances, order])
+
+  const handleReorder = useCallback((ids: string[]) => {
+    setOrder(ids)
+    localStorage.setItem('multiclaw_profile_order', JSON.stringify(ids))
+  }, [])
+
   useEffect(() => {
-    if (!loading && instances.length > 0 && selectedId === null) {
-      setSelectedId(instances[0].id)
+    if (!loading && sortedInstances.length > 0 && selectedId === null) {
+      setSelectedId(sortedInstances[0].id)
     }
-  }, [loading, instances, selectedId])
+  }, [loading, sortedInstances, selectedId])
 
-  // If selected instance was deleted, select next available
   useEffect(() => {
-    if (selectedId && !instances.find((i) => i.id === selectedId)) {
-      setSelectedId(instances[0]?.id ?? null)
+    if (selectedId && !sortedInstances.find((i) => i.id === selectedId)) {
+      setSelectedId(sortedInstances[0]?.id ?? null)
     }
-  }, [instances, selectedId])
+  }, [sortedInstances, selectedId])
 
-  const selectedInstance = selectedId ? instances.find((i) => i.id === selectedId) ?? null : null
+  const selectedInstance = selectedId
+    ? sortedInstances.find((i) => i.id === selectedId) ?? null
+    : null
 
-  async function handleCreate(opts: { name: string; color: string }) {
+  async function handleCreate(opts: { name: string; color: string; id: string; port: number; label?: string }) {
     const instance = await create(opts)
-    if (instance) {
-      setSelectedId(instance.id)
-    }
+    if (instance) setSelectedId(instance.id)
   }
 
   async function handleDelete(id: string) {
-    const deleted = await deleteInstance(id)
-    return deleted
+    return await deleteInstance(id)
   }
-
-  function handleSelectInstance(id: string) {
-    setSelectedId(id)
-  }
-
-  function handleOpenNewInstance() {
-    setNewInstanceOpen(true)
-  }
-
-  // Unused but satisfies the prop expectation via Sidebar's internal dialog
-  void newInstanceOpen
-  void setNewInstanceOpen
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        overflow: 'hidden',
-        fontFamily: 'var(--font)',
-      }}
-    >
-      {/* ── Main toolbar (full-width, 52px, draggable) ── */}
-      <header
-        className="toolbar-drag"
-        style={{
-          height: 'var(--toolbar-height)',
-          background: 'var(--toolbar-bg)',
-          borderBottom: '1px solid rgba(0,0,0,0.08)',
-          display: 'flex',
-          alignItems: 'center',
-          flexShrink: 0,
-          position: 'relative',
-        }}
-      >
-        {/* Left: spacer for traffic lights */}
-        <div style={{ width: 80, flexShrink: 0 }} />
-
-        {/* Center: app title */}
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            fontSize: 'var(--font-size-title)',
-            fontWeight: 'var(--font-weight-semibold)',
-            color: 'var(--text-primary)',
-            letterSpacing: '-0.01em',
-            pointerEvents: 'none',
-          }}
-        >
-          MultiClaw
-        </div>
-
-        {/* Right: spacer */}
-        <div style={{ flex: 1 }} />
+    <div className="flex h-screen flex-col">
+      <header className="flex h-[38px] shrink-0 items-center justify-center bg-sidebar border-b border-sidebar-border toolbar-drag">
+        <span className="text-sm font-semibold toolbar-no-drag">MultiClaw</span>
       </header>
-
-      {/* ── Content row: sidebar + main ── */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Sidebar */}
+      <SidebarProvider className="flex-1 !min-h-0">
         <Sidebar
-          instances={instances}
+          instances={sortedInstances}
           selectedId={selectedId}
-          onSelect={handleSelectInstance}
+          onSelect={(id) => setSelectedId(id)}
           onStart={start}
           onStop={stop}
           onCreate={handleCreate}
           onDelete={handleDelete}
+          onReorder={handleReorder}
         />
-
-        {/* Main content */}
-        <main
-          style={{
-            flex: 1,
-            height: '100%',
-            background: 'var(--content-bg)',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Instance view */}
-          {loading ? (
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--text-secondary)',
-                fontSize: 'var(--font-size-body)',
-              }}
-            >
-              Loading…
-            </div>
-          ) : instances.length === 0 ? (
-            <EmptyState onNewInstance={handleOpenNewInstance} />
-          ) : selectedInstance ? (
-            <InstancePane
-              instance={selectedInstance}
-              showHint={showHint}
-              onHintDismiss={() => setShowHint(false)}
-              onStart={start}
-              onStop={stop}
-            />
-          ) : (
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--text-secondary)',
-                fontSize: 'var(--font-size-body)',
-              }}
-            >
-              Select an instance from the sidebar
-            </div>
-          )}
-        </main>
-      </div>
+        <SidebarInset>
+          <div className="flex flex-1 flex-col overflow-hidden">
+            {loading ? (
+              <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+                Loading...
+              </div>
+            ) : sortedInstances.length === 0 ? (
+              <EmptyState onNewInstance={() => {}} />
+            ) : selectedInstance ? (
+              <InstancePane
+                instance={selectedInstance}
+                onStart={start}
+                onStop={stop}
+                onDelete={handleDelete}
+              />
+            ) : (
+              <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+                Select a profile from the sidebar
+              </div>
+            )}
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
     </div>
   )
 }
