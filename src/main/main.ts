@@ -94,6 +94,10 @@ function setupIpc(win: BrowserWindow): void {
     manager.getLogs(id),
   )
 
+  ipcMain.handle('instances:getDashboardUrl', (_, id: string) =>
+    manager.getDashboardUrl(id),
+  )
+
   // TUI
   ipcMain.handle('instances:launchTui', (_, id: string) =>
     manager.launchTui(id),

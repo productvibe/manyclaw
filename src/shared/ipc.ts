@@ -15,6 +15,7 @@ export const IPC = {
   INSTANCES_CREATE:     'instances:create',
   INSTANCES_DELETE:     'instances:delete',
   INSTANCES_GET_LOGS:   'instances:getLogs',
+  INSTANCES_GET_DASHBOARD_URL: 'instances:getDashboardUrl',
 
   GATEWAY_STATUS:       'gateway:status',
   GATEWAY_START:        'gateway:start',
@@ -92,6 +93,9 @@ export interface MultiClawAPI {
 
     /** Returns recent log lines (up to 2000) for the given instance. */
     getLogs(id: string): Promise<string[]>
+
+    /** Get the authenticated dashboard URL via `openclaw --profile {id} dashboard --no-open` */
+    getDashboardUrl(id: string): Promise<string>
 
     /**
      * Subscribe to status changes for any instance.

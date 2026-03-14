@@ -30,6 +30,9 @@ const api: MultiClawAPI = {
     getLogs: (id) =>
       ipcRenderer.invoke('instances:getLogs', id),
 
+    getDashboardUrl: (id) =>
+      ipcRenderer.invoke('instances:getDashboardUrl', id),
+
     onStatusChange: (cb) => {
       const handler = (_: unknown, inst: unknown) =>
         cb(inst as Parameters<typeof cb>[0])

@@ -420,9 +420,10 @@ export default function InstancePane({
         {isRunning && (
           <>
             <GhostButton
-              onClick={() =>
-                window.multiclaw.shell.openExternal(`http://127.0.0.1:${instance.port}`)
-              }
+              onClick={async () => {
+                const url = await window.multiclaw.instances.getDashboardUrl(instance.id)
+                window.multiclaw.shell.openExternal(url)
+              }}
               title="Open in browser"
             >
               🌐 Open in Browser ↗

@@ -276,6 +276,33 @@ export class InstanceManager extends EventEmitter {
     return this.getGatewayStatus()
   }
 
+  // ── Dashboard URL ────────────────────────────────────────────────────
+
+  async getDashboardUrl(id: string): Promise<string> {
+    const inst = this.instances.get(id)
+    if (!inst) throw new Error(`Instance not found: ${id}`)
+
+    const { execa } = await import('execa')
+    const { getOpenClawBin } = await import('./sandbox.js')
+    const bin = getOpenClawBin()
+
+    const result = await execa(
+      bin,
+      ['--profile', id, 'dashboard', '--no-open'],
+      {
+        reject: false,
+        env: {
+          ...process.env,
+          PATH: process.env.PATH ?? '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin',
+        },
+      },
+    )
+
+    const url = result.stdout.split('\n').map(l => l.trim()).find(l => l.startsWith('http'))
+    if (!url) throw new Error(`dashboard --no-open returned no URL. stderr: ${result.stderr}`)
+    return url
+  }
+
   // ── Event subscriptions (convenience wrappers for main.ts) ────────────
 
   onStatusChange(cb: (inst: InstanceInfo) => void): () => void {
