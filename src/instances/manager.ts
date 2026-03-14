@@ -9,7 +9,7 @@ import { EventEmitter } from 'node:events'
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
-import { launchInstance, killInstance, launchTui, launchConfigure, killTui, type ProcessHandle, type TuiHandle, type PtyHandle } from './sandbox.js'
+import { launchInstance, killInstance, launchTui, launchConfigure, launchChannelLogin, killTui, type ProcessHandle, type TuiHandle, type PtyHandle } from './sandbox.js'
 import type { InternalInstance, PersistedState, PersistedInstance } from './types.js'
 import type { InstanceInfo, GatewayStatus } from '../shared/ipc.js'
 
@@ -326,6 +326,70 @@ export class InstanceManager extends EventEmitter {
     return toInstanceInfo(inst)
   }
 
+  async clone(sourceId: string, customName?: string): Promise<InstanceInfo> {
+    const source = this.instances.get(sourceId)
+    if (!source) throw new Error(`Instance not found: ${sourceId}`)
+
+    const newName = customName?.trim() || `${source.name} (copy)`
+    const newId = this.generateId(newName)
+    const newPort = this.releasedPorts.length > 0
+      ? this.releasedPorts.shift()!
+      : this.nextPort++
+
+    const newDir = profileDir(newId)
+
+    // Copy the entire profile directory
+    fs.cpSync(source.profileDir, newDir, { recursive: true })
+
+    // Fix hardcoded paths in agent session files
+    this.rewritePathsInAgentSessions(newDir, source.profileDir, newDir)
+
+    // Update the cloned config with new port and auth token
+    const configPath = path.join(newDir, 'openclaw.json')
+    try {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+      if (config.gateway) config.gateway.port = newPort
+      if (config.agents?.defaults?.workspace) {
+        config.agents.defaults.workspace = path.join(newDir, 'workspace')
+      }
+      const crypto = await import('node:crypto')
+      if (config.gateway?.auth?.token) {
+        config.gateway.auth.token = crypto.randomBytes(24).toString('hex')
+      }
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8')
+    } catch {
+      // Config missing — that's ok, it'll be created on first start
+    }
+
+    const inst: InternalInstance = {
+      id: newId,
+      name: newName,
+      port: newPort,
+      color: source.color,
+      label: source.label,
+      status: 'stopped',
+      profileDir: newDir,
+    }
+
+    this.instances.set(newId, inst)
+    this.logs.set(newId, [])
+    this.saveCurrentState()
+    this.emit('statusChanged', toInstanceInfo(inst))
+
+    console.log(`[manager] Cloned ${sourceId} → ${newId} (port ${newPort})`)
+    return toInstanceInfo(inst)
+  }
+
+  updateInstance(id: string, opts: { name?: string; label?: string }): InstanceInfo | undefined {
+    const inst = this.instances.get(id)
+    if (!inst) return undefined
+    if (opts.name !== undefined) inst.name = opts.name
+    if (opts.label !== undefined) inst.label = opts.label || undefined
+    this.saveCurrentState()
+    this.emit('statusChanged', toInstanceInfo(inst))
+    return toInstanceInfo(inst)
+  }
+
   async delete(id: string, deleteData = false): Promise<{ cancelled?: boolean }> {
     const inst = this.instances.get(id)
     if (!inst) return {}
@@ -431,6 +495,48 @@ export class InstanceManager extends EventEmitter {
     if (handle) {
       killTui(handle)
       this.configureProcesses.delete(id)
+    }
+  }
+
+  // ── Channel Login (PTY) ─────────────────────────────────────────────
+
+  private channelLoginProcesses = new Map<string, PtyHandle>()
+
+  launchChannelLogin(id: string, channel: string): { started: boolean } {
+    const key = `${id}:${channel}`
+    if (this.channelLoginProcesses.has(key)) return { started: false }
+
+    const inst = this.instances.get(id)
+    if (!inst) throw new Error(`Instance not found: ${id}`)
+
+    const handle = launchChannelLogin(
+      { id: inst.id },
+      channel,
+      (data) => this.emit('channelLoginData', { id, channel, data }),
+      () => {
+        this.channelLoginProcesses.delete(key)
+        this.emit('channelLoginExit', { id, channel })
+      },
+    )
+
+    this.channelLoginProcesses.set(key, handle)
+    return { started: true }
+  }
+
+  sendChannelLoginInput(id: string, channel: string, data: string): void {
+    this.channelLoginProcesses.get(`${id}:${channel}`)?.ptyProcess.write(data)
+  }
+
+  resizeChannelLogin(id: string, channel: string, cols: number, rows: number): void {
+    this.channelLoginProcesses.get(`${id}:${channel}`)?.ptyProcess.resize(cols, rows)
+  }
+
+  killChannelLogin(id: string, channel: string): void {
+    const key = `${id}:${channel}`
+    const handle = this.channelLoginProcesses.get(key)
+    if (handle) {
+      killTui(handle)
+      this.channelLoginProcesses.delete(key)
     }
   }
 
@@ -554,6 +660,119 @@ export class InstanceManager extends EventEmitter {
     }
 
     return { success: true }
+  }
+
+  // ── Channels ──────────────────────────────────────────────────────────
+
+  /**
+   * Write a channel config entry directly to the profile's openclaw.json.
+   * Each channel has its own token field name (e.g. botToken, token).
+   */
+  async addChannel(
+    id: string,
+    opts: { channel: string; token: string },
+  ): Promise<{ success: boolean; error?: string }> {
+    const inst = this.instances.get(id)
+    if (!inst) return { success: false, error: 'Profile not found' }
+
+    const configPath = path.join(inst.profileDir, 'openclaw.json')
+    try {
+      let config: Record<string, unknown> = {}
+      try {
+        config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+      } catch { /* new config */ }
+
+      const channels = (config.channels ?? {}) as Record<string, Record<string, unknown>>
+      const tokenField = this.channelTokenField(opts.channel)
+
+      channels[opts.channel] = {
+        ...channels[opts.channel],
+        enabled: true,
+        [tokenField]: opts.token,
+      }
+      config.channels = channels
+
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8')
+      console.log(`[manager] Added channel ${opts.channel} for ${id}`)
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Failed to write config' }
+    }
+  }
+
+  async removeChannel(
+    id: string,
+    opts: { channel: string },
+  ): Promise<{ success: boolean; error?: string }> {
+    const inst = this.instances.get(id)
+    if (!inst) return { success: false, error: 'Profile not found' }
+
+    const configPath = path.join(inst.profileDir, 'openclaw.json')
+    try {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+      const channels = (config.channels ?? {}) as Record<string, unknown>
+      delete channels[opts.channel]
+      config.channels = channels
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8')
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Failed to write config' }
+    }
+  }
+
+  async getChannelStatus(id: string, channel: string): Promise<{ enabled: boolean; hasToken: boolean }> {
+    const inst = this.instances.get(id)
+    if (!inst) return { enabled: false, hasToken: false }
+
+    try {
+      const config = JSON.parse(fs.readFileSync(path.join(inst.profileDir, 'openclaw.json'), 'utf8'))
+      const ch = config?.channels?.[channel]
+      if (!ch) return { enabled: false, hasToken: false }
+      const tokenField = this.channelTokenField(channel)
+      return { enabled: !!ch.enabled, hasToken: !!ch[tokenField] }
+    } catch {
+      return { enabled: false, hasToken: false }
+    }
+  }
+
+  private channelTokenField(channel: string): string {
+    switch (channel) {
+      case 'telegram': return 'botToken'
+      case 'discord': return 'token'
+      case 'slack': return 'botToken'
+      default: return 'token'
+    }
+  }
+
+  /**
+   * Fix hardcoded paths in agent session files (sessions.json, *.jsonl).
+   * These contain absolute paths to the source profile that need updating.
+   */
+  private rewritePathsInAgentSessions(profileDir: string, oldPath: string, newPath: string): void {
+    const agentsDir = path.join(profileDir, 'agents')
+    let agents: string[]
+    try {
+      agents = fs.readdirSync(agentsDir)
+    } catch { return }
+
+    for (const agent of agents) {
+      const sessionsDir = path.join(agentsDir, agent, 'sessions')
+      let files: string[]
+      try {
+        files = fs.readdirSync(sessionsDir)
+      } catch { continue }
+
+      for (const file of files) {
+        if (!file.endsWith('.json') && !file.endsWith('.jsonl')) continue
+        const filePath = path.join(sessionsDir, file)
+        try {
+          const content = fs.readFileSync(filePath, 'utf8')
+          if (content.includes(oldPath)) {
+            fs.writeFileSync(filePath, content.replaceAll(oldPath, newPath), 'utf8')
+          }
+        } catch { /* skip */ }
+      }
+    }
   }
 
   private fixWorkspacePath(inst: InternalInstance): void {

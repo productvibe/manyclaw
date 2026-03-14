@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react'
-import { RotateCcw, Trash2 } from 'lucide-react'
+import { Trash2, Loader2 } from 'lucide-react'
 import type { InstanceInfo } from '@shared/ipc'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,65 +32,178 @@ type Section = 'details' | 'console' | 'configure' | 'danger'
 
 const NAV_ITEMS: { id: Section; label: string }[] = [
   { id: 'details', label: 'Details' },
-  { id: 'console', label: 'Console' },
   { id: 'configure', label: 'Configure' },
 ]
 
 interface ProfileViewProps {
   instance: InstanceInfo
   onDelete: (id: string, opts?: { deleteData?: boolean }) => Promise<boolean>
+  onClone: (id: string, name?: string) => Promise<void>
 }
 
-function DetailsSection({ instance }: { instance: InstanceInfo }) {
+function DetailsSection({ instance, onClone }: { instance: InstanceInfo; onClone: (id: string) => Promise<void> }) {
   const isDefault = instance.id === 'default'
   const dirDisplay = isDefault ? '~/.openclaw/' : `~/.openclaw-${instance.id}/`
+  const [editing, setEditing] = useState(false)
+  const [name, setName] = useState(instance.name)
+  const [label, setLabel] = useState(instance.label ?? '')
 
-  const rows: { label: string; value: React.ReactNode }[] = [
-    { label: 'Name', value: instance.name },
-    { label: 'Label', value: instance.label || '—' },
-    { label: 'Profile ID', value: instance.id },
-    { label: 'Directory', value: dirDisplay },
-    { label: 'Port', value: `:${instance.port}` },
-    {
-      label: 'Color',
-      value: (
-        <div className="flex items-center gap-2">
-          <span className="inline-block w-3 h-3 rounded-full" style={{ background: instance.color }} />
-          <span>{instance.color}</span>
-        </div>
-      ),
-    },
-  ]
+  useEffect(() => {
+    setName(instance.name)
+    setLabel(instance.label ?? '')
+    setEditing(false)
+  }, [instance.id, instance.name, instance.label])
+
+  function handleSave() {
+    window.multiclaw.instances.update(instance.id, {
+      name: name.trim() || instance.name,
+      label: label.trim(),
+    })
+    setEditing(false)
+  }
+
+  function handleCancel() {
+    setName(instance.name)
+    setLabel(instance.label ?? '')
+    setEditing(false)
+  }
 
   return (
     <div className="p-6 space-y-4">
       {isDefault && (
-        <Card className="max-w-lg border-blue-300/50 bg-blue-50/50 dark:border-blue-800/50 dark:bg-blue-950/20">
-          <CardContent className="pt-4 pb-3">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              This is the <strong>system default</strong> profile, created outside of MultiClaw by the OpenClaw CLI.
-              It runs as a background daemon and is shared across all tools that use OpenClaw.
-              MultiClaw can monitor and interact with it, but does not manage its lifecycle.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="max-w-lg rounded-lg border border-blue-300/50 bg-blue-50/50 dark:border-blue-800/50 dark:bg-blue-950/20 p-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            This is the <strong>system default</strong> profile, created outside of MultiClaw by the OpenClaw CLI.
+            It runs as a background daemon and is shared across all tools that use OpenClaw.
+            MultiClaw can monitor and interact with it, but does not manage its lifecycle.
+          </p>
+        </div>
       )}
-      <Card className="max-w-lg">
-        <CardHeader>
-          <CardTitle className="text-base">Profile Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-[120px_1fr] gap-y-3 gap-x-4 text-sm">
-            {rows.map((row) => (
-              <div key={row.label} className="contents">
-                <dt className="text-muted-foreground font-medium">{row.label}</dt>
-                <dd className="text-foreground">{row.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </CardContent>
-      </Card>
+      <div className="max-w-lg space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-semibold">Profile Details</h3>
+          {!editing && (
+            <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setEditing(true)}>
+              Edit
+            </Button>
+          )}
+        </div>
+        <dl className="grid grid-cols-[100px_1fr] gap-y-3 gap-x-4 text-sm items-center">
+          <dt className="text-muted-foreground font-medium">Name</dt>
+          <dd>
+            {editing ? (
+              <input
+                className="w-full rounded border border-input bg-background px-2 py-1.5 text-sm focus-visible:outline-none focus-visible:border-foreground/30"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+              />
+            ) : (
+              <span className="text-foreground">{instance.name}</span>
+            )}
+          </dd>
+          <dt className="text-muted-foreground font-medium">Description</dt>
+          <dd>
+            {editing ? (
+              <input
+                className="w-full rounded border border-input bg-background px-2 py-1.5 text-sm focus-visible:outline-none focus-visible:border-foreground/30"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="optional"
+              />
+            ) : (
+              <span className="text-foreground">{instance.label || '—'}</span>
+            )}
+          </dd>
+          <dt className="text-muted-foreground font-medium">Profile ID</dt>
+          <dd className="text-foreground font-mono">{instance.id}</dd>
+          <dt className="text-muted-foreground font-medium">Directory</dt>
+          <dd className="text-foreground font-mono">{dirDisplay}</dd>
+          <dt className="text-muted-foreground font-medium">Port</dt>
+          <dd className="text-foreground font-mono">:{instance.port}</dd>
+        </dl>
+        {editing && (
+          <div className="flex gap-2 justify-end">
+            <Button variant="outline" size="sm" className="h-7 text-xs" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button size="sm" className="h-7 text-xs" onClick={handleSave}>
+              Save
+            </Button>
+          </div>
+        )}
+
+        <CloneSection instance={instance} onClone={onClone} />
+      </div>
     </div>
+  )
+}
+
+function CloneSection({ instance, onClone }: { instance: InstanceInfo; onClone: (id: string, name?: string) => Promise<void> }) {
+  const [open, setOpen] = useState(false)
+  const [name, setName] = useState('')
+  const [cloning, setCloning] = useState(false)
+
+  function handleOpen() {
+    setName(`${instance.name} (copy)`)
+    setCloning(false)
+    setOpen(true)
+  }
+
+  async function handleClone() {
+    setCloning(true)
+    await onClone(instance.id, name.trim() || undefined)
+    setCloning(false)
+    setOpen(false)
+  }
+
+  return (
+    <>
+      <div className="rounded-lg border border-border p-4 space-y-3">
+        <h4 className="text-sm font-medium">Clone Profile</h4>
+        <p className="text-sm text-muted-foreground">
+          Create an exact copy of this profile — including workspace, agents, channels, and configuration.
+        </p>
+        <Button variant="outline" size="sm" onClick={handleOpen}>
+          Clone
+        </Button>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle>Clone "{instance.name}"</DialogTitle>
+            <DialogDescription>
+              This will copy the entire profile directory — workspace, agents, sessions, channels, and all configuration. The clone gets its own gateway port and can run independently.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-1.5 py-2">
+            <Label htmlFor="clone-name">Name for the clone</Label>
+            <Input
+              id="clone-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !cloning) handleClone() }}
+              autoFocus
+            />
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)} disabled={cloning}>
+              Cancel
+            </Button>
+            <Button onClick={handleClone} disabled={cloning || !name.trim()}>
+              {cloning ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-1.5" /> Cloning...</>
+              ) : (
+                'Clone Profile'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
@@ -92,23 +213,18 @@ function DangerZoneSection({ instance, onDelete }: { instance: InstanceInfo; onD
 
   return (
     <div className="p-6">
-      <Card className="max-w-lg border-destructive/30">
-        <CardHeader>
-          <CardTitle className="text-base text-destructive">Danger Zone</CardTitle>
-          <CardDescription>
-            Actions here are irreversible. The profile must be stopped first.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-start gap-4 rounded-lg border border-border p-4">
-            <div className="flex-1 space-y-1">
-              <h4 className="text-sm font-medium text-foreground">Delete this profile</h4>
-              <p className="text-sm text-muted-foreground">
-                Remove &ldquo;{instance.name}&rdquo; from MultiClaw. This cannot be undone.
-              </p>
-            </div>
+      <h3 className="text-base font-semibold text-destructive mb-1">Danger Zone</h3>
+      <p className="text-sm text-muted-foreground mb-4">Actions here are irreversible. The profile must be stopped first.</p>
 
-            <AlertDialog>
+      <div className="flex items-center gap-4 max-w-lg rounded-lg border border-border p-4">
+        <div className="flex-1">
+          <h4 className="text-sm font-medium text-foreground">Delete this profile</h4>
+          <p className="text-sm text-muted-foreground">
+            Remove &ldquo;{instance.name}&rdquo; from MultiClaw.
+          </p>
+        </div>
+
+        <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="sm" disabled={isBusy} className="gap-1.5 shrink-0">
                   <Trash2 className="h-3.5 w-3.5" />
@@ -155,14 +271,12 @@ function DangerZoneSection({ instance, onDelete }: { instance: InstanceInfo; onD
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }
 
-export default function ProfileView({ instance, onDelete }: ProfileViewProps) {
+export default function ProfileView({ instance, onDelete, onClone }: ProfileViewProps) {
   const [section, setSection] = useState<Section>('details')
   const [configureMounted, setConfigureMounted] = useState(false)
   const [configureKey, setConfigureKey] = useState(0)
@@ -203,6 +317,15 @@ export default function ProfileView({ instance, onDelete }: ProfileViewProps) {
         <Separator className="my-3" />
 
         <Button
+          variant={section === 'console' ? 'secondary' : 'ghost'}
+          size="sm"
+          className={`justify-start h-8 text-sm ${section === 'console' ? 'font-semibold' : ''}`}
+          onClick={() => setSection('console')}
+        >
+          Console
+        </Button>
+
+        <Button
           variant={section === 'danger' ? 'secondary' : 'ghost'}
           size="sm"
           className={`justify-start h-8 text-sm text-destructive hover:text-destructive ${section === 'danger' ? 'font-semibold' : ''}`}
@@ -218,7 +341,7 @@ export default function ProfileView({ instance, onDelete }: ProfileViewProps) {
           className="absolute inset-0 overflow-y-auto bg-background"
           style={{ visibility: section === 'details' ? 'visible' : 'hidden', zIndex: section === 'details' ? 1 : 0 }}
         >
-          <DetailsSection instance={instance} />
+          <DetailsSection instance={instance} onClone={onClone} />
         </div>
 
         <div
@@ -232,10 +355,9 @@ export default function ProfileView({ instance, onDelete }: ProfileViewProps) {
           className="absolute inset-0 flex flex-col bg-background"
           style={{ visibility: section === 'configure' ? 'visible' : 'hidden', zIndex: section === 'configure' ? 1 : 0 }}
         >
-          <div className="flex items-center justify-end px-3 py-1.5 border-b border-border shrink-0">
-            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5" onClick={restartConfigure}>
-              <RotateCcw className="h-3 w-3" />
-              Restart
+          <div className="flex items-center justify-start px-3 py-1.5 border-b border-border shrink-0">
+            <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={restartConfigure}>
+              Reload Configure
             </Button>
           </div>
           <div className="flex-1 relative overflow-hidden">

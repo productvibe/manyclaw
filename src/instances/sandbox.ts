@@ -146,6 +146,17 @@ export function launchConfigure(
   return spawnProfilePty(instance.id, ['configure'], onData, onExit)
 }
 
+export function launchChannelLogin(
+  instance: { id: string },
+  channel: string,
+  onData: (data: string) => void,
+  onExit: () => void,
+): PtyHandle {
+  // Use `configure --section channels` which handles dependency
+  // installation and channel setup in one interactive flow.
+  return spawnProfilePty(instance.id, ['configure', '--section', 'channels'], onData, onExit)
+}
+
 export function killTui(handle: PtyHandle): void {
   try {
     handle.ptyProcess.kill()

@@ -17,6 +17,7 @@ export function useTerminalPane(
   sendInput: (data: string) => void,
   resize: (cols: number, rows: number) => void,
   deps: unknown[],
+  opts?: { fontSize?: number },
 ) {
   const containerRef = useRef<HTMLDivElement>(null)
   const termRef = useRef<Terminal | null>(null)
@@ -73,7 +74,7 @@ export function useTerminalPane(
     const term = new Terminal({
       theme: TERM_THEME,
       fontFamily: "'SF Mono', 'Menlo', 'Courier New', monospace, 'Monaco'",
-      fontSize: 15,
+      fontSize: opts?.fontSize ?? 15,
       lineHeight: 1.0,
       cursorBlink: true,
       allowTransparency: false,

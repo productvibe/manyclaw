@@ -90,6 +90,10 @@ export default function App() {
                     onStart={start}
                     onStop={stop}
                     onDelete={handleDelete}
+                    onClone={async (id, name) => {
+                      const cloned = await window.multiclaw.instances.clone(id, name)
+                      if (cloned) setSelectedId(cloned.id)
+                    }}
                   />
                 ))}
               </>

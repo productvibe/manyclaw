@@ -57,7 +57,7 @@ export default function Sidebar({
   return (
     <>
       <ShadcnSidebar collapsible="offcanvas" className="border-r border-border top-[38px] !h-[calc(100vh-38px)]">
-        <SidebarContent>
+        <SidebarContent className="pt-2">
           <SidebarGroup>
             <SidebarGroupLabel className="mb-2">Profiles</SidebarGroupLabel>
             <SidebarGroupAction title="New Profile" onClick={() => setDialogOpen(true)}>
@@ -124,6 +124,14 @@ export default function Sidebar({
                               Stop
                             </ContextMenuItem>
                           )}
+                          <ContextMenuItem
+                            onClick={async () => {
+                              const cloned = await window.multiclaw.instances.clone(instance.id)
+                              if (cloned) onSelect(cloned.id)
+                            }}
+                          >
+                            Clone
+                          </ContextMenuItem>
                           <ContextMenuSeparator />
                           <ContextMenuItem
                             className="text-destructive focus:text-destructive"

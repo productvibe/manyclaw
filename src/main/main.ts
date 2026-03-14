@@ -65,6 +65,14 @@ function setupIpc(win: BrowserWindow): void {
     manager.create(opts),
   )
 
+  ipcMain.handle('instances:update', (_, id: string, opts: { name?: string; label?: string }) =>
+    manager.updateInstance(id, opts),
+  )
+
+  ipcMain.handle('instances:clone', (_, id: string, name?: string) =>
+    manager.clone(id, name),
+  )
+
   ipcMain.handle('instances:getNextPort', () =>
     manager.getNextPort(),
   )
@@ -105,6 +113,35 @@ function setupIpc(win: BrowserWindow): void {
   ipcMain.handle('instances:onboard', (_, id: string, opts?: { provider?: string; token?: string }) =>
     manager.onboardInstance(id, opts),
   )
+
+  // Channels
+  ipcMain.handle('instances:addChannel', (_, id: string, opts: { channel: string; token: string }) =>
+    manager.addChannel(id, opts),
+  )
+
+  ipcMain.handle('instances:removeChannel', (_, id: string, opts: { channel: string }) =>
+    manager.removeChannel(id, opts),
+  )
+
+  ipcMain.handle('instances:getChannelStatus', (_, id: string, channel: string) =>
+    manager.getChannelStatus(id, channel),
+  )
+
+  ipcMain.handle('instances:launchChannelLogin', (_, id: string, channel: string) =>
+    manager.launchChannelLogin(id, channel),
+  )
+
+  ipcMain.handle('instances:killChannelLogin', (_, id: string, channel: string) =>
+    manager.killChannelLogin(id, channel),
+  )
+
+  ipcMain.on('instances:channelLogin:input', (_, id: string, channel: string, data: string) => {
+    manager.sendChannelLoginInput(id, channel, data)
+  })
+
+  ipcMain.on('instances:channelLogin:resize', (_, id: string, channel: string, cols: number, rows: number) => {
+    manager.resizeChannelLogin(id, channel, cols, rows)
+  })
 
   // Shell
   ipcMain.handle('shell:openExternal', (_, url: string) => {
@@ -177,6 +214,14 @@ function setupIpc(win: BrowserWindow): void {
 
   manager.on('configureExit', ({ id }: { id: string }) => {
     win.webContents.send(`instance:configure:exit:${id}`)
+  })
+
+  manager.on('channelLoginData', ({ id, channel, data }: { id: string; channel: string; data: string }) => {
+    win.webContents.send(`instance:channelLogin:data:${id}:${channel}`, data)
+  })
+
+  manager.on('channelLoginExit', ({ id, channel }: { id: string; channel: string }) => {
+    win.webContents.send(`instance:channelLogin:exit:${id}:${channel}`)
   })
 }
 

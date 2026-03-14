@@ -83,6 +83,12 @@ export interface MultiClawAPI {
     /** Creates a new profile with the given options. */
     create(opts: { name: string; color: string; id?: string; port?: number; label?: string }): Promise<InstanceInfo>
 
+    /** Update profile name/label. */
+    update(id: string, opts: { name?: string; label?: string }): Promise<InstanceInfo | undefined>
+
+    /** Clone a profile — copies everything, assigns new port. */
+    clone(id: string, name?: string): Promise<InstanceInfo>
+
     /** Get the next suggested port number. */
     getNextPort(): Promise<number>
 
@@ -100,6 +106,33 @@ export interface MultiClawAPI {
 
     /** Run non-interactive onboard for this profile. */
     onboard(id: string, opts?: { provider?: string; token?: string }): Promise<{ success: boolean; error?: string }>
+
+    /** Add a messaging channel to this profile. */
+    addChannel(id: string, opts: { channel: string; token: string }): Promise<{ success: boolean; error?: string }>
+
+    /** Remove a messaging channel from this profile. */
+    removeChannel(id: string, opts: { channel: string }): Promise<{ success: boolean; error?: string }>
+
+    /** Check if a channel is configured for this profile. */
+    getChannelStatus(id: string, channel: string): Promise<{ enabled: boolean; hasToken: boolean }>
+
+    /** Launch interactive channel login (e.g. WhatsApp QR) in a PTY. */
+    launchChannelLogin(id: string, channel: string): Promise<{ started: boolean }>
+
+    /** Kill a running channel login PTY. */
+    killChannelLogin(id: string, channel: string): Promise<void>
+
+    /** Send input to a channel login PTY. */
+    sendChannelLoginInput(id: string, channel: string, data: string): void
+
+    /** Resize a channel login PTY. */
+    resizeChannelLogin(id: string, channel: string, cols: number, rows: number): void
+
+    /** Subscribe to channel login PTY output. */
+    onChannelLoginData(id: string, channel: string, cb: (data: string) => void): () => void
+
+    /** Subscribe to channel login PTY exit. */
+    onChannelLoginExit(id: string, channel: string, cb: () => void): () => void
 
     /** Spawn the TUI for this instance in a PTY (idempotent if already running). */
     launchTui(id: string, cols?: number, rows?: number): Promise<{ started: boolean }>

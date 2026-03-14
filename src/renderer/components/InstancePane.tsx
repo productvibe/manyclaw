@@ -23,10 +23,11 @@ interface InstancePaneProps {
   onStart: (id: string) => Promise<void>
   onStop: (id: string) => Promise<void>
   onDelete: (id: string, opts?: { deleteData?: boolean }) => Promise<boolean>
+  onClone: (id: string, name?: string) => Promise<void>
 }
 
 export default function InstancePane({
-  instance, visible, onStart, onStop, onDelete,
+  instance, visible, onStart, onStop, onDelete, onClone,
 }: InstancePaneProps) {
   const [actionPending, setActionPending] = useState(false)
   const [topTab, setTopTab] = useState<TopTab>('tui')
@@ -84,8 +85,6 @@ export default function InstancePane({
 
         <div className="flex-1" />
 
-        <Separator orientation="vertical" className="h-5 mx-1" />
-
         {/* Always available */}
         <Button
           variant="ghost"
@@ -96,6 +95,8 @@ export default function InstancePane({
         >
           <FolderOpen className="h-4 w-4" />
         </Button>
+
+        <Separator orientation="vertical" className="h-5 mx-1" />
 
         {/* Action buttons */}
         {isStopped && (
@@ -171,7 +172,7 @@ export default function InstancePane({
             visibility: topTab === 'profile' ? 'visible' : 'hidden',
           }}
         >
-          <ProfileView instance={instance} onDelete={onDelete} />
+          <ProfileView instance={instance} onDelete={onDelete} onClone={onClone} />
         </div>
       </div>
     </div>

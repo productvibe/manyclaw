@@ -24,6 +24,12 @@ const api: MultiClawAPI = {
     create: (opts: { name: string; color: string; id?: string; port?: number }) =>
       ipcRenderer.invoke('instances:create', opts),
 
+    update: (id: string, opts: { name?: string; label?: string }) =>
+      ipcRenderer.invoke('instances:update', id, opts),
+
+    clone: (id: string, name?: string) =>
+      ipcRenderer.invoke('instances:clone', id, name),
+
     getNextPort: () =>
       ipcRenderer.invoke('instances:getNextPort'),
 
@@ -38,6 +44,41 @@ const api: MultiClawAPI = {
 
     onboard: (id, opts) =>
       ipcRenderer.invoke('instances:onboard', id, opts),
+
+    addChannel: (id, opts) =>
+      ipcRenderer.invoke('instances:addChannel', id, opts),
+
+    removeChannel: (id, opts) =>
+      ipcRenderer.invoke('instances:removeChannel', id, opts),
+
+    getChannelStatus: (id, channel) =>
+      ipcRenderer.invoke('instances:getChannelStatus', id, channel),
+
+    launchChannelLogin: (id, channel) =>
+      ipcRenderer.invoke('instances:launchChannelLogin', id, channel),
+
+    killChannelLogin: (id, channel) =>
+      ipcRenderer.invoke('instances:killChannelLogin', id, channel),
+
+    sendChannelLoginInput: (id: string, channel: string, data: string) =>
+      ipcRenderer.send('instances:channelLogin:input', id, channel, data),
+
+    resizeChannelLogin: (id: string, channel: string, cols: number, rows: number) =>
+      ipcRenderer.send('instances:channelLogin:resize', id, channel, cols, rows),
+
+    onChannelLoginData: (id: string, channel: string, cb: (data: string) => void) => {
+      const ch = `instance:channelLogin:data:${id}:${channel}`
+      const handler = (_: unknown, data: string) => cb(data)
+      ipcRenderer.on(ch, handler)
+      return () => ipcRenderer.removeListener(ch, handler)
+    },
+
+    onChannelLoginExit: (id: string, channel: string, cb: () => void) => {
+      const ch = `instance:channelLogin:exit:${id}:${channel}`
+      const handler = () => cb()
+      ipcRenderer.on(ch, handler)
+      return () => ipcRenderer.removeListener(ch, handler)
+    },
 
     launchTui: (id, cols?, rows?) =>
       ipcRenderer.invoke('instances:launchTui', id, cols, rows),
