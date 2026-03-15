@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- ManyClaw icon: three diagonal claw-mark stripes on dark background -->
+  <!-- Dark background -->
+  <rect width="1024" height="1024" fill="#2c2418"/>
+
+  <!-- Three parallel parallelogram stripes, top-left to bottom-right (\\\ style)   -->
+  <!-- Stripe 1 — rearmost, darkest -->
+  <polygon points="402,810 502,810 302,190 202,190" fill="#C44A1C"/>
+  <!-- Stripe 2 — middle -->
+  <polygon points="562,810 662,810 462,190 362,190" fill="#E05929"/>
+  <!-- Stripe 3 — foremost, full orange -->
+  <polygon points="722,810 822,810 622,190 522,190" fill="#FF6B35"/>
+</svg>
