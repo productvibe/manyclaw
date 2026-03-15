@@ -1,6 +1,6 @@
 ---
 title: The OpenClaw Flag Most Users Don't Know About
-date: "2026-02-27"
+date: "2026-03-15"
 description: --profile gives you true isolation. Here's what that actually means.
 slug: profile-flag
 ---
