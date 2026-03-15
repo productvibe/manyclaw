@@ -1,4 +1,4 @@
-# Multiclaw Profile Management Spec
+# Manyclaw Profile Management Spec
 
 **Status:** Draft  
 **Author:** Cedar 🌲  
@@ -23,7 +23,7 @@
 
 ### Step 1 — Assign a port
 
-Multiclaw maintains a port counter in `~/.multiclaw/instances.json` (starting at 40000, incrementing per instance). Pick the next available port and persist it to the instance record.
+Manyclaw maintains a port counter in `~/.multiclaw/instances.json` (starting at 40000, incrementing per instance). Pick the next available port and persist it to the instance record.
 
 ### Step 2 — Write port to profile config
 
@@ -69,7 +69,7 @@ openclaw --profile {id} gateway \
 - `--force` — kills any existing gateway on this port before starting.
 - `--allow-unconfigured` — starts even if onboarding hasn't completed; lets the user configure via dashboard.
 
-**Run as:** Foreground child process (not daemon). Multiclaw holds the process handle; stdout/stderr are piped to the instance log buffer.
+**Run as:** Foreground child process (not daemon). Manyclaw holds the process handle; stdout/stderr are piped to the instance log buffer.
 
 **Health check after start:**
 

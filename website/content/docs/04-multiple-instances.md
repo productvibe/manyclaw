@@ -13,4 +13,4 @@ Each instance can be started and stopped independently. Click an instance in the
 
 To reorder instances, drag them in the sidebar. The order persists across app restarts. To delete an instance, right-click it and select Delete — you will be asked to confirm. Deletion is permanent and removes the profile directory from disk.
 
-Switching between instances is instant. MultiClaw keeps each instance's console log buffered in memory while it is running, so switching away and back does not lose output. The TUI view reconnects to the PTY session when you return to it.
+Switching between instances is instant. ManyClaw keeps each instance's console log buffered in memory while it is running, so switching away and back does not lose output. The TUI view reconnects to the PTY session when you return to it.

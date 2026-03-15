@@ -1,5 +1,5 @@
 ---
-title: Why We Built MultiClaw
+title: Why We Built ManyClaw
 date: "2026-03-14"
 description: Running two OpenClaw agents manually is a workflow. Running three is a part-time job. There had to be a better way.
 slug: why-we-built-multiclaw
@@ -15,11 +15,11 @@ You've got two tabs open, maybe three. You can't remember which terminal is runn
 
 This is the actual experience of running multiple OpenClaw instances today. Not a documentation problem. Not a skill issue. Just friction that compounds every time you add an agent.
 
-![MultiClaw overview — sidebar with multiple named instances](/images/blog/multiclaw-overview.png)
+![ManyClaw overview — sidebar with multiple named instances](/images/blog/multiclaw-overview.png)
 
 The frustrating part is that the underlying capability is already there. OpenClaw's profile system handles true isolation — separate memory, sessions, workspaces, API auth. Each profile is its own contained environment. The hard part isn't the isolation. It's the management layer on top. There isn't one.
 
-That's the gap MultiClaw fills. A native macOS app that wraps OpenClaw's profile system in a proper interface — a sidebar of named, colour-coded agents, one click to start or stop, status visible at a glance. No terminal juggling. No port arithmetic. No guessing which tab is which.
+That's the gap ManyClaw fills. A native macOS app that wraps OpenClaw's profile system in a proper interface — a sidebar of named, colour-coded agents, one click to start or stop, status visible at a glance. No terminal juggling. No port arithmetic. No guessing which tab is which.
 
 ![A running instance with console output](/images/blog/multiclaw-running.png)
 
@@ -35,4 +35,4 @@ There's an in-app chat view too. Send a message to any running instance, read th
 
 If you've ever sat with three terminal tabs open trying to keep track of which agent is which, you already understand the problem. The fix should have existed a long time ago.
 
-[Download MultiClaw →](/download)
+[Download ManyClaw →](/download)

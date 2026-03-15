@@ -5,7 +5,7 @@
 
 ## Context
 
-MultiClaw depends on the `openclaw` CLI. We needed to decide how the app obtains this dependency.
+ManyClaw depends on the `openclaw` CLI. We needed to decide how the app obtains this dependency.
 
 ## Decision
 
@@ -26,11 +26,11 @@ openclaw is not distributed as a standalone binary. It's an npm package with nat
 
 ## Consequences
 
-- Users must install openclaw before using MultiClaw
+- Users must install openclaw before using ManyClaw
 - The setup wizard should check for openclaw and show install instructions if missing
 - App uses whatever version is installed — always up to date with the user's system
 - Uninstall: delete the .app + `rm -rf ~/.multiclaw` + `npm uninstall -g openclaw`
 
 ## Principle
 
-Keep the app lightweight. Don't bundle what you can't own. The 677MB npm package is openclaw's responsibility to distribute — MultiClaw is the GUI layer on top.
+Keep the app lightweight. Don't bundle what you can't own. The 677MB npm package is openclaw's responsibility to distribute — ManyClaw is the GUI layer on top.

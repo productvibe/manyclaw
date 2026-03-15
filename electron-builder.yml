@@ -1,5 +1,5 @@
-appId: com.openclaw.multiclaw
-productName: MultiClaw
+appId: com.openclaw.manyclaw
+productName: ManyClaw
 
 # Source: what gets included in the app
 directories:

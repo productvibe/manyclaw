@@ -261,7 +261,7 @@ app.on('before-quit', async (e) => {
   const win = BrowserWindow.getAllWindows()[0]
   const { response } = await dialog.showMessageBox(win ?? null, {
     type: 'warning',
-    title: 'Quit MultiClaw',
+    title: 'Quit ManyClaw',
     message: `${running.length} running profile${running.length > 1 ? 's' : ''} will be stopped.`,
     detail: running.map(i => i.name).join(', '),
     buttons: ['Cancel', 'Quit'],

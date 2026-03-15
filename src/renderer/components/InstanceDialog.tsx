@@ -24,10 +24,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 const AI_PROVIDERS = [
-  { id: 'anthropic', name: 'Claude Code', description: 'Paste your setup token', authChoice: 'token', tokenProvider: 'anthropic', needsToken: true },
-  { id: 'openai', name: 'Codex', description: 'Opens browser to log in', authChoice: 'codex-cli', tokenProvider: 'openai', needsToken: false },
-  { id: 'gemini', name: 'Gemini', description: 'Opens browser to log in', authChoice: 'google-gemini-cli', tokenProvider: 'gemini', needsToken: false },
-  { id: 'skip', name: 'Skip', description: 'Configure a provider later', authChoice: 'skip', tokenProvider: '', needsToken: false },
+  { id: 'anthropic', name: 'Claude Code', description: 'Paste your setup token', authChoice: 'token', tokenProvider: 'anthropic', needsToken: true, disabled: false },
+  { id: 'openai', name: 'Codex', description: 'Coming soon', authChoice: 'codex-cli', tokenProvider: 'openai', needsToken: false, disabled: true },
+  { id: 'gemini', name: 'Gemini', description: 'Coming soon', authChoice: 'google-gemini-cli', tokenProvider: 'gemini', needsToken: false, disabled: true },
+  { id: 'skip', name: 'Skip', description: 'Configure a provider later', authChoice: 'skip', tokenProvider: '', needsToken: false, disabled: false },
 ] as const
 
 const formSchema = z.object({

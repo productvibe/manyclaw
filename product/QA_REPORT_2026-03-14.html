@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MultiClaw QA Report — 2026-03-14</title>
+<title>ManyClaw QA Report — 2026-03-14</title>
 <style>
   :root {
     --pass: #34C759;
@@ -233,8 +233,8 @@
   <header>
     <div class="header-top">
       <div>
-        <h1>🌲 MultiClaw QA Report</h1>
-        <div class="meta">Tester: Cedar · Date: 2026-03-14 · App: MultiClaw v0 · CDP port: 9555</div>
+        <h1>🌲 ManyClaw QA Report</h1>
+        <div class="meta">Tester: Cedar · Date: 2026-03-14 · App: ManyClaw v0 · CDP port: 9555</div>
       </div>
       <div class="badge warn">⚠ PARTIAL PASS</div>
     </div>
@@ -377,7 +377,7 @@ Error: Gateway returned 404: Not Found  01:26 AM</pre>
         </div>
         <div class="step">
           <div class="step-label">Root cause (for Brook)</div>
-          <p>MultiClaw sends chat messages to <code>http://127.0.0.1:40000/v1/chat/completions</code>. That endpoint does not exist on the OpenClaw gateway — it returns HTTP 404. This may also involve a missing or mismatched auth token. Brook to investigate correct gateway chat API.</p>
+          <p>ManyClaw sends chat messages to <code>http://127.0.0.1:40000/v1/chat/completions</code>. That endpoint does not exist on the OpenClaw gateway — it returns HTTP 404. This may also involve a missing or mismatched auth token. Brook to investigate correct gateway chat API.</p>
         </div>
         <div class="verdict-row">
           <div class="verdict-label">Verdict</div>

@@ -1,5 +1,11 @@
+import type { MetaFunction } from "react-router";
 import { Link } from "react-router";
 import Layout from "~/components/Layout";
+
+export const meta: MetaFunction = () => [
+  { title: "Download ManyClaw" },
+  { name: "description", content: "Download ManyClaw for macOS. Free and open source." },
+];
 
 export default function Download() {
   return (
@@ -24,7 +30,7 @@ export default function Download() {
             marginTop: 0,
           }}
         >
-          Download MultiClaw
+          Download ManyClaw
         </h1>
         <p
           style={{
@@ -39,7 +45,7 @@ export default function Download() {
 
         {/* Primary CTA */}
         <a
-          href="#"
+          href="https://github.com/nichochar/multiclaw/releases/latest"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -55,7 +61,7 @@ export default function Download() {
             marginBottom: "2.5rem",
           }}
         >
-          ↓ Download MultiClaw 0.1 (.dmg)
+          ↓ Download ManyClaw 0.1 (.dmg)
         </a>
 
         {/* Brew */}
@@ -80,7 +86,7 @@ export default function Download() {
             marginBottom: "3rem",
           }}
         >
-          brew install --cask multiclaw
+          brew install --cask manyclaw
         </code>
 
         {/* Requirements */}
@@ -129,12 +135,12 @@ export default function Download() {
             marginBottom: "0.5rem",
           }}
         >
-          The DMG is signed and notarized. Open it, drag MultiClaw to Applications, launch.
+          The DMG is signed and notarized. Open it, drag ManyClaw to Applications, launch.
         </p>
         <p style={{ fontSize: "0.875rem", color: "rgba(44,36,24,0.5)" }}>
           Source code and release notes on{" "}
           <a
-            href="https://github.com/clawpack/multiclaw"
+            href="https://github.com/nichochar/multiclaw"
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: "#FF6B35", textDecoration: "none" }}

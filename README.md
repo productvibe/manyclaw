@@ -1,1 +1,1 @@
-# MultiClaw
+# ManyClaw

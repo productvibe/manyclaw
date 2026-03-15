@@ -1,7 +1,13 @@
 import { useLoaderData, Link } from "react-router";
+import type { MetaFunction } from "react-router";
 import type { Route } from "./+types/index";
 import Layout from "~/components/Layout";
 import { listPosts } from "~/lib/content";
+
+export const meta: MetaFunction = () => [
+  { title: "Blog — ManyClaw" },
+  { name: "description", content: "Updates, stories, and release notes from the ManyClaw team." },
+];
 
 export function loader(_: Route.LoaderArgs) {
   return { posts: listPosts("blog") };

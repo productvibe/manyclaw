@@ -3,8 +3,8 @@ export default function Footer() {
     <footer className="py-8 border-t border-[--color-border-subtle] bg-background" role="contentinfo">
       <div className="w-[min(90%,1080px)] mx-auto flex items-center justify-between max-md:flex-col max-md:gap-4 max-md:text-center">
         <div className="flex items-center gap-2 max-md:flex-col">
-          <span className="font-display font-extrabold text-xl text-foreground">MultiClaw</span>
-          <span className="text-sm text-muted-foreground">&copy; 2026 MultiClaw. All rights reserved.</span>
+          <span className="font-display font-extrabold text-xl text-foreground">ManyClaw</span>
+          <span className="text-sm text-muted-foreground">&copy; 2026 ManyClaw. All rights reserved.</span>
         </div>
         <div className="flex items-center gap-4">
           <a href="https://github.com/nichochar/multiclaw" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground hover:text-foreground transition-colors flex items-center">

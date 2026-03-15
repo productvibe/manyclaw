@@ -1,5 +1,11 @@
 import { useEffect, useRef } from "react"
+import type { MetaFunction } from "react-router"
 import { Link } from "react-router"
+
+export const meta: MetaFunction = () => [
+  { title: "ManyClaw — One machine. Multiple agents." },
+  { name: "description", content: "ManyClaw runs multiple isolated OpenClaw agents on a single machine. Free, open source, macOS." },
+];
 
 /* ── Separator SVG (hatched lines) ── */
 function Separator() {
@@ -237,7 +243,7 @@ export default function Home() {
   }, [])
 
   function copyInstall() {
-    navigator.clipboard.writeText("brew install --cask multiclaw")
+    navigator.clipboard.writeText("brew install --cask manyclaw")
   }
 
   return (
@@ -248,9 +254,9 @@ export default function Home() {
       {/* ── Nav ── */}
       <header className="sticky top-0 z-100 bg-background/90 backdrop-blur-md border-b border-[--color-border-subtle]" role="banner">
         <nav className="flex items-center justify-between h-17 w-[min(90%,1080px)] mx-auto" aria-label="Main navigation">
-          <a href="/" className="flex items-center gap-2.5 font-display font-extrabold text-xl text-foreground no-underline" aria-label="MultiClaw home">
+          <a href="/" className="flex items-center gap-2.5 font-display font-extrabold text-xl text-foreground no-underline" aria-label="ManyClaw home">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-extrabold text-lg font-display">M</div>
-            <span>MultiClaw</span>
+            <span>ManyClaw</span>
             <span className="text-xs font-normal text-muted-foreground ml-1 max-md:hidden">One machine. Multiple agents.</span>
           </a>
           <div className="flex items-center gap-5 ml-8 relative top-0.5 max-md:hidden">
@@ -275,14 +281,14 @@ export default function Home() {
               You don't need three Mac&nbsp;Minis.
             </h1>
             <p className="text-xl text-muted-foreground max-w-[560px] leading-relaxed font-normal max-md:text-base">
-              MultiClaw runs multiple isolated OpenClaw agents on a single machine. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
+              ManyClaw runs multiple isolated OpenClaw agents on a single machine. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
             </p>
             <div className="mt-4 flex flex-col items-center gap-4" id="download">
               <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-6 py-3 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">
                 Download for macOS
               </Link>
               <div className="inline-flex items-center bg-foreground border border-[#1a1408] rounded-sm max-w-full">
-                <pre className="m-0 py-4 pl-5 pr-0 font-mono text-sm leading-none text-white whitespace-pre overflow-x-auto text-left max-md:text-sm max-md:py-2.5 max-md:pl-3.5"><code>brew install --cask multiclaw</code></pre>
+                <pre className="m-0 py-4 pl-5 pr-0 font-mono text-sm leading-none text-white whitespace-pre overflow-x-auto text-left max-md:text-sm max-md:py-2.5 max-md:pl-3.5"><code>brew install --cask manyclaw</code></pre>
                 <button className="p-0 mx-4.5 ml-4 flex items-center bg-none border-none text-white/50 font-sans text-sm font-semibold cursor-pointer whitespace-nowrap transition-colors hover:text-white" onClick={copyInstall} type="button">
                   Copy
                 </button>
@@ -298,7 +304,7 @@ export default function Home() {
             <div className="z-1 origin-center bg-white/55 backdrop-blur-lg border border-black/[0.06] rounded-[20px] p-2 relative overflow-hidden" ref={screenshotRef} style={{ transform: "rotateX(4deg)" }}>
               <img
                 src="/images/hero.png"
-                alt="MultiClaw app — multi-instance management"
+                alt="ManyClaw app — multi-instance management"
                 width={1280}
                 height={699}
                 loading="eager"
@@ -326,7 +332,7 @@ export default function Home() {
               <p>
                 OpenClaw's <code className="font-mono text-base bg-black/[0.06] px-1.5 py-0.5 rounded">--profile</code> flag creates genuine isolation at the process level — separate memory, sessions, workspace, and port per instance. The capability is already there. What's missing is a way to manage it without living in the terminal.
               </p>
-              <p className="font-semibold text-foreground">That's MultiClaw.</p>
+              <p className="font-semibold text-foreground">That's ManyClaw.</p>
             </div>
           </div>
         </section>
@@ -450,7 +456,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Built on OpenClaw</h3>
                 <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  MultiClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
+                  ManyClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
                 </p>
               </div>
             </div>
@@ -465,7 +471,7 @@ export default function Home() {
               One machine. As many agents as you need.
             </h2>
             <p className="text-lg text-muted-foreground max-w-[440px]">
-              MultiClaw is free, open source, and runs entirely on your hardware.
+              ManyClaw is free, open source, and runs entirely on your hardware.
             </p>
             <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-5.5 py-2.5 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">Download for macOS</Link>
           </div>
@@ -476,7 +482,7 @@ export default function Home() {
       <footer className="py-8 border-t border-[--color-border-subtle] bg-background" role="contentinfo">
         <div className="w-[min(90%,1080px)] mx-auto flex items-center justify-between max-md:flex-col max-md:gap-4 max-md:text-center">
           <div className="flex items-center gap-2 max-md:flex-col">
-            <span className="font-display font-extrabold text-xl text-foreground">MultiClaw</span>
+            <span className="font-display font-extrabold text-xl text-foreground">ManyClaw</span>
             <span className="text-sm text-muted-foreground">— One machine. Multiple agents.</span>
           </div>
           <div className="flex items-center gap-5 text-sm text-muted-foreground">

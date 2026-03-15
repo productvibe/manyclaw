@@ -69,7 +69,7 @@ export interface GatewayStatus {
 //     ipcRenderer.on, so they work across the contextBridge sandbox
 //   - Each subscription returns an unsubscribe function (() => void)
 
-export interface MultiClawAPI {
+export interface ManyClawAPI {
   instances: {
     /** Returns all instances with current status */
     list(): Promise<InstanceInfo[]>
@@ -206,6 +206,6 @@ export interface MultiClawAPI {
 // Augment the global Window type so renderer code gets full autocomplete
 declare global {
   interface Window {
-    multiclaw: MultiClawAPI
+    multiclaw: ManyClawAPI
   }
 }

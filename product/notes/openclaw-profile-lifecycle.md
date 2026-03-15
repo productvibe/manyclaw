@@ -116,7 +116,7 @@ Each profile needs a unique port, set during onboard via `--gateway-port`.
 | default (my-agent) | 40000 |
 | additional instances | 40001+ |
 
-## How Multiclaw Does It
+## How Manyclaw Does It
 
 1. **Create**: User fills in name + color in dialog
 2. **Onboard**: `onboard --non-interactive --auth-choice token --token <saved-token> --token-provider anthropic --gateway-port <port> --skip-health`

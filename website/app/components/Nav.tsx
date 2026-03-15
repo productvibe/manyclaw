@@ -10,7 +10,7 @@ export default function Nav() {
         <nav className="flex items-center justify-between h-17 w-[min(90%,1080px)] mx-auto">
           <Link to="/" className="flex items-center gap-2.5 font-display font-extrabold text-xl text-foreground no-underline">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-extrabold text-lg font-display">M</div>
-            <span>MultiClaw</span>
+            <span>ManyClaw</span>
           </Link>
 
           {/* Desktop links */}

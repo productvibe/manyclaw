@@ -1,5 +1,5 @@
 {
-  "name": "multiclaw",
+  "name": "manyclaw",
   "version": "0.0.1",
   "description": "Manage multiple OpenClaw instances side by side",
   "private": true,

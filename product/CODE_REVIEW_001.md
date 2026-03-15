@@ -1,4 +1,4 @@
-# CODE_REVIEW_001 — MultiClaw Architecture Audit
+# CODE_REVIEW_001 — ManyClaw Architecture Audit
 
 **Reviewer:** Emery 🏗️ — Technical Architect  
 **Date:** 2026-03-14  
@@ -78,9 +78,9 @@ This is the exact violation the review principle exists to catch: **manually rea
 
 The correct model is:
 
-1. MultiClaw owns the token. When creating an instance, MultiClaw generates the token (a random secret string) and stores it in its own state file (`~/.multiclaw/instances.json`).
-2. MultiClaw passes that token to the gateway at launch time via `--token <token>` (already supported by the `launchInstance` call in `sandbox.ts`, just not used yet).
-3. When `sendChat` (or any other gateway call) needs the token, it reads it from MultiClaw's own state — not from openclaw's config.
+1. ManyClaw owns the token. When creating an instance, ManyClaw generates the token (a random secret string) and stores it in its own state file (`~/.multiclaw/instances.json`).
+2. ManyClaw passes that token to the gateway at launch time via `--token <token>` (already supported by the `launchInstance` call in `sandbox.ts`, just not used yet).
+3. When `sendChat` (or any other gateway call) needs the token, it reads it from ManyClaw's own state — not from openclaw's config.
 
 **Why this matters:** openclaw's config file format is internal and subject to change. The path (`~/.openclaw-{id}/openclaw.json`) and the key (`gateway.auth.token`) are implementation details of the openclaw runtime. If either changes — or if the token is stored in a SecretRef (keychain, env) rather than plaintext in the config — this breaks silently and with no helpful error message.
 
@@ -90,7 +90,7 @@ The correct model is:
 - In `sendChat`, read `inst.token` from the in-memory instance state — no file I/O, no config parsing.
 - Delete `readProfileToken()`.
 
-**Docs reference:** `openclaw gateway run --token <token>` — the token is an input to the gateway, not something MultiClaw discovers by reading back the config afterwards.
+**Docs reference:** `openclaw gateway run --token <token>` — the token is an input to the gateway, not something ManyClaw discovers by reading back the config afterwards.
 
 ---
 
@@ -211,7 +211,7 @@ Clean. Correct use of contextBridge. No openclaw interaction. Shape matches the 
 ## Rules for Brook and Finley Going Forward
 
 **Rule 1: Token ownership is ours.**  
-MultiClaw generates tokens for its own instances. We pass them in; we don't read them back. openclaw's config files are openclaw's business, not ours.
+ManyClaw generates tokens for its own instances. We pass them in; we don't read them back. openclaw's config files are openclaw's business, not ours.
 
 **Rule 2: Use `--profile`, `--port`, `--force` — not filesystem workarounds.**  
 If you feel the urge to write config files, read config files, or scan ports manually: stop. The CLI flags handle this. sandbox.ts is the correct model.
@@ -237,7 +237,7 @@ Brook is currently fixing token auth in `sendChat`. When that branch is ready fo
 - Does it address the `/v1/chat/completions` endpoint question? (**Required** — either confirm it's documented, or switch to WS RPC.)
 - Is `readProfileToken()` fully gone, or just unused? (**Must be deleted**, not just bypassed.)
 
-A fix that swaps one form of config reading for another will be rejected. The correct fix changes the ownership model: MultiClaw owns the token end-to-end.
+A fix that swaps one form of config reading for another will be rejected. The correct fix changes the ownership model: ManyClaw owns the token end-to-end.
 
 ---
 

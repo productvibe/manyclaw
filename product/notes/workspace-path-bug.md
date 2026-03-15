@@ -4,7 +4,7 @@
 
 ## Problem
 
-New profiles created via MultiClaw had their workspaces landing in `~/.openclaw/` (default profile directory) instead of `~/.openclaw-{id}/`. Every chat, regardless of which profile it was started from, created its workspace under the default profile.
+New profiles created via ManyClaw had their workspaces landing in `~/.openclaw/` (default profile directory) instead of `~/.openclaw-{id}/`. Every chat, regardless of which profile it was started from, created its workspace under the default profile.
 
 ## Root Cause
 

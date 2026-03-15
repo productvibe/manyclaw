@@ -1,4 +1,4 @@
-# MultiClaw — Design Tokens
+# ManyClaw — Design Tokens
 **Author:** Dee 🎨  
 **Date:** 2026-03-14  
 **Status:** v1.0 — Authoritative source of truth for implementation  

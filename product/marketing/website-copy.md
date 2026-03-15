@@ -1,4 +1,4 @@
-# MultiClaw — Website Copy
+# ManyClaw — Website Copy
 
 **Version:** 1.1 — 2026-03-15
 **Page coverage:** Homepage, Download
@@ -11,7 +11,7 @@
 
 ### Nav
 
-**Logo:** MultiClaw
+**Logo:** ManyClaw
 
 **Links:** Download · Docs · Blog · GitHub
 
@@ -25,7 +25,7 @@
 You don't need three Mac Minis.
 
 **Subheading:**
-MultiClaw runs multiple isolated OpenClaw agents on a single machine. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
+ManyClaw runs multiple isolated OpenClaw agents on a single machine. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
 
 **CTA button:**
 Download for macOS
@@ -49,7 +49,7 @@ It works. It's also expensive, power-hungry, and absurd when the software could 
 
 OpenClaw's `--profile` flag creates genuine isolation at the process level — separate memory, sessions, workspace, and port per instance. The capability is already there. What's missing is a way to manage it without living in the terminal.
 
-That's MultiClaw.
+That's ManyClaw.
 
 ---
 
@@ -107,7 +107,7 @@ That's MultiClaw.
 
 **Item 3**
 **Title:** Built on OpenClaw
-**Body:** MultiClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
+**Body:** ManyClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
 
 ---
 
@@ -117,7 +117,7 @@ That's MultiClaw.
 One machine. As many agents as you need.
 
 **Subheading:**
-MultiClaw is free, open source, and runs entirely on your hardware.
+ManyClaw is free, open source, and runs entirely on your hardware.
 
 **Button:**
 Download for macOS
@@ -126,7 +126,7 @@ Download for macOS
 
 ### Footer
 
-**Tagline:** MultiClaw — One machine. Multiple agents.
+**Tagline:** ManyClaw — One machine. Multiple agents.
 
 **Links:** Download · Docs · Blog · GitHub · License
 
@@ -138,13 +138,13 @@ Download for macOS
 ---
 
 **Heading:**
-Download MultiClaw
+Download ManyClaw
 
 **Subheading:**
 Free and open source. Everything runs on your machine.
 
 **Button:**
-Download MultiClaw 0.1 (.dmg)
+Download ManyClaw 0.1 (.dmg)
 
 **Install via Homebrew:**
 ```
@@ -161,6 +161,6 @@ brew install --cask multiclaw
 ---
 
 **Notes:**
-The DMG is signed and notarized. Open it, drag MultiClaw to Applications, launch.
+The DMG is signed and notarized. Open it, drag ManyClaw to Applications, launch.
 
 Source code and release notes on [GitHub →](https://github.com/clawpack/multiclaw)

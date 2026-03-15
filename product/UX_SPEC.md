@@ -1,4 +1,4 @@
-# MultiClaw — UX Specification
+# ManyClaw — UX Specification
 **Author:** Dee 🎨  
 **Date:** 2026-03-14  
 **Status:** v1.0 — Ready for implementation  
@@ -8,7 +8,7 @@
 
 ## Overview
 
-MultiClaw is a macOS desktop app for managing multiple isolated OpenClaw AI instances side by side. Three things, nothing more:
+ManyClaw is a macOS desktop app for managing multiple isolated OpenClaw AI instances side by side. Three things, nothing more:
 
 1. **Manage instances** — create, start, stop, delete named profiles
 2. **Chat** — send messages to a running instance, see replies
@@ -32,7 +32,7 @@ Users think of instances like **browser profiles** or **Docker containers** — 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  ● ● ●  [spacer 8px]  MultiClaw        [divider]  [chat icon]  │  ← Toolbar: 52px
+│  ● ● ●  [spacer 8px]  ManyClaw        [divider]  [chat icon]  │  ← Toolbar: 52px
 ├─────────────────────┬───────────────────────────────────────────┤
 │                     │                                           │
 │     Sidebar         │         Content Area                      │
@@ -51,7 +51,7 @@ Users think of instances like **browser profiles** or **Docker containers** — 
 - **Default size:** 1200×760px
 - **Titlebar:** native macOS, integrated (no separate bar)
 - **Traffic lights:** standard position, left-aligned
-- **Window title:** "MultiClaw" — centered in toolbar
+- **Window title:** "ManyClaw" — centered in toolbar
 - **Toolbar:** `height: var(--toolbar-height)` = 52px, `background: var(--sidebar-bg)` = `#F5F5F5`
 - **Sidebar/content divider:** `1px solid var(--border-color)` = `rgba(0,0,0,0.1)`
 
@@ -60,7 +60,7 @@ Users think of instances like **browser profiles** or **Docker containers** — 
 | Position | Element | Notes |
 |----------|---------|-------|
 | Left | Traffic lights (system) | Standard macOS |
-| Center | App name "MultiClaw" | `font-size: 15px`, `font-weight: 600`, `color: #1C1C1E` |
+| Center | App name "ManyClaw" | `font-size: 15px`, `font-weight: 600`, `color: #1C1C1E` |
 | Right | Chat icon button | `20×20px` icon, `color: #8E8E93`, switches to Chat view |
 
 The toolbar has a subtle bottom border: `border-bottom: 1px solid rgba(0,0,0,0.08)`.
@@ -485,11 +485,11 @@ Content area is centered both axes:
 
 **Why:** Zero actions to understanding, one action to running.
 
-A new user opens MultiClaw and immediately sees an instance called **"My OpenClaw"** in the sidebar, stopped state. The content area shows the instance pane with a single large Start button.
+A new user opens ManyClaw and immediately sees an instance called **"My OpenClaw"** in the sidebar, stopped state. The content area shows the instance pane with a single large Start button.
 
 They click Start. Done. They're running.
 
-No wizard. No onboarding flow. No "welcome to MultiClaw" modal. Just: here's your first instance, press play.
+No wizard. No onboarding flow. No "welcome to ManyClaw" modal. Just: here's your first instance, press play.
 
 **Implementation:**
 - App creates a default instance record on first launch: `{ name: "My OpenClaw", color: "#007AFF", status: "stopped" }`

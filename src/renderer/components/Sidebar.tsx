@@ -59,7 +59,7 @@ export default function Sidebar({
       <ShadcnSidebar collapsible="offcanvas" className="border-r border-border top-[38px] !h-[calc(100vh-38px)]">
         <SidebarContent className="pt-2">
           <SidebarGroup>
-            <SidebarGroupLabel className="mb-2">Profiles</SidebarGroupLabel>
+            <SidebarGroupLabel className="mb-2">Instances</SidebarGroupLabel>
             <SidebarGroupAction title="New Profile" onClick={() => setDialogOpen(true)}>
               <Plus className="h-4 w-4" />
             </SidebarGroupAction>

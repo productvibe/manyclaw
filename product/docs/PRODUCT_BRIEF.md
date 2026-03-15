@@ -1,4 +1,4 @@
-# MultiClaw — Product Brief
+# ManyClaw — Product Brief
 
 **Version:** 0.1 — 2026-03-14  
 **Status:** Early access / ready for marketing  
@@ -7,7 +7,7 @@
 
 ## What It Is
 
-MultiClaw is a native macOS app for running multiple OpenClaw AI agents side by side. Think browser profiles, but for AI — each instance is fully isolated with its own identity, memory, sessions, and config.
+ManyClaw is a native macOS app for running multiple OpenClaw AI agents side by side. Think browser profiles, but for AI — each instance is fully isolated with its own identity, memory, sessions, and config.
 
 ---
 
@@ -25,7 +25,7 @@ Right now, achieving this means terminal tabs, manual `--profile` flags, jugglin
 
 ## The Solution
 
-MultiClaw is a clean visual shell around OpenClaw's native profile system. One window. Sidebar of named, color-coded agents. Click to select, press Start, you're running.
+ManyClaw is a clean visual shell around OpenClaw's native profile system. One window. Sidebar of named, color-coded agents. Click to select, press Start, you're running.
 
 No terminal required. No port management. No config files. Just agents.
 
@@ -67,7 +67,7 @@ Opens with a default instance pre-created. One click to start. No wizard, no onb
 
 ## What It's Not
 
-MultiClaw is a visual shell — not a replacement for OpenClaw. It doesn't manage API keys, skills, WhatsApp/Telegram integrations, or agent configuration. Those live in each instance's own OpenClaw UI. MultiClaw just makes running many of them manageable.
+ManyClaw is a visual shell — not a replacement for OpenClaw. It doesn't manage API keys, skills, WhatsApp/Telegram integrations, or agent configuration. Those live in each instance's own OpenClaw UI. ManyClaw just makes running many of them manageable.
 
 ---
 

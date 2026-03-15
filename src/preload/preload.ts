@@ -4,13 +4,13 @@
  * This is the ONLY place ipcRenderer is used. It exposes window.multiclaw
  * to the renderer process without leaking any Node/Electron internals.
  *
- * The shape must exactly match MultiClawAPI in src/shared/ipc.ts.
+ * The shape must exactly match ManyClawAPI in src/shared/ipc.ts.
  */
 
 import { contextBridge, ipcRenderer } from 'electron'
-import type { MultiClawAPI } from '../shared/ipc.js'
+import type { ManyClawAPI } from '../shared/ipc.js'
 
-const api: MultiClawAPI = {
+const api: ManyClawAPI = {
   instances: {
     list: () =>
       ipcRenderer.invoke('instances:list'),

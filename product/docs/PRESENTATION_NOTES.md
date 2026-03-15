@@ -39,7 +39,7 @@
 
 ## Mock UI (Slide 3)
 
-Hand-coded SVG + HTML to approximate the actual MultiClaw sidebar and terminal. No screenshots — keeps the file self-contained and renders crisply at any size. Uses the same colors and proportions as the real app.
+Hand-coded SVG + HTML to approximate the actual ManyClaw sidebar and terminal. No screenshots — keeps the file self-contained and renders crisply at any size. Uses the same colors and proportions as the real app.
 
 ---
 

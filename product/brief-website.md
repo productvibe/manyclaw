@@ -1,8 +1,8 @@
-# MultiClaw Website — Product Brief
+# ManyClaw Website — Product Brief
 
 ## What we're building
 
-A marketing website for MultiClaw. Lives at `website/` inside the multiclaw repo. Serves as the public face of the product — where people land, learn, and download.
+A marketing website for ManyClaw. Lives at `website/` inside the multiclaw repo. Serves as the public face of the product — where people land, learn, and download.
 
 ## Pages
 

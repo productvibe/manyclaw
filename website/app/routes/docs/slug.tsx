@@ -1,9 +1,18 @@
 import { useLoaderData, Link } from "react-router";
+import type { MetaFunction } from "react-router";
 import type { Route } from "./+types/slug";
 import { data } from "react-router";
 import Nav from "~/components/Nav";
 import Footer from "~/components/Footer";
 import { getPost, listPosts, type PostMeta } from "~/lib/content";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) return [{ title: "ManyClaw Docs" }];
+  return [
+    { title: `${data.post.title} — ManyClaw Docs` },
+    ...(data.post.description ? [{ name: "description", content: data.post.description }] : []),
+  ];
+};
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 

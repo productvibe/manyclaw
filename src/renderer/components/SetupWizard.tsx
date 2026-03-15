@@ -63,7 +63,7 @@ export default function SetupWizard({ onCreate, onStart }: SetupWizardProps) {
         <MacMiniIcon color="#007AFF" size={80} />
 
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground">Welcome to MultiClaw</h1>
+          <h1 className="text-2xl font-bold text-foreground">Welcome to ManyClaw</h1>
           <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             Run multiple OpenClaw agents side by side. Paste your Anthropic API token below to get started.
           </p>

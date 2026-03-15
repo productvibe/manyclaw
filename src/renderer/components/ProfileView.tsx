@@ -73,9 +73,9 @@ function DetailsSection({ instance, onClone }: { instance: InstanceInfo; onClone
       {isDefault && (
         <div className="max-w-lg rounded-lg border border-blue-300/50 bg-blue-50/50 dark:border-blue-800/50 dark:bg-blue-950/20 p-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            This is the <strong>system default</strong> profile, created outside of MultiClaw by the OpenClaw CLI.
+            This is the <strong>system default</strong> profile, created outside of ManyClaw by the OpenClaw CLI.
             It runs as a background daemon and is shared across all tools that use OpenClaw.
-            MultiClaw can monitor and interact with it, but does not manage its lifecycle.
+            ManyClaw can monitor and interact with it, but does not manage its lifecycle.
           </p>
         </div>
       )}
@@ -220,7 +220,7 @@ function DangerZoneSection({ instance, onDelete }: { instance: InstanceInfo; onD
         <div className="flex-1">
           <h4 className="text-sm font-medium text-foreground">Delete this profile</h4>
           <p className="text-sm text-muted-foreground">
-            Remove &ldquo;{instance.name}&rdquo; from MultiClaw.
+            Remove &ldquo;{instance.name}&rdquo; from ManyClaw.
           </p>
         </div>
 

@@ -57,7 +57,7 @@ export default function App() {
         <SidebarTrigger className="toolbar-no-drag ml-[70px]" />
         <div className="flex-1" />
         <span className="text-sm font-semibold toolbar-no-drag">
-          MultiClaw{selectedId ? ` — ${sortedInstances.find(i => i.id === selectedId)?.name ?? ''}` : ''}
+          ManyClaw{selectedId ? ` — ${sortedInstances.find(i => i.id === selectedId)?.name ?? ''}` : ''}
         </span>
         <div className="flex-1" />
       </header>

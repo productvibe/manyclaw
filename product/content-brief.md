@@ -1,4 +1,4 @@
-# MultiClaw — Content Brief
+# ManyClaw — Content Brief
 
 **Owner:** Gray 📣  
 **Cadence:** 1 post per day, published 8am Oslo time  
@@ -17,7 +17,7 @@
 
 ## The one rule
 
-Outside-in. Always. Find the conversation happening in the OpenClaw community, then connect MultiClaw to it. Never start from the product and work outward — that's ego, not content.
+Outside-in. Always. Find the conversation happening in the OpenClaw community, then connect ManyClaw to it. Never start from the product and work outward — that's ego, not content.
 
 ---
 
@@ -29,7 +29,7 @@ Outside-in. Always. Find the conversation happening in the OpenClaw community, t
 - Specific beats general — always
 - No names of individuals — the team is the author
 
-**Test for every post:** Could this post exist without MultiClaw and still be useful? If yes, it's probably a good post. If the product is doing all the heavy lifting, rewrite it.
+**Test for every post:** Could this post exist without ManyClaw and still be useful? If yes, it's probably a good post. If the product is doing all the heavy lifting, rewrite it.
 
 ---
 
@@ -42,13 +42,13 @@ Opens with a specific situation the reader has been in. Names it precisely. Usef
 One observation, no padding. Good for responding to a community thread with a real answer.
 
 **How-tos**
-Task-focused, no narrative. Just steps. E.g. "How to set up a dev/prod agent split in MultiClaw."
+Task-focused, no narrative. Just steps. E.g. "How to set up a dev/prod agent split in ManyClaw."
 
 **Changelogs with context**
 Not a bullet list of fixes. One paragraph on *why* it changed, then the list.
 
 **Community spotlights**
-Someone doing something interesting with OpenClaw or MultiClaw. No interview format — just tell the story.
+Someone doing something interesting with OpenClaw or ManyClaw. No interview format — just tell the story.
 
 *Skip case studies for now — too early, too formal.*
 
@@ -65,7 +65,7 @@ Someone doing something interesting with OpenClaw or MultiClaw. No interview for
 
 ## Launch post
 
-**Title:** Why we built MultiClaw  
+**Title:** Why we built ManyClaw  
 **Angle:** Not about the product — about the moment every serious OpenClaw user hits. The second agent problem. Dev agent, personal agent, terminal tabs colliding, ports conflicting, wishing someone had built the obvious thing. Name that frustration precisely. Then: we did.
 
 No pitch language. No feature lists. Just the problem, then the fix, told by the people who were annoyed enough to write the code.
@@ -91,5 +91,5 @@ No pitch language. No feature lists. Just the problem, then the fix, told by the
 
 - Feature announcements dressed as blog posts
 - "We're excited to share..." anything
-- Posts that only make sense if you already use MultiClaw
+- Posts that only make sense if you already use ManyClaw
 - Anything with an individual's name in it
