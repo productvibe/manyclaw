@@ -1,6 +1,6 @@
 ---
 title: "Why your one OpenClaw doesn't actually work"
-date: 2026-03-15
+date: "March 15, 2026"
 description: "The most common OpenClaw frustration isn't a prompt problem. It's structural."
 slug: why-one-openclaw-doesnt-work
 ---

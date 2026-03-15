@@ -1,6 +1,6 @@
 ---
 title: "The second agent is always the hard one"
-date: 2026-03-15
+date: "March 15, 2026"
 description: "The community's advice against adding a second OpenClaw agent is correct. But it's treating the symptom, not the cause."
 slug: the-second-agent-problem
 ---
