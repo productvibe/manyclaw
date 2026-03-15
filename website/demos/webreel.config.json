@@ -5,7 +5,7 @@
   "videos": {
     "manyclaw-demo": {
       "url": "http://localhost:3000",
-      "output": "../public/videos/manyclaw-demo.mp4",
+      "output": "public/videos/manyclaw-demo.mp4",
       "waitFor": "#hero-title",
       "steps": [
         { "action": "pause", "ms": 1000 },
