@@ -242,10 +242,6 @@ export default function Home() {
     return () => obs.disconnect()
   }, [])
 
-  function copyInstall() {
-    navigator.clipboard.writeText("brew install --cask manyclaw")
-  }
-
   return (
     <div className="font-sans text-lg leading-relaxed text-foreground bg-background antialiased mc-page-rails">
       {/* Grain */}
@@ -264,7 +260,7 @@ export default function Home() {
             <Link to="/blog" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Blog</Link>
           </div>
           <div className="flex items-center gap-5 ml-auto">
-            <a href="https://github.com/nichochar/multiclaw" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://github.com/productvibe/manyclaw" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
             <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-sm px-4 py-2 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">Download</Link>
           </div>
         </nav>
@@ -287,12 +283,6 @@ export default function Home() {
               <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-6 py-3 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">
                 Download for macOS
               </Link>
-              <div className="inline-flex items-center bg-foreground border border-[#1a1408] rounded-sm max-w-full">
-                <pre className="m-0 py-4 pl-5 pr-0 font-mono text-sm leading-none text-white whitespace-pre overflow-x-auto text-left max-md:text-sm max-md:py-2.5 max-md:pl-3.5"><code>brew install --cask manyclaw</code></pre>
-                <button className="p-0 mx-4.5 ml-4 flex items-center bg-none border-none text-white/50 font-sans text-sm font-semibold cursor-pointer whitespace-nowrap transition-colors hover:text-white" onClick={copyInstall} type="button">
-                  Copy
-                </button>
-              </div>
             </div>
           </div>
           <div className="w-[min(95%,1300px)] mx-auto mt-12 relative z-1" style={{ perspective: 1800 }} ref={wrapRef}>
@@ -489,8 +479,8 @@ export default function Home() {
             <Link to="/download" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Download</Link>
             <Link to="/docs" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Docs</Link>
             <Link to="/blog" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Blog</Link>
-            <a href="https://github.com/nichochar/multiclaw" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors no-underline text-muted-foreground">GitHub</a>
-            <a href="https://github.com/nichochar/multiclaw/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors no-underline text-muted-foreground">License</a>
+            <a href="https://github.com/productvibe/manyclaw" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors no-underline text-muted-foreground">GitHub</a>
+            <a href="https://github.com/productvibe/manyclaw/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors no-underline text-muted-foreground">License</a>
           </div>
         </div>
       </footer>

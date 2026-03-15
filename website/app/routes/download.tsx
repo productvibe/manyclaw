@@ -45,7 +45,7 @@ export default function Download() {
 
         {/* Primary CTA */}
         <a
-          href="https://github.com/nichochar/multiclaw/releases/latest"
+          href="https://github.com/productvibe/manyclaw/releases/latest"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -63,31 +63,6 @@ export default function Download() {
         >
           ↓ Download ManyClaw 0.1 (.dmg)
         </a>
-
-        {/* Brew */}
-        <p
-          style={{
-            fontSize: "0.875rem",
-            color: "rgba(44,36,24,0.5)",
-            marginBottom: "0.5rem",
-          }}
-        >
-          Or install via Homebrew:
-        </p>
-        <code
-          style={{
-            display: "inline-block",
-            background: "#2c2418",
-            color: "#fcfaf5",
-            padding: "0.625rem 1.25rem",
-            borderRadius: "0.5rem",
-            fontFamily: "'SF Mono', 'Fira Code', monospace",
-            fontSize: "0.9rem",
-            marginBottom: "3rem",
-          }}
-        >
-          brew install --cask manyclaw
-        </code>
 
         {/* Requirements */}
         <div
@@ -140,7 +115,7 @@ export default function Download() {
         <p style={{ fontSize: "0.875rem", color: "rgba(44,36,24,0.5)" }}>
           Source code and release notes on{" "}
           <a
-            href="https://github.com/nichochar/multiclaw"
+            href="https://github.com/productvibe/manyclaw"
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: "#FF6B35", textDecoration: "none" }}

@@ -289,10 +289,20 @@ export class InstanceManager extends EventEmitter {
     await Promise.allSettled(ids.map(id => this.stop(id)))
   }
 
+  validate(opts: { id: string; port: number }): { idExists: boolean; portExists: boolean; dirExists: boolean } {
+    const idExists = this.instances.has(opts.id)
+    const portExists = Array.from(this.instances.values()).some(i => i.port === opts.port)
+    const dirExists = fs.existsSync(profileDir(opts.id))
+    return { idExists, portExists, dirExists }
+  }
+
   getNextPort(): number {
-    // Peek at the next port without consuming it
-    if (this.releasedPorts.length > 0) return this.releasedPorts[0]
-    return this.nextPort
+    // Always suggest highest port + 1 (no recycling)
+    let highest = BASE_PORT
+    for (const inst of this.instances.values()) {
+      if (inst.port > highest) highest = inst.port
+    }
+    return highest + 1
   }
 
   create(opts: { name: string; color: string; id?: string; port?: number; label?: string }): InstanceInfo {

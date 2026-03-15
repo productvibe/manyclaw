@@ -17,7 +17,7 @@ export default function Nav() {
           <div className="hidden sm:flex items-center gap-5">
             <Link to="/blog" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Blog</Link>
             <Link to="/docs" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Docs</Link>
-            <a href="https://github.com/nichochar/multiclaw" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://github.com/productvibe/manyclaw" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
             <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-sm px-4 py-2 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">Download</Link>
           </div>
 
@@ -50,7 +50,7 @@ export default function Nav() {
         <div className="fixed top-17 inset-x-0 bottom-0 z-99 bg-background/[0.98] backdrop-blur-md flex flex-col items-center pt-12 gap-6 sm:hidden">
           <Link to="/blog" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">Blog</Link>
           <Link to="/docs" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">Docs</Link>
-          <a href="https://github.com/nichochar/multiclaw" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">GitHub</a>
+          <a href="https://github.com/productvibe/manyclaw" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">GitHub</a>
           <Link to="/download" onClick={() => setMenuOpen(false)} className="inline-flex items-center font-medium text-lg px-6 py-2.5 rounded-sm bg-primary text-primary-foreground no-underline">Download</Link>
         </div>
       )}

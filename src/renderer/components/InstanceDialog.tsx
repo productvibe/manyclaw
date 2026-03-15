@@ -59,6 +59,7 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
   const [statusMsg, setStatusMsg] = useState('')
   const [selectedProvider, setSelectedProvider] = useState('anthropic')
   const [token, setToken] = useState('')
+  const [conflicts, setConflicts] = useState<{ idExists: boolean; portExists: boolean; dirExists: boolean }>({ idExists: false, portExists: false, dirExists: false })
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -72,15 +73,29 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
       setStatusMsg('')
       setSelectedProvider('anthropic')
       setToken('')
+      setConflicts({ idExists: false, portExists: false, dirExists: false })
       window.multiclaw.instances.getNextPort().then((p) => form.setValue('port', p))
     }
   }, [open])
 
   const watchedName = form.watch('name')
+  const watchedPort = form.watch('port')
   const derivedId = nameToId(watchedName)
+
+  // Validate on name/port change
+  useEffect(() => {
+    if (!derivedId) { setConflicts({ idExists: false, portExists: false, dirExists: false }); return }
+    const timer = setTimeout(() => {
+      window.multiclaw.instances.validate({ id: derivedId, port: Number(watchedPort) || 0 }).then(setConflicts)
+    }, 200)
+    return () => clearTimeout(timer)
+  }, [derivedId, watchedPort])
+
+  const hasConflict = conflicts.idExists || conflicts.portExists || conflicts.dirExists
 
   // Step 1 → Step 2
   function handleNext() {
+    if (hasConflict) return
     form.handleSubmit(() => setStep('provider'))()
   }
 
@@ -180,7 +195,16 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
                 </div>
 
                 {derivedId && (
-                  <p className="text-xs text-muted-foreground -mt-2">~/.openclaw-{derivedId}/</p>
+                  <div className="-mt-2 space-y-0.5">
+                    <p className={`text-xs ${conflicts.idExists || conflicts.dirExists ? 'text-destructive' : 'text-muted-foreground'}`}>
+                      ~/.openclaw-{derivedId}/
+                      {conflicts.idExists && ' — name already exists'}
+                      {!conflicts.idExists && conflicts.dirExists && ' — directory already exists'}
+                    </p>
+                    {conflicts.portExists && (
+                      <p className="text-xs text-destructive">Port {watchedPort} is already in use</p>
+                    )}
+                  </div>
                 )}
 
                 <FormField
@@ -201,7 +225,7 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
 
                 <div className="flex justify-end gap-3">
                   <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-                  <Button type="submit">Next</Button>
+                  <Button type="submit" disabled={hasConflict || !derivedId}>Next</Button>
                 </div>
               </form>
             </Form>
@@ -224,16 +248,21 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
                   <button
                     key={p.id}
                     type="button"
-                    onClick={() => setSelectedProvider(p.id)}
+                    onClick={() => { if (!p.disabled) setSelectedProvider(p.id) }}
+                    disabled={p.disabled}
                     className={`w-full rounded-lg border p-3 text-left transition-colors ${
-                      selected ? 'border-foreground bg-accent' : 'border-border hover:border-foreground/20'
+                      p.disabled
+                        ? 'border-border opacity-50 cursor-not-allowed'
+                        : selected
+                          ? 'border-foreground bg-accent'
+                          : 'border-border hover:border-foreground/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className={`h-4 w-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                        selected ? 'border-foreground' : 'border-muted-foreground/40'
+                        selected && !p.disabled ? 'border-foreground' : 'border-muted-foreground/40'
                       }`}>
-                        {selected && <span className="h-2 w-2 rounded-full bg-foreground" />}
+                        {selected && !p.disabled && <span className="h-2 w-2 rounded-full bg-foreground" />}
                       </span>
                       <span className="text-sm font-medium">{p.name}</span>
                       <span className="text-xs text-muted-foreground">{p.description}</span>

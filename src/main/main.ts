@@ -77,6 +77,10 @@ function setupIpc(win: BrowserWindow): void {
     manager.getNextPort(),
   )
 
+  ipcMain.handle('instances:validate', (_, opts: { id: string; port: number }) =>
+    manager.validate(opts),
+  )
+
   ipcMain.handle('instances:delete', async (_, id: string, opts?: { deleteData?: boolean }) => {
     const inst = manager.getInstance(id)
     if (!inst) return { error: 'Not found' }

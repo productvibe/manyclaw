@@ -92,6 +92,9 @@ export interface ManyClawAPI {
     /** Get the next suggested port number. */
     getNextPort(): Promise<number>
 
+    /** Check if a profile id or port already exists. */
+    validate(opts: { id: string; port: number }): Promise<{ idExists: boolean; portExists: boolean; dirExists: boolean }>
+
     /**
      * Deletes an instance.
      * Instance must be stopped first (main enforces this).

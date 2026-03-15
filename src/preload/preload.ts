@@ -33,6 +33,9 @@ const api: ManyClawAPI = {
     getNextPort: () =>
       ipcRenderer.invoke('instances:getNextPort'),
 
+    validate: (opts: { id: string; port: number }) =>
+      ipcRenderer.invoke('instances:validate', opts),
+
     delete: (id, opts) =>
       ipcRenderer.invoke('instances:delete', id, opts),
 

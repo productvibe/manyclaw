@@ -159,12 +159,15 @@ function CloneSection({ instance, onClone }: { instance: InstanceInfo; onClone: 
 
   return (
     <>
-      <div className="rounded-lg border border-border p-4 space-y-3">
-        <h4 className="text-sm font-medium">Clone Profile</h4>
+      <div className="rounded-lg border border-border p-4 space-y-3 opacity-60">
+        <div className="flex items-center gap-2">
+          <h4 className="text-sm font-medium">Clone Profile</h4>
+          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">Coming Soon</span>
+        </div>
         <p className="text-sm text-muted-foreground">
           Create an exact copy of this profile — including workspace, agents, channels, and configuration.
         </p>
-        <Button variant="outline" size="sm" onClick={handleOpen}>
+        <Button variant="outline" size="sm" disabled>
           Clone
         </Button>
       </div>

@@ -17,7 +17,7 @@ Yes. Because each instance is a separate OpenClaw profile with its own isolated 
 No. Memory, sessions, workspace files, and configuration are fully isolated per profile. Two instances running simultaneously cannot read each other's state. This is a property of OpenClaw's `--profile` system, not a ManyClaw-level abstraction.
 
 **Is ManyClaw open source?**
-Yes. ManyClaw is MIT-licensed and the source is available on [GitHub](https://github.com/nichochar/multiclaw).
+Yes. ManyClaw is MIT-licensed and the source is available on [GitHub](https://github.com/productvibe/manyclaw).
 
 **What happens to my data if I delete an instance?**
 Deleting an instance removes the profile directory from disk (`~/.openclaw-<id>/`). This is permanent and includes all memory, sessions, and workspace files for that instance. ManyClaw shows a confirmation dialog before deleting.
