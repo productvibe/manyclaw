@@ -10,19 +10,7 @@ files:
   - dist/**/*
   - package.json
 
-# Bundled openclaw binary — must be outside ASAR so it can be executed
-# Place the binary at resources/openclaw before running electron-builder
-# (see BLUEPRINT.md §5 for the copy script)
-extraResources:
-  - from: resources/openclaw
-    to: openclaw
-    filter:
-      - "**/*"
-
-# ASAR is enabled but the binary is unpacked
 asar: true
-asarUnpack:
-  - resources/openclaw/**/*
 
 # macOS target
 mac:
@@ -31,7 +19,6 @@ mac:
     - target: dmg
       arch:
         - arm64
-        - x64
   # Hardened runtime required for notarization
   hardenedRuntime: true
   entitlements: build/entitlements.mac.plist

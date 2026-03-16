@@ -9,7 +9,7 @@ import { EventEmitter } from 'node:events'
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
-import { launchInstance, killInstance, launchTui, launchConfigure, launchChannelLogin, killTui, type ProcessHandle, type TuiHandle, type PtyHandle } from './sandbox.js'
+import { launchInstance, killInstance, launchTui, launchConfigure, launchChannelLogin, killTui, ensurePath, type ProcessHandle, type TuiHandle, type PtyHandle } from './sandbox.js'
 import type { InternalInstance, PersistedState, PersistedInstance } from './types.js'
 import type { InstanceInfo, GatewayStatus } from '../shared/ipc.js'
 
@@ -424,7 +424,7 @@ export class InstanceManager extends EventEmitter {
         : ['--profile', id, 'uninstall', '--all', '--yes']
       await execa(bin, uninstallArgs, {
         reject: false,
-        env: { ...process.env },
+        env: { ...process.env, PATH: ensurePath(process.env.PATH) },
       })
     }
 
@@ -594,7 +594,7 @@ export class InstanceManager extends EventEmitter {
       : ['--profile', id, 'dashboard']
     await execa(bin, args, {
       reject: false,
-      env: { ...process.env },
+      env: { ...process.env, PATH: ensurePath(process.env.PATH) },
     })
   }
 
@@ -663,7 +663,7 @@ export class InstanceManager extends EventEmitter {
 
     const result = await execa(bin, args, {
       reject: false,
-      env: { ...process.env },
+      env: { ...process.env, PATH: ensurePath(process.env.PATH) },
     })
 
     if (result.exitCode !== 0) {

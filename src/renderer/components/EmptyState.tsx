@@ -18,15 +18,15 @@ export default function EmptyState({ onNewInstance }: EmptyStateProps) {
       </div>
 
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground">No profiles yet</h2>
+        <h2 className="text-lg font-semibold text-foreground">No Claws yet</h2>
         <p className="text-sm text-muted-foreground max-w-[260px] mt-1.5 leading-relaxed">
-          Run multiple OpenClaw profiles side by side — dev, staging, production, or more.
+          Run multiple Claws side by side — dev, staging, production, or more.
         </p>
       </div>
 
       <Button onClick={onNewInstance} className="gap-1.5">
         <Plus className="h-4 w-4" />
-        New Profile
+        New Claw
       </Button>
     </div>
   )

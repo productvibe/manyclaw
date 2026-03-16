@@ -108,7 +108,7 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
 
     const id = nameToId(values.name.trim())
     setStep('creating')
-    setStatusMsg('Creating profile...')
+    setStatusMsg('Creating Claw...')
 
     try {
       await onCreate({
@@ -140,11 +140,11 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
       }
 
       setStep('done')
-      setStatusMsg('Profile ready.')
+      setStatusMsg('Claw ready.')
       setTimeout(() => onClose(), 1000)
     } catch (err) {
       setStep('error')
-      setStatusMsg(err instanceof Error ? err.message : 'Failed to create profile')
+      setStatusMsg(err instanceof Error ? err.message : 'Failed to create Claw')
     }
   }
 
@@ -157,9 +157,9 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
         {step === 'form' && (
           <>
             <DialogHeader className="shrink-0">
-              <DialogTitle>New Profile</DialogTitle>
+              <DialogTitle>New Claw</DialogTitle>
               <DialogDescription>
-                Each profile gets its own gateway, workspace, and channels.
+                Each Claw gets its own gateway, workspace, and channels.
               </DialogDescription>
             </DialogHeader>
 
@@ -310,7 +310,7 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
                 onClick={handleCreate}
                 disabled={currentProvider.needsToken && !token.trim()}
               >
-                Create Profile
+                Create Claw
               </Button>
             </div>
           </>

@@ -72,7 +72,7 @@ export default function InstancePane({
             Chat
           </ToggleGroupItem>
           <ToggleGroupItem value="profile" className="h-7 px-3 text-xs data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-            Profile
+            Claw
           </ToggleGroupItem>
         </ToggleGroup>
 

@@ -45,14 +45,14 @@ export default function LogsPane({ instance }: { instance: InstanceInfo }) {
       {instance.status === 'stopped' && logs.length === 0 && (
         <div className="flex flex-col items-center justify-center h-full gap-2 text-[#48484A]">
           <div className="opacity-40">─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-          <div>Profile is stopped. Press Start to run it.</div>
+          <div>Claw is stopped. Press Start to run it.</div>
           <div className="opacity-40">─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
         </div>
       )}
 
       {instance.status === 'error' && (
         <div className="mb-4 text-amber-500">
-          Warning: Profile exited with error
+          Warning: Claw exited with error
           {instance.lastError && (
             <div className="mt-1 text-[#F5F5F7]">{instance.lastError}</div>
           )}

@@ -10,6 +10,15 @@ import * as pty from 'node-pty'
 import fs from 'node:fs'
 import path from 'node:path'
 
+const EXTRA_PATHS = ['/opt/homebrew/bin', '/usr/local/bin', '/usr/bin', '/bin']
+
+/** Ensure PATH includes common macOS locations (packaged apps have minimal PATH). */
+export function ensurePath(currentPath?: string): string {
+  const parts = new Set((currentPath || '').split(':'))
+  for (const p of EXTRA_PATHS) parts.add(p)
+  return Array.from(parts).filter(Boolean).join(':')
+}
+
 export function getOpenClawBin(): string {
   // 1. Explicit override (e.g. CI or integration tests)
   if (process.env.OPENCLAW_BIN) return process.env.OPENCLAW_BIN
@@ -72,7 +81,10 @@ export async function launchInstance(
     ? ['gateway', '--force']
     : ['--profile', instance.id, 'gateway', '--force']
 
-  const child = execa(bin, gatewayArgs, { env: { ...process.env }, reject: false })
+  const child = execa(bin, gatewayArgs, {
+    env: { ...process.env, PATH: ensurePath(process.env.PATH) },
+    reject: false,
+  })
 
   child.stdout?.on('data', (d: Buffer) =>
     d.toString().split('\n').filter(Boolean).forEach(pushLog),

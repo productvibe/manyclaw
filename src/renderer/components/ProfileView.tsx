@@ -73,7 +73,7 @@ function DetailsSection({ instance, onClone }: { instance: InstanceInfo; onClone
       {isDefault && (
         <div className="max-w-lg rounded-lg border border-blue-300/50 bg-blue-50/50 dark:border-blue-800/50 dark:bg-blue-950/20 p-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            This is the <strong>system default</strong> profile, created outside of ManyClaw by the OpenClaw CLI.
+            This is the <strong>system default</strong> Claw, created outside of ManyClaw by the OpenClaw CLI.
             It runs as a background daemon and is shared across all tools that use OpenClaw.
             ManyClaw can monitor and interact with it, but does not manage its lifecycle.
           </p>
@@ -81,7 +81,7 @@ function DetailsSection({ instance, onClone }: { instance: InstanceInfo; onClone
       )}
       <div className="max-w-lg space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold">Profile Details</h3>
+          <h3 className="text-base font-semibold">Claw Details</h3>
           {!editing && (
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setEditing(true)}>
               Edit
@@ -115,7 +115,7 @@ function DetailsSection({ instance, onClone }: { instance: InstanceInfo; onClone
               <span className="text-foreground">{instance.label || '—'}</span>
             )}
           </dd>
-          <dt className="text-muted-foreground font-medium">Profile ID</dt>
+          <dt className="text-muted-foreground font-medium">Claw ID</dt>
           <dd className="text-foreground font-mono">{instance.id}</dd>
           <dt className="text-muted-foreground font-medium">Directory</dt>
           <dd className="text-foreground font-mono">{dirDisplay}</dd>
@@ -161,11 +161,11 @@ function CloneSection({ instance, onClone }: { instance: InstanceInfo; onClone: 
     <>
       <div className="rounded-lg border border-border p-4 space-y-3 opacity-60">
         <div className="flex items-center gap-2">
-          <h4 className="text-sm font-medium">Clone Profile</h4>
+          <h4 className="text-sm font-medium">Clone Claw</h4>
           <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">Coming Soon</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          Create an exact copy of this profile — including workspace, agents, channels, and configuration.
+          Create an exact copy of this Claw — including workspace, agents, channels, and configuration.
         </p>
         <Button variant="outline" size="sm" disabled>
           Clone
@@ -177,7 +177,7 @@ function CloneSection({ instance, onClone }: { instance: InstanceInfo; onClone: 
           <DialogHeader>
             <DialogTitle>Clone "{instance.name}"</DialogTitle>
             <DialogDescription>
-              This will copy the entire profile directory — workspace, agents, sessions, channels, and all configuration. The clone gets its own gateway port and can run independently.
+              This will copy the entire Claw directory — workspace, agents, sessions, channels, and all configuration. The clone gets its own gateway port and can run independently.
             </DialogDescription>
           </DialogHeader>
 
@@ -200,7 +200,7 @@ function CloneSection({ instance, onClone }: { instance: InstanceInfo; onClone: 
               {cloning ? (
                 <><Loader2 className="h-4 w-4 animate-spin mr-1.5" /> Cloning...</>
               ) : (
-                'Clone Profile'
+                'Clone Claw'
               )}
             </Button>
           </DialogFooter>
@@ -217,11 +217,11 @@ function DangerZoneSection({ instance, onDelete }: { instance: InstanceInfo; onD
   return (
     <div className="p-6">
       <h3 className="text-base font-semibold text-destructive mb-1">Danger Zone</h3>
-      <p className="text-sm text-muted-foreground mb-4">Actions here are irreversible. The profile must be stopped first.</p>
+      <p className="text-sm text-muted-foreground mb-4">Actions here are irreversible. The Claw must be stopped first.</p>
 
       <div className="flex items-center gap-4 max-w-lg rounded-lg border border-border p-4">
         <div className="flex-1">
-          <h4 className="text-sm font-medium text-foreground">Delete this profile</h4>
+          <h4 className="text-sm font-medium text-foreground">Delete this Claw</h4>
           <p className="text-sm text-muted-foreground">
             Remove &ldquo;{instance.name}&rdquo; from ManyClaw.
           </p>
@@ -238,7 +238,7 @@ function DangerZoneSection({ instance, onDelete }: { instance: InstanceInfo; onD
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete &ldquo;{instance.name}&rdquo;?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will remove the profile from the sidebar. This action cannot be undone.
+                    This will remove the Claw from the sidebar. This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
 
@@ -253,7 +253,7 @@ function DangerZoneSection({ instance, onDelete }: { instance: InstanceInfo; onD
                       Also uninstall all data
                     </Label>
                     <p className="text-xs text-muted-foreground">
-                      Removes sessions, config, and workspace for this profile.
+                      Removes sessions, config, and workspace for this Claw.
                     </p>
                     {deleteData && (
                       <code className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded mt-1 inline-block">
@@ -269,7 +269,7 @@ function DangerZoneSection({ instance, onDelete }: { instance: InstanceInfo; onD
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     onClick={() => onDelete(instance.id, { deleteData })}
                   >
-                    Delete Profile
+                    Delete Claw
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

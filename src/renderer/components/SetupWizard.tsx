@@ -22,7 +22,7 @@ export default function SetupWizard({ onCreate, onStart }: SetupWizardProps) {
     if (!token.trim()) return
 
     setStep('creating')
-    setStatusMsg('Creating profile...')
+    setStatusMsg('Creating Claw...')
 
     try {
       await onCreate({

@@ -44,7 +44,7 @@ export default function AppSettingsDialog({ open, onClose }: AppSettingsDialogPr
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
           <DialogDescription>
-            Anthropic setup token for new instances.
+            Anthropic setup token for new Claws.
             Generate one with <code className="rounded bg-muted px-1 py-0.5 text-xs font-mono">claude setup-token</code>
           </DialogDescription>
         </DialogHeader>
