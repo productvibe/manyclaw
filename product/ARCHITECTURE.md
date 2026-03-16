@@ -44,7 +44,7 @@ Each profile is fully isolated — its own agent identity, memory, sessions, con
 ~/.multiclaw/
   instances.json                ← instance list + port counter (app state)
 
-~/Projects/multiclaw/           ← App source
+~/Projects/manyclaw/           ← App source
   src/
     main/                       ← Brook's domain
       main.ts                   ← ~200 lines: window, app lifecycle, IPC wiring only

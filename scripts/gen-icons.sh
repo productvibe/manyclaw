@@ -3,7 +3,7 @@
 # Renders icon.svg → PNG at all required sizes, then builds .icns
 set -e
 
-REPO="$HOME/Projects/multiclaw"
+REPO="$HOME/Projects/manyclaw"
 BUILD="$REPO/build"
 WEB="$REPO/website/public"
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
