@@ -3,7 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
 
-const contentRoot = path.resolve(process.cwd(), "content");
+const contentRoot = path.resolve(process.cwd(), "..", "content");
 
 export interface PostMeta {
   slug: string;

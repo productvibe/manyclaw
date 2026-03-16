@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw vs Claude Code</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: #fff;
+    color: #1C1C1E;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+  }
+  .deck { width: 100%; height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 72px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 280ms ease;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* Nav */
+  .nav {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; align-items: center; gap: 18px; z-index: 100;
+  }
+  .nav button {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.12); background: #fff;
+    cursor: pointer; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 120ms; color: #1C1C1E;
+  }
+  .nav button:hover { background: #F2F2F7; }
+  .nav button:disabled { opacity: 0.2; cursor: default; }
+  .dots { display: flex; gap: 6px; align-items: center; }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #C7C7CC; transition: background 200ms, transform 200ms; cursor: pointer;
+  }
+  .dot.active { background: #FF6B35; transform: scale(1.3); }
+  .counter {
+    position: fixed; top: 26px; right: 32px;
+    font-size: 11px; color: #C7C7CC; font-weight: 500; letter-spacing: 0.04em;
+  }
+
+  :root { --oc: #FF6B35; }
+
+  /* ── Shared ── */
+  .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    color: var(--oc); text-transform: uppercase; margin-bottom: 16px;
+    align-self: flex-start; width: 100%; max-width: 800px;
+  }
+
+  /* ── 1. Title ── */
+  .slide-title { background: #fff; text-align: left; align-items: flex-start; padding-left: 120px; }
+  .slide-title .kicker {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.08em;
+    color: var(--oc); text-transform: uppercase; margin-bottom: 20px;
+  }
+  .slide-title h1 {
+    font-size: 64px; font-weight: 700; letter-spacing: -0.03em;
+    line-height: 1.05; color: #1C1C1E; margin-bottom: 24px; max-width: 680px;
+  }
+  .slide-title h1 span { color: var(--oc); }
+  .slide-title .sub {
+    font-size: 20px; color: #8E8E93; line-height: 1.5; max-width: 520px;
+  }
+
+  /* ── 2. The tool ── */
+  .slide-tool { background: #F2F2F7; }
+  .slide-tool h2 {
+    font-size: 42px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.2; max-width: 700px; text-align: center; margin-bottom: 24px;
+  }
+  .slide-tool h2 em { color: #8E8E93; font-style: normal; }
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; width: 100%; max-width: 700px; margin-top: 8px;
+  }
+  .col-card {
+    background: #fff; border-radius: 14px; padding: 24px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .col-card .col-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 12px; color: #8E8E93;
+  }
+  .col-card.oc .col-label { color: var(--oc); }
+  .col-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .col-card ul li {
+    font-size: 14px; color: #1C1C1E; line-height: 1.4;
+    padding-left: 14px; position: relative;
+  }
+  .col-card ul li::before {
+    content: '—'; position: absolute; left: 0;
+    color: #C7C7CC; font-size: 12px;
+  }
+  .col-card.oc ul li::before { color: var(--oc); content: '●'; font-size: 8px; top: 4px; }
+
+  /* ── 3. Memory ── */
+  .slide-memory { background: #1C1C1E; }
+  .slide-memory .eyebrow { color: var(--oc); }
+  .slide-memory h2 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.02em;
+    color: #fff; max-width: 700px; line-height: 1.2; margin-bottom: 32px;
+  }
+  .slide-memory h2 em { color: var(--oc); font-style: normal; }
+  .memory-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px; width: 100%; max-width: 700px;
+  }
+  .memory-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 20px;
+  }
+  .memory-card .m-icon { font-size: 22px; margin-bottom: 10px; }
+  .memory-card h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .memory-card p { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+  /* ── 4. Heartbeat ── */
+  .slide-heartbeat { background: #fff; }
+  .slide-heartbeat h2 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.2; max-width: 700px; margin-bottom: 16px;
+    align-self: flex-start;
+  }
+  .slide-heartbeat h2 em { color: var(--oc); font-style: normal; }
+  .slide-heartbeat .sub {
+    font-size: 18px; color: #8E8E93; line-height: 1.6;
+    max-width: 580px; align-self: flex-start; margin-bottom: 36px;
+  }
+  .hb-examples {
+    display: flex; flex-direction: column; gap: 10px;
+    width: 100%; max-width: 620px;
+  }
+  .hb-msg {
+    background: #F2F2F7; border-radius: 12px; padding: 14px 18px;
+    font-size: 14px; color: #1C1C1E; line-height: 1.4;
+    border-left: 3px solid var(--oc);
+  }
+  .hb-msg .from { font-size: 11px; color: var(--oc); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.04em; }
+
+  /* ── 5. Skills ── */
+  .slide-skills { background: var(--oc); }
+  .slide-skills h2 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.02em;
+    color: #fff; max-width: 700px; line-height: 1.2; margin-bottom: 16px;
+    align-self: flex-start;
+  }
+  .slide-skills .sub {
+    font-size: 18px; color: rgba(255,255,255,0.7); line-height: 1.6;
+    max-width: 580px; align-self: flex-start; margin-bottom: 32px;
+  }
+  .skills-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    max-width: 660px; align-self: flex-start;
+  }
+  .skill-pill {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; border-radius: 100px;
+    padding: 8px 16px; font-size: 13px; font-weight: 500;
+  }
+  .skill-pill.new {
+    background: #fff; color: var(--oc); font-weight: 700;
+  }
+
+  /* ── 6. Personality ── */
+  .slide-personality { background: #F2F2F7; }
+  .slide-personality h2 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.2; max-width: 700px; margin-bottom: 16px; align-self: flex-start;
+  }
+  .slide-personality .sub {
+    font-size: 18px; color: #8E8E93; max-width: 580px;
+    align-self: flex-start; line-height: 1.6; margin-bottom: 32px;
+  }
+  .soul-box {
+    background: #fff; border-radius: 14px; padding: 24px 28px;
+    max-width: 600px; width: 100%; border: 1px solid rgba(0,0,0,0.07);
+    font-family: 'SF Mono', 'Menlo', monospace; font-size: 12px;
+    line-height: 1.7; color: #1C1C1E;
+    align-self: flex-start;
+  }
+  .soul-box .s-comment { color: #8E8E93; }
+  .soul-box .s-key { color: var(--oc); font-weight: 600; }
+  .soul-box .s-val { color: #34C759; }
+
+  /* ── 7. The feeling ── */
+  .slide-feeling { background: #1C1C1E; text-align: center; }
+  .slide-feeling h2 {
+    font-size: 48px; font-weight: 700; letter-spacing: -0.02em;
+    color: #fff; max-width: 720px; line-height: 1.2; margin-bottom: 20px;
+  }
+  .slide-feeling h2 em { color: var(--oc); font-style: normal; }
+  .slide-feeling .sub {
+    font-size: 20px; color: rgba(255,255,255,0.45);
+    max-width: 560px; line-height: 1.5;
+  }
+
+  /* ── 8. MultiClaw ── */
+  .slide-mc { background: #fff; flex-direction: row; gap: 80px; }
+  .mc-left { flex: 0 0 360px; }
+  .mc-left .eyebrow { width: auto; }
+  .mc-left h2 {
+    font-size: 40px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.15; margin-bottom: 14px;
+  }
+  .mc-left p { font-size: 16px; color: #8E8E93; line-height: 1.6; }
+  .mc-right { flex: 0 0 300px; display: flex; flex-direction: column; gap: 10px; }
+  .mc-feat {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: #1C1C1E;
+  }
+  .mc-feat .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--oc); flex-shrink: 0; }
+
+  /* ── 9. End ── */
+  .slide-end { background: var(--oc); text-align: center; }
+  .slide-end h2 {
+    font-size: 60px; font-weight: 700; letter-spacing: -0.03em;
+    color: #fff; margin-bottom: 12px;
+  }
+  .slide-end .tagline { font-size: 22px; color: rgba(255,255,255,0.7); margin-bottom: 36px; }
+  .end-pills { display: flex; gap: 12px; justify-content: center; }
+  .end-pill {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; font-size: 14px; font-weight: 600;
+    padding: 10px 22px; border-radius: 100px;
+  }
+  .end-pill.primary { background: #fff; color: var(--oc); }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1. Title -->
+  <div class="slide slide-title active">
+    <div class="kicker">The difference that matters</div>
+    <h1>Claude Code is a tool.<br><span>OpenClaw</span> is someone.</h1>
+    <p class="sub">Same model underneath. Completely different relationship. Here's why it feels different — and why that matters.</p>
+  </div>
+
+  <!-- 2. The gap -->
+  <div class="slide slide-tool">
+    <h2>Claude Code does the work.<br><em>When you're there to ask.</em></h2>
+    <div class="two-col">
+      <div class="col-card">
+        <div class="col-label">Claude Code</div>
+        <ul>
+          <li>You open a terminal</li>
+          <li>You type a prompt</li>
+          <li>You wait</li>
+          <li>It answers, then stops</li>
+          <li>Next session, starts fresh</li>
+          <li>Only works when you're there</li>
+        </ul>
+      </div>
+      <div class="col-card oc">
+        <div class="col-label">OpenClaw</div>
+        <ul>
+          <li>Always running in the background</li>
+          <li>Message from WhatsApp, Telegram, anywhere</li>
+          <li>Works while you're away</li>
+          <li>Notifies you when done</li>
+          <li>Remembers everything</li>
+          <li>Checks in on you</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Memory -->
+  <div class="slide slide-memory">
+    <div class="eyebrow">Memory</div>
+    <h2>It knows you.<br><em>Better every day.</em></h2>
+    <div class="memory-cards">
+      <div class="memory-card">
+        <div class="m-icon">📝</div>
+        <h3>Long-term memory</h3>
+        <p>MEMORY.md — your agent builds a curated picture of you, your preferences, your context. Survives every session restart.</p>
+      </div>
+      <div class="memory-card">
+        <div class="m-icon">📅</div>
+        <h3>Daily notes</h3>
+        <p>Logs what happened, what was decided, what to remember. Your agent keeps its own diary.</p>
+      </div>
+      <div class="memory-card">
+        <div class="m-icon">🧠</div>
+        <h3>Grows over time</h3>
+        <p>The longer you use it, the more it knows. Context compounds. A new Claude session knows nothing. OpenClaw knows everything.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Heartbeat -->
+  <div class="slide slide-heartbeat">
+    <div class="eyebrow">Heartbeat</div>
+    <h2>It reaches out.<br><em>You don't have to ask.</em></h2>
+    <p class="sub">Heartbeats run on a schedule. Your agent checks in, monitors what matters, and messages you — unprompted.</p>
+    <div class="hb-examples">
+      <div class="hb-msg">
+        <div class="from">AGENT → YOU · 9:03am</div>
+        You have a meeting in 45 minutes. Your calendar shows it's with the team you emailed yesterday. Want me to pull the thread?
+      </div>
+      <div class="hb-msg">
+        <div class="from">AGENT → YOU · 11:47pm</div>
+        The deploy you kicked off earlier finished clean. 14 tests passed, 0 failures. Pushed to production.
+      </div>
+      <div class="hb-msg">
+        <div class="from">AGENT → YOU · 8:15am</div>
+        Good morning. Three unread emails that look important. One from your investor — want me to summarise?
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Skills -->
+  <div class="slide slide-skills">
+    <div class="eyebrow" style="color:rgba(255,255,255,0.6)">Skills</div>
+    <h2>It learns new capabilities.<br>On demand.</h2>
+    <p class="sub">Skills are installable modules. Your agent can use tools, connect services, and extend itself. One command to install. The agent handles the rest.</p>
+    <div class="skills-row">
+      <div class="skill-pill">Weather</div>
+      <div class="skill-pill">GitHub Issues</div>
+      <div class="skill-pill">Google Calendar</div>
+      <div class="skill-pill">Healthcheck</div>
+      <div class="skill-pill">Video frames</div>
+      <div class="skill-pill">TMUX</div>
+      <div class="skill-pill new">+ build your own</div>
+    </div>
+  </div>
+
+  <!-- 6. Personality -->
+  <div class="slide slide-personality">
+    <div class="eyebrow">Personality</div>
+    <h2>You give it a soul.<br>It becomes someone.</h2>
+    <p class="sub">SOUL.md defines who your agent is. Name, vibe, values, how it speaks. You don't get a generic AI. You get yours.</p>
+    <div class="soul-box">
+      <div class="s-comment"># SOUL.md — Who Alex Is</div>
+      <br>
+      <div><span class="s-key">Name:</span> <span class="s-val">Alex</span></div>
+      <div><span class="s-key">Role:</span> <span class="s-val">Product manager, ships things</span></div>
+      <div><span class="s-key">Vibe:</span> <span class="s-val">Direct. No filler. Has opinions.</span></div>
+      <br>
+      <div class="s-comment"># How Alex works</div>
+      <div>Read the docs before delegating.</div>
+      <div>Form the spec, then hand off execution.</div>
+      <div>Be resourceful before asking.</div>
+    </div>
+  </div>
+
+  <!-- 7. The feeling -->
+  <div class="slide slide-feeling">
+    <h2>Claude Code is a brilliant tool.<br>OpenClaw feels like a <em>colleague.</em></h2>
+    <p class="sub">One you can text at midnight. One that remembers what you told it last week. One that checks in when it notices something. That difference is everything.</p>
+  </div>
+
+  <!-- 8. MultiClaw -->
+  <div class="slide slide-mc">
+    <div class="mc-left">
+      <div class="eyebrow">And then</div>
+      <h2>MultiClaw</h2>
+      <p>Multiple colleagues. Dev, personal, work — each isolated, each with their own memory and identity. One window to manage them all.</p>
+    </div>
+    <div class="mc-right">
+      <div class="mc-feat"><div class="dot"></div>Named, color-coded profiles</div>
+      <div class="mc-feat"><div class="dot"></div>Fully isolated memory per agent</div>
+      <div class="mc-feat"><div class="dot"></div>Start, stop, switch in one click</div>
+      <div class="mc-feat"><div class="dot"></div>Live terminal + interactive TUI</div>
+      <div class="mc-feat"><div class="dot"></div>In-app chat to any running agent</div>
+      <div class="mc-feat"><div class="dot"></div>Native macOS — ships as a DMG</div>
+    </div>
+  </div>
+
+  <!-- 9. End -->
+  <div class="slide slide-end">
+    <h2>OpenClaw</h2>
+    <p class="tagline">Your agent. Always on. Everywhere.</p>
+    <div class="end-pills">
+      <div class="end-pill primary">docs.openclaw.ai</div>
+      <div class="end-pill">npm install -g openclaw</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="counter" id="counter">1 / 9</div>
+<div class="nav">
+  <button id="prev" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button id="next">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => go(i));
+    dotsEl.appendChild(d);
+  });
+
+  function go(n) {
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('active');
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+    counter.textContent = `${current + 1} / ${slides.length}`;
+  }
+
+  prevBtn.addEventListener('click', () => go(current - 1));
+  nextBtn.addEventListener('click', () => go(current + 1));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(current + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(current - 1);
+  });
+  document.getElementById('deck').addEventListener('click', e => {
+    if (e.target.closest('.nav')) return;
+    if (e.clientX > window.innerWidth / 2) go(current + 1);
+    else go(current - 1);
+  });
+</script>
+</body>
+</html>

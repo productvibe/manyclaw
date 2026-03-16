@@ -2,7 +2,7 @@
 
 **Owner:** Gray 📣  
 **Cadence:** 1 post per day, published 8am Oslo time  
-**Location:** `website/content/blog/YYYY-MM-DD-slug.md`
+**Location:** `content/blog/YYYY-MM-DD-slug.md`
 
 ## Daily workflow
 
@@ -11,7 +11,7 @@
 3. **Alex + Gray discuss** — topic, angle, tone, style. Logged to `product/marketing/YYYY-MM-DD-discussion.md`
 4. **Gray writes** draft → `product/marketing/YYYY-MM-DD-draft.md`
 5. **Alex approves** the draft
-6. **Gray publishes** final → `website/content/blog/YYYY-MM-DD-slug.md`
+6. **Gray publishes** final → `content/blog/YYYY-MM-DD-slug.md`
 
 ---
 

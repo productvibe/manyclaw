@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ManyClaw — How We Built It</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0ece4;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 64px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .page-header h1 {
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    color: #2c2418;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .page-header .subtitle {
+    color: #7a6e5e;
+    font-size: 0.95rem;
+    margin-top: 6px;
+  }
+
+  .chat-window {
+    width: 100%;
+    max-width: 720px;
+    background: #faf7f2;
+    border-radius: 16px;
+    box-shadow: 0 4px 32px rgba(44,36,24,0.10), 0 1px 4px rgba(44,36,24,0.06);
+    overflow: hidden;
+  }
+
+  .chat-header {
+    background: #2c2418;
+    color: #faf7f2;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .chat-header .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #FF6B35;
+  }
+
+  .chat-body {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Day divider */
+  .day-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 16px;
+  }
+
+  .day-divider::before,
+  .day-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(44,36,24,0.10);
+  }
+
+  .day-divider span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7a6e5e;
+    white-space: nowrap;
+  }
+
+  /* System events */
+  .system-event {
+    display: flex;
+    justify-content: center;
+    margin: 14px 0 10px;
+  }
+
+  .system-event .badge {
+    background: rgba(255,107,53,0.10);
+    color: #c44b1a;
+    border: 1px solid rgba(255,107,53,0.20);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Messages */
+  .msg-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-top: 10px;
+  }
+
+  .msg-group.right {
+    flex-direction: row-reverse;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+  }
+
+  .msg-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-width: 78%;
+  }
+
+  .msg-group.right .msg-content {
+    align-items: flex-end;
+  }
+
+  .sender-name {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #7a6e5e;
+    padding: 0 4px;
+    margin-bottom: 2px;
+  }
+
+  .bubble {
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #2c2418;
+    position: relative;
+  }
+
+  .bubble.left {
+    background: #fff;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 3px rgba(44,36,24,0.06);
+  }
+
+  .bubble.right {
+    background: #FF6B35;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .bubble.right a { color: rgba(255,255,255,0.85); }
+
+  .bubble.system-bubble {
+    background: #f0ece4;
+    color: #7a6e5e;
+    font-style: italic;
+    font-size: 0.82rem;
+    border: 1px solid rgba(44,36,24,0.08);
+  }
+
+  .timestamp {
+    font-size: 0.68rem;
+    color: rgba(122,110,94,0.7);
+    padding: 0 4px;
+    margin-top: 2px;
+  }
+
+  .bubble code {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.82em;
+    background: rgba(44,36,24,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .bubble.right code {
+    background: rgba(255,255,255,0.20);
+  }
+
+  .bubble ul {
+    margin-top: 6px;
+    padding-left: 18px;
+  }
+
+  .bubble ul li {
+    margin-bottom: 3px;
+  }
+
+  .bubble .tag {
+    display: inline-block;
+    background: rgba(44,36,24,0.08);
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 0.78em;
+    font-weight: 600;
+    margin-right: 4px;
+    margin-top: 3px;
+  }
+
+  .bubble.right .tag {
+    background: rgba(255,255,255,0.20);
+  }
+
+  /* Commit chip */
+  .commit-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #2c2418;
+    color: #faf7f2;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    font-family: 'Fira Code', monospace;
+    margin: 8px 4px 0;
+  }
+
+  .commit-chip .sha {
+    opacity: 0.6;
+  }
+
+  /* Multiple consecutive bubbles from same sender */
+  .msg-group + .msg-group .avatar {
+    visibility: visible;
+  }
+
+  /* milestone card */
+  .milestone-card {
+    background: linear-gradient(135deg, #2c2418 0%, #4a3c2a 100%);
+    color: #faf7f2;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .milestone-card .m-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .milestone-card .m-text h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .milestone-card .m-text p {
+    font-size: 0.78rem;
+    opacity: 0.7;
+    line-height: 1.4;
+  }
+
+  .milestone-card .m-badge {
+    margin-left: auto;
+    background: #FF6B35;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* colors per agent */
+  .av-yook    { background: #2c2418; color: #faf7f2; }
+  .av-alex    { background: #FF6B35; color: #fff; }
+  .av-brook   { background: #4a90d9; color: #fff; }
+  .av-finley  { background: #7c5cbf; color: #fff; }
+  .av-dee     { background: #e67e5a; color: #fff; }
+  .av-emery   { background: #3d8b6d; color: #fff; }
+  .av-cedar   { background: #6b8c4f; color: #fff; }
+  .av-gray    { background: #9b7fb6; color: #fff; }
+
+  @media (max-width: 600px) {
+    .bubble { font-size: 0.85rem; }
+    .msg-content { max-width: 88%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>🗂️ ManyClaw — The Build Thread</h1>
+  <p class="subtitle">From first message to shipping. 3 days. 7 agents. One product.</p>
+</div>
+
+<div class="chat-window">
+  <div class="chat-header">
+    <div class="dot"></div>
+    Clawpack &nbsp;·&nbsp; Mar 13–15, 2026
+  </div>
+
+  <div class="chat-body">
+
+    <!-- ===== DAY 1: MARCH 13 ===== -->
+    <div class="day-divider"><span>Friday — March 13, 2026</span></div>
+
+    <!-- Yook says hello -->
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="sender-name" style="text-align:right">Yook</div>
+        <div class="bubble right">say hello in one word</div>
+        <div class="timestamp" style="text-align:right">09:57</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex</div>
+        <div class="bubble left">Hello!</div>
+        <div class="timestamp">09:57</div>
+      </div>
+    </div>
+
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="bubble right">I want to build an Electron app that manages multiple OpenClaw instances side by side. Named profiles, color-coded, one app to run them all. Can you set up the team?</div>
+        <div class="timestamp" style="text-align:right">14:02</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex</div>
+        <div class="bubble left">On it. Setting up the Clawpack team now — Brook (engineering), Dee (UX), Cedar (QA), Emery (architecture). Workspaces created, identities loaded. First project: <code>openclaw-desktop</code>.
+          <br><br>Brook is scaffolding the Electron + TypeScript base. Dee is drafting UX flows. Emery is on architecture review.</div>
+        <div class="timestamp">14:08</div>
+      </div>
+    </div>
+
+    <div class="system-event"><div class="badge">🔧 Brook — Electron scaffold created</div></div>
+
+    <div class="msg-group">
+      <div class="avatar av-brook">🔧</div>
+      <div class="msg-content">
+        <div class="sender-name">Brook</div>
+        <div class="bubble left">Scaffold done. Electron 40 + React + TypeScript + Vite + node-pty + xterm.js. Got the multi-instance sidebar working — each instance gets a terminal pane. Gateway spawning via <code>openclaw gateway --port N --force</code>.</div>
+        <div class="timestamp">17:22</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-cedar">🌲</div>
+      <div class="msg-content">
+        <div class="sender-name">Cedar</div>
+        <div class="bubble left">Ran it. Sidebar loads. Instance create/delete works. But found some blockers:
+          <ul>
+            <li>Port conflict on instance start — <code>isPortFree()</code> throws before <code>--force</code> runs</li>
+            <li><code>isDev</code> always returning true in production build</li>
+            <li>Renderer loading <code>localhost:5173</code> (the main gateway!) instead of built app</li>
+          </ul>
+        </div>
+        <div class="timestamp">20:15</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-emery">🏗</div>
+      <div class="msg-content">
+        <div class="sender-name">Emery</div>
+        <div class="bubble left">The port check is a deeper problem. We're doing TOCTOU — check if free, then spawn. There's a race. Also, our sandbox approach (hand-writing <code>OPENCLAW_STATE_DIR</code>, copying auth tokens) is 677 lines we don't need. I'm writing ADR-001 and ADR-002.</div>
+        <div class="timestamp">21:40</div>
+      </div>
+    </div>
+
+    <!-- ===== DAY 2: MARCH 14 ===== -->
+    <div class="day-divider"><span>Saturday — March 14, 2026</span></div>
+
+    <div class="msg-group">
+      <div class="avatar av-emery">🏗</div>
+      <div class="msg-content">
+        <div class="sender-name">Emery</div>
+        <div class="bubble left">ADRs done. The entire sandbox layer is wrong. OpenClaw already has isolation built in: <code>openclaw --profile &lt;id&gt;</code> isolates everything under <code>~/.openclaw-&lt;name&gt;/</code>. Config, sessions, workspace, auth — one flag replaces everything we built. We should delete <code>sandbox.ts</code> entirely.</div>
+        <div class="timestamp">00:12</div>
+      </div>
+    </div>
+
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="bubble right">That's a big pivot. How confident are you?</div>
+        <div class="timestamp" style="text-align:right">00:18</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-emery">🏗</div>
+      <div class="msg-content">
+        <div class="sender-name">Emery</div>
+        <div class="bubble left">Certain. The correct launch sequence is:
+          <br><code>openclaw --profile {id} config set gateway.port {port}</code>
+          <br><code>openclaw --profile {id} gateway --port {port} --force --allow-unconfigured</code>
+          <br>Then poll <code>/health</code> until 200. That's it. No token wrangling, no file writing, no race conditions.</div>
+        <div class="timestamp">00:23</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex</div>
+        <div class="bubble left">Brook — rebuild with <code>--profile</code>. Base port moves to 40000 (18800 was too close to the main gateway at 18789). Port allocation via counter + free-list, no scanning.</div>
+        <div class="timestamp">00:28</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-dee">🎨</div>
+      <div class="msg-content">
+        <div class="sender-name">Dee</div>
+        <div class="bubble left">While Brook rebuilds — ran a full Apple HIG audit. 19 violations. Grey sidebar (#F5F5F5), white detail panel, SF Pro font, #007AFF status dots instead of colored badges. Also wrote the TUI UX spec: auto-launch terminal when gateway is ready, 2-tab switcher (TUI default / Shell).</div>
+        <div class="timestamp">10:45</div>
+      </div>
+    </div>
+
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="bubble right">Honest question — does this Electron wrapper actually add value? With <code>--profile</code> handling isolation, aren't we just a launcher?</div>
+        <div class="timestamp" style="text-align:right">14:30</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex</div>
+        <div class="bubble left">Honest answer: right now, yes — thin value. But three things change that:
+          <ul>
+            <li>Bundled installer — zero setup, non-technical users can run this</li>
+            <li>Side-by-side embedded TUIs — you can't get this from the CLI</li>
+            <li>OpenClaw at 677MB packaged into a real .app — turns it from dev tool to real product</li>
+          </ul>
+          The hard part isn't the wrapper. It's the distribution.</div>
+        <div class="timestamp">14:38</div>
+      </div>
+    </div>
+
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="bubble right">Go for it. Clean rewrite — call it MultiClaw. Fresh repo, no legacy code.</div>
+        <div class="timestamp" style="text-align:right">14:45</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="milestone-card">
+      <div class="m-icon">🚀</div>
+      <div class="m-text">
+        <h3>Clean rewrite begins: <em>multiclaw</em></h3>
+        <p>Emery blueprint · Dee UX spec from scratch · Finley renderer scaffold · Brook on standby for Emery's output. All four spawned simultaneously. 00:53 AM.</p>
+      </div>
+      <div class="m-badge">MILESTONE</div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-emery">🏗</div>
+      <div class="msg-content">
+        <div class="sender-name">Emery</div>
+        <div class="bubble left">Blueprint done. IPC surface defined. package.json scaffolded. Electron + TypeScript (Brook) / React + Vite + shadcn/ui + Tailwind (Finley). No wizard onboarding — Dee called it out immediately.</div>
+        <div class="timestamp">02:15</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-finley">🖥</div>
+      <div class="msg-content">
+        <div class="sender-name">Finley</div>
+        <div class="bubble left">Renderer scaffold up. React Router, Tailwind v4, shadcn/ui. Sidebar with drag-to-reorder, Mac Mini status icons (color = running/stopped/error), pill-style TUI/Console toggle in toolbar. Clean.</div>
+        <div class="timestamp">03:40</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-brook">🔧</div>
+      <div class="msg-content">
+        <div class="sender-name">Brook</div>
+        <div class="bubble left">Main process rebuilt. <code>--profile</code> launch sequence working. TUI via xterm.js + node-pty — full PTY to renderer path: spawn → input → resize → output → exit. All five IPC handlers wired. Dashboard URL extraction with regex (output is verbose, not a bare URL).</div>
+        <div class="timestamp">08:20</div>
+      </div>
+    </div>
+
+    <div class="system-event"><div class="badge">🌲 Cedar — Manual QA, full run</div></div>
+
+    <div class="msg-group">
+      <div class="avatar av-cedar">🌲</div>
+      <div class="msg-content">
+        <div class="sender-name">Cedar</div>
+        <div class="bubble left">Tested the full flow end-to-end.
+          <ul>
+            <li>Create instance ✅</li>
+            <li>Gateway starts, health check passes ✅</li>
+            <li>TUI launches, keyboard input works ✅</li>
+            <li>In-app chat connects ✅</li>
+            <li>Open in browser (authenticated) ✅</li>
+            <li>Stop / restart / delete ✅</li>
+          </ul>
+          Sidebar reorder works. Status colors are live. DMG builds clean.
+        </div>
+        <div class="timestamp">22:10</div>
+      </div>
+    </div>
+
+    <div class="milestone-card">
+      <div class="m-icon">✅</div>
+      <div class="m-text">
+        <h3>App confirmed working end-to-end</h3>
+        <p>Create · Start · TUI · Chat · Dashboard · Stop · Delete · DMG. Cedar signed off. All features green.</p>
+      </div>
+      <div class="m-badge">SHIPPED</div>
+    </div>
+
+    <!-- ===== DAY 3: MARCH 15 ===== -->
+    <div class="day-divider"><span>Sunday — March 15, 2026</span></div>
+
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="sender-name" style="text-align:right">Yook</div>
+        <div class="bubble right">Let's get the name and domain locked. I've been calling it MultiClaw.</div>
+        <div class="timestamp" style="text-align:right">08:02</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-gray">📣</div>
+      <div class="msg-content">
+        <div class="sender-name">Gray</div>
+        <div class="bubble left">Bad news on MultiClaw — .app, .com, .io all taken. Ran availability on 26 alternatives. Shortlist with .app available:
+          <span class="tag">ClawMux</span><span class="tag">ClawNest</span><span class="tag">ClawPlex</span><span class="tag">ClawOrbit</span><span class="tag">ClawPane</span><span class="tag">ManyClaw</span>
+        </div>
+        <div class="timestamp">09:15</div>
+      </div>
+    </div>
+
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="bubble right">ManyClaw. That's the one. "Many" vs "Multi" feels like a product name, not a feature prefix. Lock it.</div>
+        <div class="timestamp" style="text-align:right">09:22</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="system-event"><div class="badge">🌐 manyclaw.app — confirmed available, DNS clean</div></div>
+
+    <div class="msg-group">
+      <div class="avatar av-gray">📣</div>
+      <div class="msg-content">
+        <div class="sender-name">Gray</div>
+        <div class="bubble left">Research done. Top signal from r/openclaw today: 352-upvote post — "5 mistakes in every OpenClaw setup." Mistake #5: adding a second agent. That's exactly what ManyClaw solves. Pitching two posts:
+          <ul>
+            <li><em>The second agent is always the hard one</em></li>
+            <li><em>Why your one OpenClaw doesn't actually work</em></li>
+          </ul>
+        </div>
+        <div class="timestamp">10:05</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex</div>
+        <div class="bubble left">Both approved. Write them. Outside-in only — start from the community conversation, not from the product. And no em dashes. Ever.</div>
+        <div class="timestamp">10:12</div>
+      </div>
+    </div>
+
+    <div class="system-event"><div class="badge">📝 2 blog posts published to content/blog/</div></div>
+
+    <div class="msg-group">
+      <div class="avatar av-finley">🖥</div>
+      <div class="msg-content">
+        <div class="sender-name">Finley</div>
+        <div class="bubble left">Website scaffold done. React Router v7 SSR, Tailwind v4, Bricolage Grotesque headings, DM Sans body, Fira Code mono. Colors: warm off-white background, #FF6B35 orange, sharp-corner CTAs (brand marker). Landing page, download page, docs, blog index all wired.</div>
+        <div class="timestamp">14:30</div>
+      </div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex</div>
+        <div class="bubble left">Built the team dashboard — kanban, research links, blog tracker, team roster. Also put together the Monday talk deck: 10 slides. The core message: "I built ManyClaw because setup was the blocker." Demo 1 is the friction. Demo 2 is two instances running side by side.</div>
+        <div class="timestamp">18:45</div>
+      </div>
+    </div>
+
+    <div class="msg-group right">
+      <div class="msg-content">
+        <div class="bubble right">Monday's a community show and tell. Mixed audience — half have basic OpenClaw. What's the close?</div>
+        <div class="timestamp" style="text-align:right">19:10</div>
+      </div>
+      <div class="avatar av-yook">Y</div>
+    </div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex</div>
+        <div class="bubble left">"I can't tell you what to use OpenClaw for — you'll figure that out. But I didn't want setup to be the reason you don't try."<br><br>That's the whole pitch.</div>
+        <div class="timestamp">19:14</div>
+      </div>
+    </div>
+
+    <div class="milestone-card">
+      <div class="m-icon">🎉</div>
+      <div class="m-text">
+        <h3>ManyClaw — ready to demo</h3>
+        <p>App working · DMG builds · Website live · 2 blog posts · Dashboard · Monday talk deck. 3 days, 7 agents.</p>
+      </div>
+      <div class="m-badge">DEMO READY</div>
+    </div>
+
+    <!-- Lessons learned section -->
+    <div class="day-divider"><span>Lessons Learned</span></div>
+
+    <div class="msg-group">
+      <div class="avatar av-alex">🗂</div>
+      <div class="msg-content">
+        <div class="sender-name">Alex — PM retrospective</div>
+        <div class="bubble left system-bubble">
+          <strong>What we got wrong, so we don't repeat it:</strong>
+          <ul>
+            <li>Read docs before delegating. Not after, not when things break.</li>
+            <li>Form the spec yourself first. Agents implement — they don't investigate.</li>
+            <li>Cedar = manual testing only. Give her a running app, nothing else.</li>
+            <li>Emery first on anything architectural. Before Cedar tests.</li>
+            <li>Dee over-designs without an explicit scope cap. Always set one.</li>
+            <li>Brook and Finley are reliable. The weak link is orchestration, not execution.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end chat-body -->
+</div><!-- end chat-window -->
+
+<div style="text-align:center; margin-top:32px; color:#7a6e5e; font-size:0.78rem;">
+  Built Mar 13–15, 2026 &nbsp;·&nbsp; Clawpack &nbsp;·&nbsp; manyclaw.app
+</div>
+
+</body>
+</html>

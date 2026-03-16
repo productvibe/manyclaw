@@ -63,11 +63,11 @@ A marketing website for ManyClaw. Lives at `website/` inside the multiclaw repo.
 
 ## Content rules
 
-- Blog and docs are Markdown files in `website/content/`
+- Blog and docs are Markdown files in `content/`
 - Frontmatter fields: `title`, `date`, `slug`, `description`, `order` (docs only), `section` (docs only)
 - Docs sort by `order` ascending. Blog sorts by `date` descending.
 - Doc sections group nav entries under a label (e.g. "Introduction", "Concepts", "Reference")
-- File naming convention: `website/content/docs/NN-slug.md` where `NN` matches the `order` value
+- File naming convention: `content/docs/NN-slug.md` where `NN` matches the `order` value
 
 ## Naming and links
 

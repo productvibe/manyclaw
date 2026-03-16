@@ -466,6 +466,8 @@
   <a class="nav-item" href="#" onclick="showPage('blogs',this)"><span class="icon">✍</span> Blog</a>
   <a class="nav-item" href="#" onclick="showPage('team',this)"><span class="icon">◉</span> Team</a>
   <a class="nav-item" href="#" onclick="showPage('automation',this)"><span class="icon">⏱</span> Automation</a>
+  <a class="nav-item" href="#" onclick="showPage('skills',this)"><span class="icon">⚡</span> Skills</a>
+  <a class="nav-item" href="#" onclick="showPage('system',this)"><span class="icon">◈</span> System</a>
   <div class="sidebar-footer"><div class="live-dot"></div> Live · Mon Mar 16</div>
 </nav>
 
@@ -837,7 +839,7 @@
       <div class="row-list">
         <div class="row">
           <div class="row-body">
-            <div class="row-title"><a href="../../website/content/blog/2026-03-15-the-second-agent-problem.md" target="_blank" class="post-link">The second agent is always the hard one ↗</a></div>
+            <div class="row-title"><a href="../../content/blog/2026-03-15-the-second-agent-problem.md" target="_blank" class="post-link">The second agent is always the hard one ↗</a></div>
             <div class="row-meta"><span>Gray</span><span>~400 words</span><span>Mar 15, 2026</span></div>
             <div class="row-excerpt">Opens on the double-agent debugging nightmare. Cites the 352-upvote post. Reframes: the second agent isn't the mistake, running two unmanaged agents is.</div>
           </div>
@@ -845,7 +847,7 @@
         </div>
         <div class="row">
           <div class="row-body">
-            <div class="row-title"><a href="../../website/content/blog/2026-03-15-why-one-openclaw-doesnt-work.md" target="_blank" class="post-link">Why your one OpenClaw doesn't actually work ↗</a></div>
+            <div class="row-title"><a href="../../content/blog/2026-03-15-why-one-openclaw-doesnt-work.md" target="_blank" class="post-link">Why your one OpenClaw doesn't actually work ↗</a></div>
             <div class="row-meta"><span>Gray</span><span>~420 words</span><span>Mar 15, 2026</span></div>
             <div class="row-excerpt">Opens on the "I set it up but nothing works" frustration. Names context bleed as the structural problem. Separation is the fix.</div>
           </div>
@@ -853,7 +855,7 @@
         </div>
         <div class="row">
           <div class="row-body">
-            <div class="row-title"><a href="../../website/content/blog/2026-03-15-profile-flag.md" target="_blank" class="post-link">The OpenClaw flag most users don't know about ↗</a></div>
+            <div class="row-title"><a href="../../content/blog/2026-03-15-profile-flag.md" target="_blank" class="post-link">The OpenClaw flag most users don't know about ↗</a></div>
             <div class="row-meta"><span>Gray</span><span>Mar 15, 2026</span></div>
             <div class="row-excerpt">The <code>--profile</code> flag gives you true isolation. What that actually means in practice.</div>
           </div>
@@ -861,7 +863,7 @@
         </div>
         <div class="row">
           <div class="row-body">
-            <div class="row-title"><a href="../../website/content/blog/2026-03-14-why-we-built-multiclaw.md" target="_blank" class="post-link">Why we built ManyClaw ↗</a></div>
+            <div class="row-title"><a href="../../content/blog/2026-03-14-why-we-built-multiclaw.md" target="_blank" class="post-link">Why we built ManyClaw ↗</a></div>
             <div class="row-meta"><span>Gray</span><span>Mar 14, 2026</span></div>
             <div class="row-excerpt">Running two OpenClaw agents manually is a workflow. Running three is a part-time job. There had to be a better way.</div>
           </div>
@@ -1095,13 +1097,312 @@
 
     <div class="section-label">Action Items</div>
     <div class="grid grid-2">
-      <div class="info-box">
-        <strong>Fix Gray's cron job path</strong>
-        Job payload still references <code>~/Projects/multiclaw</code> after repo rename. Update to <code>~/Projects/manyclaw</code> before next run (Tue 7:30 AM).
+      <div class="info-box" style="border-left:3px solid var(--green)">
+        <strong style="color:var(--green)">✓ Gray's cron job path fixed</strong>
+        Payload updated from <code>~/Projects/multiclaw</code> to <code>~/Projects/manyclaw</code>. Ready for next run Tue 7:30 AM.
       </div>
       <div class="info-box">
         <strong>Investigate timeout</strong>
         Gray's job has timed out twice at the 10-minute limit. Research + pitch + await Alex response may be too much for one turn. Consider splitting into two jobs: research/pitch, then write/publish.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SKILLS -->
+  <div class="page" id="page-skills">
+    <div class="page-header">
+      <h1>Skills</h1>
+      <p>Installed agent skills — tools Alex and the team can use</p>
+    </div>
+
+    <div class="grid grid-4" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-label">Total Skills</div>
+        <div class="stat-num">52</div>
+        <div class="stat-sub">Installed</div>
+        <span class="stat-tag tag-green">Ready</span>
+      </div>
+      <div class="card">
+        <div class="card-label">Custom</div>
+        <div class="stat-num">1</div>
+        <div class="stat-sub">playwright (workspace)</div>
+        <span class="stat-tag tag-blue">Local</span>
+      </div>
+      <div class="card">
+        <div class="card-label">Core</div>
+        <div class="stat-num">51</div>
+        <div class="stat-sub">From openclaw/skills</div>
+        <span class="stat-tag tag-muted">System</span>
+      </div>
+      <div class="card">
+        <div class="card-label">In Use Today</div>
+        <div class="stat-num">3</div>
+        <div class="stat-sub">coding-agent · github · weather</div>
+        <span class="stat-tag tag-accent">Active</span>
+      </div>
+    </div>
+
+    <div class="section-label">Communication &amp; Messaging</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="grid grid-3" style="gap:8px">
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">discord</strong>Discord ops via the message tool</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">imsg</strong>iMessage send/receive</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">wacli</strong>WhatsApp CLI messaging</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">bluebubbles</strong>BlueBubbles iMessage bridge</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">slack</strong>Slack messaging</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">voice-call</strong>Voice call automation</div>
+      </div>
+    </div>
+
+    <div class="section-label">Coding &amp; Development</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="grid grid-3" style="gap:8px">
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">coding-agent</strong>Delegate to Codex, Claude Code, or Pi agents</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">github</strong>GitHub ops via <code>gh</code> CLI — issues, PRs, CI</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">gh-issues</strong>Fetch issues, spawn sub-agents, open PRs</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">playwright</strong>Browser automation via Playwright MCP</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">tmux</strong>Remote-control tmux sessions</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">node-connect</strong>Node.js connection utilities</div>
+      </div>
+    </div>
+
+    <div class="section-label">AI &amp; Media</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="grid grid-3" style="gap:8px">
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">gemini</strong>Gemini CLI — one-shot Q&amp;A, summaries, generation</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">openai-image-gen</strong>OpenAI image generation</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">openai-whisper</strong>Local Whisper transcription</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">openai-whisper-api</strong>Whisper via OpenAI API</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">sag</strong>ElevenLabs TTS — voice storytelling</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">sherpa-onnx-tts</strong>Local on-device TTS via sherpa-onnx</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">video-frames</strong>Extract frames/clips from video via ffmpeg</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">gifgrep</strong>Search and extract GIF frames</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">camsnap</strong>Webcam snapshot capture</div>
+      </div>
+    </div>
+
+    <div class="section-label">Productivity &amp; Notes</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="grid grid-3" style="gap:8px">
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">apple-notes</strong>Read/write Apple Notes</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">apple-reminders</strong>Apple Reminders integration</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">bear-notes</strong>Bear notes app</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">obsidian</strong>Obsidian vault read/write</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">notion</strong>Notion pages and databases</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">things-mac</strong>Things 3 task management</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">trello</strong>Trello boards and cards</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">summarize</strong>Summarise documents and content</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">session-logs</strong>Search and analyse session history</div>
+      </div>
+    </div>
+
+    <div class="section-label">Home, Music &amp; Local</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="grid grid-3" style="gap:8px">
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">openhue</strong>Philips Hue smart lights</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">sonoscli</strong>Sonos speaker control</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">spotify-player</strong>Spotify playback control</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">songsee</strong>Song identification and lookup</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">weather</strong>Current weather and forecasts via wttr.in</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">goplaces</strong>Location and places lookup</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">canvas</strong>Canvas drawing and visual tools</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">peekaboo</strong>Screen/window peek utility</div>
+      </div>
+    </div>
+
+    <div class="section-label">Tools &amp; Utilities</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="grid grid-3" style="gap:8px">
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">clawhub</strong>Search, install, publish skills from clawhub.com</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">skill-creator</strong>Create, edit, audit AgentSkills</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">healthcheck</strong>Security hardening and risk audits</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">1password</strong>1Password secrets lookup</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">himalaya</strong>Email client CLI</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">blogwatcher</strong>Monitor blogs and RSS feeds</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">xurl</strong>URL fetch and extraction</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">nano-pdf</strong>PDF read and extraction</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">nano-banana-pro</strong>Nano Banana Pro utilities</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">model-usage</strong>Track model token usage and costs</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">oracle</strong>Data querying and lookups</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">mcporter</strong>MCP server port management</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">blucli</strong>Bluetooth device CLI</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">eightctl</strong>Eight Sleep mattress control</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">ordercli</strong>Order tracking CLI</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">sherpa</strong>On-device AI inference (sherpa)</div>
+        <div class="k-note"><strong style="color:var(--text);display:block;margin-bottom:2px">gog</strong>GOG game library integration</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SYSTEM -->
+  <div class="page" id="page-system">
+    <div class="page-header">
+      <h1>System</h1>
+      <p>Live sessions, channels, agents, and runtime health</p>
+    </div>
+
+    <div class="grid grid-4" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-label">Active Sessions</div>
+        <div class="stat-num">1</div>
+        <div class="stat-sub">Alex · webchat</div>
+        <span class="stat-tag tag-green">Live</span>
+      </div>
+      <div class="card">
+        <div class="card-label">Channels</div>
+        <div class="stat-num">2</div>
+        <div class="stat-sub">Telegram · Discord</div>
+        <span class="stat-tag tag-amber">1 warning</span>
+      </div>
+      <div class="card">
+        <div class="card-label">Agents</div>
+        <div class="stat-num">7</div>
+        <div class="stat-sub">main + 6 team agents</div>
+        <span class="stat-tag tag-green">All configured</span>
+      </div>
+      <div class="card">
+        <div class="card-label">Model</div>
+        <div class="stat-num" style="font-size:16px;letter-spacing:-0.5px">Sonnet</div>
+        <div class="stat-sub">claude-sonnet-4-6 · 200k ctx</div>
+        <span class="stat-tag tag-blue">Anthropic</span>
+      </div>
+    </div>
+
+    <div class="section-label">Active Sessions</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="row-list">
+        <div class="row">
+          <div style="flex-shrink:0;margin-top:2px"><span class="badge badge-green">Live</span></div>
+          <div class="row-body">
+            <div class="row-title">Alex — main session</div>
+            <div class="row-meta">
+              <span>webchat</span>
+              <span>claude-sonnet-4-6</span>
+              <span>94k / 1M ctx tokens used</span>
+              <span>~$0.045 this session</span>
+            </div>
+            <div class="row-excerpt">Session ID: <code>d9580ab7</code> · 18 total sessions on record</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Channels</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="row-list">
+        <div class="row">
+          <div style="flex-shrink:0;margin-top:2px"><span class="badge badge-green">Enabled</span></div>
+          <div class="row-body">
+            <div class="row-title">Telegram</div>
+            <div class="row-meta"><span>token: config</span><span>default provider</span></div>
+            <div class="row-excerpt" style="color:var(--amber)">
+              ⚠ <strong>groupPolicy is "allowlist" but groupAllowFrom is empty</strong> — all group messages will be silently dropped. Add sender IDs to <code>channels.telegram.groupAllowFrom</code> or set <code>groupPolicy</code> to "open".
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex-shrink:0;margin-top:2px"><span class="badge badge-green">Enabled</span></div>
+          <div class="row-body">
+            <div class="row-title">Discord</div>
+            <div class="row-meta"><span>token: config</span><span>default provider</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex-shrink:0;margin-top:2px"><span class="badge badge-green">Active</span></div>
+          <div class="row-body">
+            <div class="row-title">Webchat</div>
+            <div class="row-meta">Local · current active channel for Alex</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Agents &amp; Session History</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="row-list">
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" style="display:flex;align-items:center;gap:8px">
+              <span>🗂️ Alex (main)</span>
+              <span class="badge badge-green">Active now</span>
+            </div>
+            <div class="row-meta"><span>18 sessions</span><span>claude-sonnet-4-6</span><span>webchat</span><span>heartbeat: 1h</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" style="display:flex;align-items:center;gap:8px">
+              <span>📣 Gray</span>
+              <span class="badge badge-muted">Idle</span>
+            </div>
+            <div class="row-meta"><span>2 sessions</span><span>heartbeat: disabled</span><span>triggered via cron</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" style="display:flex;align-items:center;gap:8px">
+              <span>🔨 Brook</span>
+              <span class="badge badge-muted">Idle</span>
+            </div>
+            <div class="row-meta"><span>2 sessions</span><span>heartbeat: disabled</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" style="display:flex;align-items:center;gap:8px">
+              <span>🖥️ Finley</span>
+              <span class="badge badge-muted">Idle</span>
+            </div>
+            <div class="row-meta"><span>2 sessions</span><span>heartbeat: disabled</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" style="display:flex;align-items:center;gap:8px">
+              <span>🏗️ Emery</span>
+              <span class="badge badge-muted">Idle</span>
+            </div>
+            <div class="row-meta"><span>2 sessions</span><span>heartbeat: disabled</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" style="display:flex;align-items:center;gap:8px">
+              <span>🎨 Dee</span>
+              <span class="badge badge-muted">Idle</span>
+            </div>
+            <div class="row-meta"><span>2 sessions</span><span>heartbeat: disabled</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" style="display:flex;align-items:center;gap:8px">
+              <span>🌲 Cedar</span>
+              <span class="badge badge-muted">Idle</span>
+            </div>
+            <div class="row-meta"><span>2 sessions</span><span>heartbeat: disabled</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Runtime</div>
+    <div class="grid grid-2">
+      <div class="info-box">
+        <strong>Gateway</strong>
+        Local · ws://127.0.0.1:40003<br>
+        LaunchAgent: not installed (manual start)<br>
+        Node service: not installed<br>
+        Auth: Anthropic token configured
+      </div>
+      <div class="info-box">
+        <strong>Host</strong>
+        macOS 26.3 · arm64<br>
+        Node v22.22.1<br>
+        OpenClaw channel: stable<br>
+        Tailscale: off
       </div>
     </div>
   </div>

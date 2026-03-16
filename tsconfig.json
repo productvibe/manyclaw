@@ -11,18 +11,18 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["src/shared/*"]
+      "@shared/*": ["app/shared/*"]
     }
   },
   "include": [
-    "src/main/**/*",
-    "src/preload/**/*",
-    "src/instances/**/*",
-    "src/shared/**/*"
+    "app/main/**/*",
+    "app/preload/**/*",
+    "app/instances/**/*",
+    "app/shared/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "src/renderer"
+    "app/renderer"
   ]
 }

@@ -5,8 +5,8 @@ import path from 'node:path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Renderer source lives in src/renderer/
-  root: 'src/renderer',
+  // Renderer source lives in app/renderer/
+  root: 'app/renderer',
 
   plugins: [
     react(),
@@ -15,8 +15,8 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src/renderer'),
-      '@shared': path.resolve(__dirname, 'src/shared'),
+      '@': path.resolve(__dirname, 'app/renderer'),
+      '@shared': path.resolve(__dirname, 'app/shared'),
     },
   },
 

@@ -11,12 +11,12 @@
 - Sidebar shows "My OpenClaw" with green Running indicator
 - TUI and Logs tabs visible
 - Header bar has Open in Browser, Stop, Restart buttons
-- **Screenshot:** `qa-real2/01-launch.png`
+- **Screenshot:** `product/qa/qa-real2/01-launch.png`
 
 ## Flow 2: Instance Running / Health Check — PASS
 - Instance was already in Running state (green dot)
 - Health endpoint returns: `{"ok":true,"status":"live"}`
-- **Screenshot:** `qa-real2/02-started.png`
+- **Screenshot:** `product/qa/qa-real2/02-started.png`
 
 ## Flow 3: TUI Tab Rendering — PARTIAL
 - **PASS:** TUI tab renders xterm.js terminal with content
@@ -28,13 +28,13 @@
   Fix: pass --token or --password when using --url.
   ```
 - The TUI process appears to exit after this error — no interactive prompt is reached
-- **Screenshot:** `qa-real2/03-tui.png`
+- **Screenshot:** `product/qa/qa-real2/03-tui.png`
 
 ## Flow 4: Type a Message — FAIL
 - Typed "hello" + Enter into xterm textarea
 - No response — the TUI process had already exited due to the credential error
 - The terminal is a dead shell at this point
-- **Screenshot:** `qa-real2/04-reply.png`
+- **Screenshot:** `product/qa/qa-real2/04-reply.png`
 
 ## Flow 5: Logs Tab — PARTIAL
 - **PASS:** Logs tab renders and shows structured log output
@@ -43,13 +43,13 @@
   - Pattern: `[ws] unauthorized conn=<uuid> ... reason=device_token_mismatch`
   - Followed by: `[ws] closed before connect ... code=1008 reason=unauthorized: device token mismatch`
 - **Root cause:** The token the Electron app passes to the OpenClaw gateway does not match the gateway's device token. This is the same class of bug as the TUI credential error — the app is not correctly propagating authentication credentials.
-- **Screenshot:** `qa-real2/05-logs.png`
+- **Screenshot:** `product/qa/qa-real2/05-logs.png`
 
 ## Flow 6: Stop Instance — PASS
 - Stop button clicked, instance shut down cleanly
 - Logs confirm: `[gateway] signal SIGTERM received`, `shutting down`, `gmail watcher stopped`
 - Status changed to "Stopped" (orange dot)
-- **Screenshot:** `qa-real2/06-stopped.png`
+- **Screenshot:** `product/qa/qa-real2/06-stopped.png`
 
 ---
 

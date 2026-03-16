@@ -11,13 +11,13 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["src/shared/*"],
-      "@/*": ["src/renderer/*"]
+      "@shared/*": ["app/shared/*"],
+      "@/*": ["app/renderer/*"]
     }
   },
   "include": [
-    "src/renderer/**/*",
-    "src/shared/**/*"
+    "app/renderer/**/*",
+    "app/shared/**/*"
   ],
   "exclude": [
     "node_modules",
