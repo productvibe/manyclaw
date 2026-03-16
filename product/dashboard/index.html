@@ -459,13 +459,13 @@
 <body>
 
 <nav class="sidebar">
-  <div class="sidebar-logo">Multi<span>Claw</span></div>
+  <div class="sidebar-logo">Many<span>Claw</span></div>
   <a class="nav-item active" href="#" onclick="showPage('overview',this)"><span class="icon">⬡</span> Overview</a>
   <a class="nav-item" href="#" onclick="showPage('tasks',this)"><span class="icon">✓</span> Tasks</a>
   <a class="nav-item" href="#" onclick="showPage('research',this)"><span class="icon">◎</span> Research</a>
   <a class="nav-item" href="#" onclick="showPage('blogs',this)"><span class="icon">✍</span> Blog</a>
   <a class="nav-item" href="#" onclick="showPage('team',this)"><span class="icon">◉</span> Team</a>
-  <div class="sidebar-footer"><div class="live-dot"></div> Live · Sun Mar 15</div>
+  <div class="sidebar-footer"><div class="live-dot"></div> Live · Mon Mar 16</div>
 </nav>
 
 <main class="main">
@@ -474,36 +474,36 @@
   <div class="page active" id="page-overview">
     <div class="topbar">
       <div>
-        <h1>Good morning 👋</h1>
-        <p>Sunday, March 15, 2026</p>
+        <h1>Good afternoon 👋</h1>
+        <p>Monday, March 16, 2026</p>
       </div>
-      <span class="week-chip">Week 11</span>
+      <span class="week-chip">Week 12 · Demo day tomorrow</span>
     </div>
 
     <div class="grid grid-4" style="margin-bottom:20px">
       <div class="card">
-        <div class="card-label">Tasks Today</div>
-        <div class="stat-num">7</div>
-        <div class="stat-sub">All done</div>
-        <span class="stat-tag tag-green">On track</span>
+        <div class="card-label">App Status</div>
+        <div class="stat-num" style="color:var(--green)">✓</div>
+        <div class="stat-sub">Shipped &amp; working</div>
+        <span class="stat-tag tag-green">v0.0.1</span>
       </div>
       <div class="card">
         <div class="card-label">Blog Posts</div>
-        <div class="stat-num" style="color:var(--accent)">2</div>
-        <div class="stat-sub">Published today</div>
+        <div class="stat-num" style="color:var(--accent)">4</div>
+        <div class="stat-sub">Published total</div>
         <span class="stat-tag tag-green">Live</span>
       </div>
       <div class="card">
-        <div class="card-label">Research</div>
-        <div class="stat-num">1</div>
-        <div class="stat-sub">Run this morning</div>
-        <span class="stat-tag tag-green">Complete</span>
+        <div class="card-label">Today's Changes</div>
+        <div class="stat-num">2</div>
+        <div class="stat-sub">UI + folder rename</div>
+        <span class="stat-tag tag-blue">Done</span>
       </div>
       <div class="card">
-        <div class="card-label">Team Active</div>
-        <div class="stat-num">2</div>
-        <div class="stat-sub">Alex · Gray</div>
-        <span class="stat-tag tag-muted">Blog run</span>
+        <div class="card-label">Community Demo</div>
+        <div class="stat-num">1</div>
+        <div class="stat-sub">Tomorrow, Monday event</div>
+        <span class="stat-tag tag-amber">Tomorrow</span>
       </div>
     </div>
 
@@ -511,39 +511,47 @@
       <div class="card">
         <div class="card-label">Today's Activity</div>
         <div class="activity">
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Research completed — Reddit, HN, X checked</div><div class="activity-time">7:30 AM</div></div>
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Research saved to <code>2026-03-15-research.md</code></div><div class="activity-time">7:31 AM</div></div>
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">3 topic pitches sent to Alex</div><div class="activity-time">7:32 AM</div></div>
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Alex approved Pitch 1 + Pitch 2</div><div class="activity-time">11:16 AM</div></div>
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Draft 1 written — "The second agent is always the hard one"</div><div class="activity-time">11:17 AM</div></div>
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Draft 2 written — "Why your one OpenClaw doesn't actually work"</div><div class="activity-time">11:17 AM</div></div>
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Alex approved both drafts</div><div class="activity-time">11:18 AM</div></div>
-          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--accent)"></div></div><div class="activity-text">Both posts published to <code>website/content/blog/</code></div><div class="activity-time">11:18 AM</div></div>
+          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Dialog wording fixed — "New Profiles" → "New Instance"</div><div class="activity-time">12:05 PM</div></div>
+          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Full rebrand: Instances/Profiles → <strong>Claws</strong> throughout UI</div><div class="activity-time">12:31 PM</div></div>
+          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--green)"></div></div><div class="activity-text">Repo renamed <code>multiclaw</code> → <code>manyclaw</code>, all internal paths updated</div><div class="activity-time">1:37 PM</div></div>
+          <div class="row"><div class="dot-wrap"><div class="dot" style="background:var(--accent)"></div></div><div class="activity-text">Dashboard updated with latest info</div><div class="activity-time">2:09 PM</div></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-label">Blog Pipeline</div>
+        <div class="card-label">Demo Prep — Tomorrow</div>
         <div class="progress-wrap">
-          <div class="progress-head"><span>March 15 posts</span><span>Complete</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          <div class="progress-head"><span>Monday community event</span><span>~80%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
         </div>
         <div class="row-list">
           <div class="row">
+            <div class="check check-done">✓</div>
             <div class="row-body">
-              <div class="row-title"><a href="../../website/content/blog/2026-03-15-the-second-agent-problem.md" target="_blank" class="post-link">The second agent is always the hard one ↗</a></div>
-              <div class="row-meta">Gray · ~400 words · Mar 15</div>
-              <div class="row-excerpt">Opens on the double-agent debugging nightmare. Cites the 352-upvote post. Reframes what "the mistake" actually is.</div>
+              <div class="row-title">App is working</div>
+              <div class="row-meta">Create, start, stop, delete Claws. TUI, dashboard, channels.</div>
             </div>
-            <div class="row-right"><span class="badge badge-green">Published</span></div>
           </div>
           <div class="row">
+            <div class="check check-done">✓</div>
             <div class="row-body">
-              <div class="row-title"><a href="../../website/content/blog/2026-03-15-why-one-openclaw-doesnt-work.md" target="_blank" class="post-link">Why your one OpenClaw doesn't actually work ↗</a></div>
-              <div class="row-meta">Gray · ~420 words · Mar 15</div>
-              <div class="row-excerpt">Opens on the "can't find real use" frustration. Names context bleed as the structural problem.</div>
+              <div class="row-title">Presentation deck</div>
+              <div class="row-meta"><code>product/presentation/monday-talk.html</code></div>
             </div>
-            <div class="row-right"><span class="badge badge-green">Published</span></div>
+          </div>
+          <div class="row">
+            <div class="check check-done">✓</div>
+            <div class="row-body">
+              <div class="row-title">Naming consistent — "Claws" everywhere</div>
+              <div class="row-meta">Sidebar, dialogs, detail tab, empty state, logs</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="check check-pending"></div>
+            <div class="row-body">
+              <div class="row-title">Blog post for tomorrow</div>
+              <div class="row-meta">Gray to run research + write for 8am</div>
+            </div>
           </div>
         </div>
       </div>
@@ -564,25 +572,7 @@
       <div class="kanban-col">
         <div class="kanban-col-head">
           <span class="kanban-col-title">Backlog</span>
-          <span class="kanban-count">5</span>
-        </div>
-
-        <div class="k-card">
-          <div class="k-card-title">Architecture sign-off — ManyClaw v1</div>
-          <div class="k-note">Review profiles, isolation model, and gateway routing before Brook/Finley build.</div>
-          <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📐</div> Emery</div>
-            <span class="k-tag k-tag-arch">Architecture</span>
-          </div>
-        </div>
-
-        <div class="k-card">
-          <div class="k-card-title">Spec — ManyClaw profile switching UX</div>
-          <div class="k-note">Define exactly how users switch between instances. Scope only what was asked.</div>
-          <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📝</div> Dee</div>
-            <span class="k-tag k-tag-config">Specs</span>
-          </div>
+          <span class="kanban-count">4</span>
         </div>
 
         <div class="k-card">
@@ -604,23 +594,6 @@
         </div>
 
         <div class="k-card">
-          <div class="k-card-title">ManyClaw product — initial build</div>
-          <div class="k-note">Core feature work: profiles, isolation, multi-instance management. Pending Emery sign-off.</div>
-          <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">⚙️</div> Finley</div>
-            <span class="k-tag k-tag-eng">Engineering</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- UP NEXT -->
-      <div class="kanban-col">
-        <div class="kanban-col-head">
-          <span class="kanban-col-title">Up Next</span>
-          <span class="kanban-count">4</span>
-        </div>
-
-        <div class="k-card">
           <div class="k-card-title">Website blog infrastructure</div>
           <div class="k-note">Build blog directory, static site setup, deploy pipeline. Needed before posts go live on a real domain.</div>
           <div class="k-card-meta">
@@ -630,8 +603,25 @@
         </div>
 
         <div class="k-card">
-          <div class="k-card-title">Launch post — "Why we built ManyClaw"</div>
-          <div class="k-note">The second agent problem. Dev agent, personal agent, ports colliding. Name it precisely.</div>
+          <div class="k-card-title">Post — How power users hack multi-Claw setups today</div>
+          <div class="k-note">The workarounds that shouldn't need to exist. Strong community research angle.</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">📣</div> Gray</div>
+            <span class="k-tag k-tag-content">Content</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- UP NEXT -->
+      <div class="kanban-col">
+        <div class="kanban-col-head">
+          <span class="kanban-col-title">Up Next</span>
+          <span class="kanban-count">2</span>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title">Blog post for March 17 — 8am publish</div>
+          <div class="k-note">Gray runs research tonight or early tomorrow. Topic TBD based on findings.</div>
           <div class="k-card-meta">
             <div class="k-assignee"><div class="k-avatar">📣</div> Gray</div>
             <span class="k-tag k-tag-content">Content</span>
@@ -640,16 +630,7 @@
 
         <div class="k-card">
           <div class="k-card-title">Post — The context bleed problem</div>
-          <div class="k-note">Why mixing personal and work agents in one instance is subtly breaking workflows.</div>
-          <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📣</div> Gray</div>
-            <span class="k-tag k-tag-content">Content</span>
-          </div>
-        </div>
-
-        <div class="k-card">
-          <div class="k-card-title">Post — How power users hack multi-agent setups today</div>
-          <div class="k-note">The workarounds that shouldn't need to exist. Strong community research angle.</div>
+          <div class="k-note">Why mixing personal and work agents in one Claw is subtly breaking your workflows.</div>
           <div class="k-card-meta">
             <div class="k-assignee"><div class="k-avatar">📣</div> Gray</div>
             <span class="k-tag k-tag-content">Content</span>
@@ -683,45 +664,62 @@
       <div class="kanban-col k-col-done">
         <div class="kanban-col-head">
           <span class="kanban-col-title">Done</span>
-          <span class="kanban-count">6</span>
+          <span class="kanban-count">11</span>
         </div>
 
         <div class="k-card">
-          <div class="k-card-title done">Publish both posts</div>
+          <div class="k-card-title done">Rename repo multiclaw → manyclaw</div>
           <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📣</div> Gray · 11:18 AM</div>
+            <div class="k-assignee"><div class="k-avatar">🗂️</div> Alex · 1:37 PM</div>
+            <span class="k-tag k-tag-config">Config</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">Rebrand UI — Instances/Profiles → Claws</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">🗂️</div> Alex · 12:31 PM</div>
+            <span class="k-tag k-tag-eng">Engineering</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">Fix dialog title "New Profiles" → "New Instance"</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">🗂️</div> Alex · 12:05 PM</div>
+            <span class="k-tag k-tag-eng">Engineering</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">ManyClaw app — full build shipped</div>
+          <div class="k-note">Create, start, stop, delete Claws. TUI, channels, cloning, drag-to-reorder, dashboard embed.</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">⚙️</div> Brook · Finley · Mar 15</div>
+            <span class="k-tag k-tag-eng">Engineering</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">DMG build and distribution</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">🔨</div> Brook · Mar 15</div>
+            <span class="k-tag k-tag-eng">Engineering</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">Monday talk deck</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">🗂️</div> Alex · Mar 15</div>
             <span class="k-tag k-tag-content">Content</span>
           </div>
         </div>
 
         <div class="k-card">
-          <div class="k-card-title done">Alex approves drafts</div>
+          <div class="k-card-title done">Publish 4 blog posts</div>
           <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">🗂️</div> Alex · 11:18 AM</div>
-            <span class="k-tag k-tag-content">Content</span>
-          </div>
-        </div>
-
-        <div class="k-card">
-          <div class="k-card-title done">Write Draft 2 — "Why your one OpenClaw doesn't work"</div>
-          <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📣</div> Gray · 11:17 AM</div>
-            <span class="k-tag k-tag-content">Content</span>
-          </div>
-        </div>
-
-        <div class="k-card">
-          <div class="k-card-title done">Write Draft 1 — "The second agent is always the hard one"</div>
-          <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📣</div> Gray · 11:17 AM</div>
-            <span class="k-tag k-tag-content">Content</span>
-          </div>
-        </div>
-
-        <div class="k-card">
-          <div class="k-card-title done">Pitch 3 topics to Alex</div>
-          <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📣</div> Gray · 7:32 AM</div>
+            <div class="k-assignee"><div class="k-avatar">📣</div> Gray · Mar 14–15</div>
             <span class="k-tag k-tag-content">Content</span>
           </div>
         </div>
@@ -729,8 +727,32 @@
         <div class="k-card">
           <div class="k-card-title done">Research — Reddit, HN, Twitter</div>
           <div class="k-card-meta">
-            <div class="k-assignee"><div class="k-avatar">📣</div> Gray · 7:30 AM</div>
+            <div class="k-assignee"><div class="k-avatar">📣</div> Gray · Mar 15</div>
             <span class="k-tag k-tag-content">Content</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">Domain secured — manyclaw.app</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">🗂️</div> Alex · Mar 15</div>
+            <span class="k-tag k-tag-config">Config</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">App icon + branding</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">🎨</div> Dee · Mar 15</div>
+            <span class="k-tag k-tag-content">Design</span>
+          </div>
+        </div>
+
+        <div class="k-card">
+          <div class="k-card-title done">Marketing website scaffolded</div>
+          <div class="k-card-meta">
+            <div class="k-assignee"><div class="k-avatar">🔨</div> Brook · Mar 15</div>
+            <span class="k-tag k-tag-eng">Engineering</span>
           </div>
         </div>
       </div>
@@ -761,24 +783,24 @@
       <div class="row-list">
         <div class="row">
           <div class="row-body">
+            <div class="row-title">2026-03-16 — Monday</div>
+            <div class="row-meta">Not yet run today</div>
+          </div>
+          <div class="row-right"><span class="badge badge-amber">Pending</span></div>
+        </div>
+        <div class="row">
+          <div class="row-body">
             <div class="row-title">2026-03-15 — Sunday Morning</div>
             <div class="row-meta"><span>Reddit ✓</span><span>HN ✓</span><span>Twitter partial</span><span>Discord ✗</span></div>
             <div class="row-excerpt">Top signal: 352-upvote post on "5 mistakes in every OpenClaw setup" — #5 is adding a second agent. HN: Google restricting OAuth users (802pts). Themes: multi-agent complexity, cost anxiety, the "can't find real use" gap.</div>
           </div>
           <div class="row-right"><span class="badge badge-green">Complete</span></div>
         </div>
-        <div class="row">
-          <div class="row-body">
-            <div class="row-title" style="color:var(--text-3)">2026-03-14 — No report</div>
-            <div class="row-meta">Blog process started March 15</div>
-          </div>
-          <div class="row-right"><span class="badge badge-muted">Not run</span></div>
-        </div>
       </div>
     </div>
 
     <div class="grid grid-2">
-      <div class="info-box"><strong>Hot this week</strong>Multi-agent complexity pain<br>Model cost anxiety (Opus default)<br>Google OAuth crackdown (802pts HN)<br>"Can't find real use" frustration</div>
+      <div class="info-box"><strong>Hot last week</strong>Multi-agent complexity pain<br>Model cost anxiety (Opus default)<br>Google OAuth crackdown (802pts HN)<br>"Can't find real use" frustration</div>
       <div class="info-box"><strong>Ongoing themes</strong>Security: prompt injection, credential leaks<br>Local-first vs paid API tradeoffs<br>Skills ecosystem quality and trust<br>OpenClaw ecosystem expansion (Klaus, DenchClaw)</div>
     </div>
   </div>
@@ -792,20 +814,20 @@
     </div>
 
     <div class="grid grid-4" style="margin-bottom:20px">
-      <div class="card"><div class="card-label">Published</div><div class="stat-num" style="color:var(--accent)">2</div><div class="stat-sub">Today</div></div>
-      <div class="card"><div class="card-label">Drafts</div><div class="stat-num">0</div><div class="stat-sub">Awaiting review</div></div>
+      <div class="card"><div class="card-label">Published</div><div class="stat-num" style="color:var(--accent)">4</div><div class="stat-sub">Total</div></div>
+      <div class="card"><div class="card-label">Today</div><div class="stat-num">0</div><div class="stat-sub">Not yet posted</div></div>
       <div class="card"><div class="card-label">In Progress</div><div class="stat-num">0</div><div class="stat-sub">Being written</div></div>
-      <div class="card"><div class="card-label">Up Next</div><div class="stat-num">3</div><div class="stat-sub">Planned</div></div>
+      <div class="card"><div class="card-label">Up Next</div><div class="stat-num">2</div><div class="stat-sub">Planned</div></div>
     </div>
 
     <div class="card" style="margin-bottom:14px">
-      <div class="card-label">Pipeline — March 15</div>
+      <div class="card-label">Pipeline — March 16</div>
       <div class="pipeline">
-        <div class="pipe-step done"><div class="pipe-label">Research</div><div class="pipe-note">Done · 7:30 AM</div></div>
-        <div class="pipe-step done"><div class="pipe-label">Pitch</div><div class="pipe-note">3 sent · 2 approved</div></div>
-        <div class="pipe-step done"><div class="pipe-label">Drafts</div><div class="pipe-note">2 written · 11:17 AM</div></div>
-        <div class="pipe-step done"><div class="pipe-label">Approval</div><div class="pipe-note">Alex · 11:18 AM</div></div>
-        <div class="pipe-step done"><div class="pipe-label">Publish</div><div class="pipe-note">2 posts live</div></div>
+        <div class="pipe-step active"><div class="pipe-label">Research</div><div class="pipe-note">Not run yet</div></div>
+        <div class="pipe-step"><div class="pipe-label">Pitch</div><div class="pipe-note">Waiting on research</div></div>
+        <div class="pipe-step"><div class="pipe-label">Drafts</div><div class="pipe-note">—</div></div>
+        <div class="pipe-step"><div class="pipe-label">Approval</div><div class="pipe-note">—</div></div>
+        <div class="pipe-step"><div class="pipe-label">Publish</div><div class="pipe-note">Target: 8am tomorrow</div></div>
       </div>
     </div>
 
@@ -828,6 +850,22 @@
           </div>
           <div class="row-right"><span class="badge badge-green">Published</span></div>
         </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title"><a href="../../website/content/blog/2026-03-15-profile-flag.md" target="_blank" class="post-link">The OpenClaw flag most users don't know about ↗</a></div>
+            <div class="row-meta"><span>Gray</span><span>Mar 15, 2026</span></div>
+            <div class="row-excerpt">The <code>--profile</code> flag gives you true isolation. What that actually means in practice.</div>
+          </div>
+          <div class="row-right"><span class="badge badge-green">Published</span></div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title"><a href="../../website/content/blog/2026-03-14-why-we-built-multiclaw.md" target="_blank" class="post-link">Why we built ManyClaw ↗</a></div>
+            <div class="row-meta"><span>Gray</span><span>Mar 14, 2026</span></div>
+            <div class="row-excerpt">Running two OpenClaw agents manually is a workflow. Running three is a part-time job. There had to be a better way.</div>
+          </div>
+          <div class="row-right"><span class="badge badge-green">Published</span></div>
+        </div>
       </div>
     </div>
 
@@ -836,22 +874,15 @@
       <div class="row-list">
         <div class="row">
           <div class="row-body">
-            <div class="row-title">Why we built ManyClaw <span style="font-weight:400;color:var(--text-2);font-size:12px">(launch post)</span></div>
-            <div class="row-meta">The second agent problem. Dev agent, personal agent, ports colliding. Name the frustration. Then: we did.</div>
+            <div class="row-title">March 17 post — topic TBD from research</div>
+            <div class="row-meta">Gray to run research then pitch. Outside-in, always.</div>
           </div>
           <div class="row-right"><span class="badge badge-accent">Priority</span></div>
         </div>
         <div class="row">
           <div class="row-body">
             <div class="row-title">The context bleed problem</div>
-            <div class="row-meta">Why mixing personal and work agents in one instance is subtly breaking your workflows</div>
-          </div>
-          <div class="row-right"><span class="badge badge-muted">Planned</span></div>
-        </div>
-        <div class="row">
-          <div class="row-body">
-            <div class="row-title">How power users are hacking multi-agent setups today</div>
-            <div class="row-meta">The workarounds that shouldn't need to exist</div>
+            <div class="row-meta">Why mixing personal and work agents in one Claw is subtly breaking your workflows</div>
           </div>
           <div class="row-right"><span class="badge badge-muted">Planned</span></div>
         </div>
@@ -872,55 +903,55 @@
         <div class="avatar">🗂️</div>
         <div><div class="team-name">Alex</div><div class="team-role">Product Manager</div></div>
         <div class="team-status"><div class="status-dot sd-green"></div>Active · Main session</div>
-        <div class="team-note"><strong>Current focus</strong>Coordinating team. Running ManyClaw product. Approving blog content.</div>
+        <div class="team-note"><strong>Current focus</strong>UI polish pre-demo. Coordinating team. Approving blog content. Demo tomorrow at Monday community event.</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-accent">PM</span><span class="badge badge-blue">Decisions</span></div>
       </div>
 
       <div class="team-card">
         <div class="avatar">📣</div>
         <div><div class="team-name">Gray</div><div class="team-role">Content &amp; Marketing</div></div>
-        <div class="team-status"><div class="status-dot sd-green"></div>Active · Blog run complete</div>
-        <div class="team-note"><strong>Current focus</strong>Two posts published today. Research done. Ready for tomorrow's run.</div>
+        <div class="team-status"><div class="status-dot sd-amber"></div>Up next — research run</div>
+        <div class="team-note"><strong>Current focus</strong>4 posts published. Research due for tomorrow's 8am post. Demo day = good story opportunity.</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-green">Writing</span><span class="badge badge-muted">Research</span></div>
       </div>
 
       <div class="team-card">
         <div class="avatar">🔨</div>
-        <div><div class="team-name">Brook</div><div class="team-role">Builder / Engineer</div></div>
-        <div class="team-status"><div class="status-dot sd-amber"></div>Not assigned</div>
-        <div class="team-note"><strong>Next up</strong>Website blog infrastructure — needed before posts can go live on a real domain.</div>
+        <div><div class="team-name">Brook</div><div class="team-role">Software Engineer</div></div>
+        <div class="team-status"><div class="status-dot sd-amber"></div>Available</div>
+        <div class="team-note"><strong>Next up</strong>Website blog infrastructure — needed before posts go live on manyclaw.app.</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-blue">Dev</span></div>
       </div>
 
       <div class="team-card">
-        <div class="avatar">⚙️</div>
-        <div><div class="team-name">Finley</div><div class="team-role">Builder / Engineer</div></div>
-        <div class="team-status"><div class="status-dot sd-amber"></div>Not assigned</div>
-        <div class="team-note"><strong>Available for</strong>Product engineering, feature work, infrastructure.</div>
+        <div class="avatar">🖥️</div>
+        <div><div class="team-name">Finley</div><div class="team-role">Frontend Engineer</div></div>
+        <div class="team-status"><div class="status-dot sd-amber"></div>Available</div>
+        <div class="team-note"><strong>Available for</strong>Product UI work, renderer components, CSS, interaction polish.</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-blue">Dev</span></div>
       </div>
 
       <div class="team-card">
-        <div class="avatar">📐</div>
-        <div><div class="team-name">Emery</div><div class="team-role">Architecture</div></div>
-        <div class="team-status"><div class="status-dot sd-amber"></div>Not assigned</div>
+        <div class="avatar">🏗️</div>
+        <div><div class="team-name">Emery</div><div class="team-role">Technical Architect</div></div>
+        <div class="team-status"><div class="status-dot sd-amber"></div>Available</div>
         <div class="team-note"><strong>Role</strong>Signs off on architecture before anything gets built. First call for any design question.</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-accent">Architecture</span></div>
       </div>
 
       <div class="team-card">
-        <div class="avatar">📝</div>
-        <div><div class="team-name">Dee</div><div class="team-role">Specs</div></div>
-        <div class="team-status"><div class="status-dot sd-amber"></div>Not assigned</div>
-        <div class="team-note"><strong>Role</strong>Writes specs for exactly what was asked. Never scopes beyond the brief.</div>
+        <div class="avatar">🎨</div>
+        <div><div class="team-name">Dee</div><div class="team-role">UX &amp; Design</div></div>
+        <div class="team-status"><div class="status-dot sd-amber"></div>Available</div>
+        <div class="team-note"><strong>Role</strong>Writes specs for exactly what was asked. Senior minimalist — never scopes beyond the brief.</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-amber">Specs</span></div>
       </div>
 
       <div class="team-card">
-        <div class="avatar">🔍</div>
-        <div><div class="team-name">Cedar</div><div class="team-role">QA / Testing</div></div>
-        <div class="team-status"><div class="status-dot sd-amber"></div>Not assigned</div>
-        <div class="team-note"><strong>Role</strong>Manual testing only. Give her a running app and ask what she sees.</div>
+        <div class="avatar">🌲</div>
+        <div><div class="team-name">Cedar</div><div class="team-role">QA &amp; Testing</div></div>
+        <div class="team-status"><div class="status-dot sd-amber"></div>Available</div>
+        <div class="team-note"><strong>Role</strong>Manual testing only. Give her a running app and ask what she sees. Never writes specs or reads docs.</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-red">QA</span></div>
       </div>
 
