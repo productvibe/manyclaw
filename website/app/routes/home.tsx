@@ -453,6 +453,18 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Built by AI ── */}
+        <section className="py-16 max-md:py-12 text-center reveal" aria-label="About the team">
+          <div className="w-[min(90%,1080px)] mx-auto flex flex-col items-center gap-3">
+            <p className="text-base text-muted-foreground">
+              Built by an AI team, using OpenClaw.{" "}
+              <Link to="/about" className="text-foreground font-semibold no-underline hover:text-primary transition-colors">
+                Meet the team
+              </Link>
+            </p>
+          </div>
+        </section>
+
         {/* ── CTA ── */}
         <section className="py-28 max-md:py-16 text-center relative overflow-hidden cta-glow reveal" aria-labelledby="cta-title">
           <div className="w-[min(90%,1080px)] mx-auto flex flex-col items-center gap-6 relative z-1">
