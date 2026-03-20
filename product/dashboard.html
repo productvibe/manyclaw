@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ManyClaw — Product Dashboard</title>
+  <style>
+    /* ─── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── THEMES ─────────────────────────────────────────────── */
+    :root,
+    [data-theme="light"] {
+      --bg:          #FFFFFF;
+      --bg-main:     #F7F7F7;
+      --sidebar-bg:  #FAFAFA;
+      --surface:     #FFFFFF;
+      --surface2:    #F3F3F3;
+      --border:      #E8E8E8;
+      --text:        #0F0F0F;
+      --text-2:      #6B6B6B;
+      --text-3:      #ABABAB;
+      --accent:      #5E6AD2;
+      --accent-bg:   #EEEFFE;
+      --accent-text: #4952B8;
+      --green:       #26A96C;
+      --green-bg:    #EAF7F1;
+      --amber:       #D97706;
+      --amber-bg:    #FEF3E2;
+      --avatar-bg:   #EBEBEB;
+      --avatar-text: #555555;
+      --nav-active-bg: #EBEBEB;
+      --nav-active-text: #0F0F0F;
+      --nav-hover-bg: #F0F0F0;
+      --switcher-active-bg: #0F0F0F;
+      --switcher-active-text: #FFFFFF;
+      --switcher-bg: #F0F0F0;
+      --switcher-text: #6B6B6B;
+      --tag-done-bg: #EAF7F1;
+      --tag-done-text: #26A96C;
+      --tag-active-bg: #FEF3E2;
+      --tag-active-text: #D97706;
+    }
+
+    [data-theme="dark"] {
+      --bg:          #0F0F0F;
+      --bg-main:     #0F0F0F;
+      --sidebar-bg:  #161616;
+      --surface:     #1C1C1C;
+      --surface2:    #252525;
+      --border:      #2A2A2A;
+      --text:        #F0F0F0;
+      --text-2:      #8A8A8A;
+      --text-3:      #555555;
+      --accent:      #7C84E0;
+      --accent-bg:   #1E1F3A;
+      --accent-text: #9BA2E8;
+      --green:       #34C97A;
+      --green-bg:    #0F2B1E;
+      --amber:       #F0A030;
+      --amber-bg:    #2A1F0A;
+      --avatar-bg:   #2C2C2C;
+      --avatar-text: #AAAAAA;
+      --nav-active-bg: #272727;
+      --nav-active-text: #F0F0F0;
+      --nav-hover-bg: #1E1E1E;
+      --switcher-active-bg: #F0F0F0;
+      --switcher-active-text: #0F0F0F;
+      --switcher-bg: #252525;
+      --switcher-text: #8A8A8A;
+      --tag-done-bg: #0F2B1E;
+      --tag-done-text: #34C97A;
+      --tag-active-bg: #2A1F0A;
+      --tag-active-text: #F0A030;
+    }
+
+    [data-theme="manyclaw"] {
+      --bg:          #1C1710;
+      --bg-main:     #1C1710;
+      --sidebar-bg:  #231D14;
+      --surface:     #2A2218;
+      --surface2:    #332A1E;
+      --border:      #3D3226;
+      --text:        #F5EFE6;
+      --text-2:      #9A8A76;
+      --text-3:      #5E5040;
+      --accent:      #FF6B35;
+      --accent-bg:   #2E1E10;
+      --accent-text: #FF8A5C;
+      --green:       #52C97A;
+      --green-bg:    #0D2318;
+      --amber:       #F0A030;
+      --amber-bg:    #2A1C08;
+      --avatar-bg:   #3A2E20;
+      --avatar-text: #C8A882;
+      --nav-active-bg: #3A2E20;
+      --nav-active-text: #FF6B35;
+      --nav-hover-bg: #2E2418;
+      --switcher-active-bg: #FF6B35;
+      --switcher-active-text: #FFFFFF;
+      --switcher-bg: #2E2418;
+      --switcher-text: #9A8A76;
+      --tag-done-bg: #0D2318;
+      --tag-done-text: #52C97A;
+      --tag-active-bg: #2A1C08;
+      --tag-active-text: #F0A030;
+    }
+
+    /* ─── BASE ───────────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-main);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── SIDEBAR ────────────────────────────────────────────── */
+    .sidebar {
+      width: 220px;
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      padding: 20px 10px 24px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 10;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 24px;
+    }
+    .sidebar-logo-mark {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .sidebar-logo-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      padding: 16px 10px 5px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      height: 32px;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--text-2);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.1s, color 0.1s;
+      white-space: nowrap;
+    }
+    .nav-item:hover { background: var(--nav-hover-bg); color: var(--text); }
+    .nav-item.active {
+      background: var(--nav-active-bg);
+      color: var(--nav-active-text);
+      font-weight: 600;
+    }
+    .nav-icon {
+      font-size: 13px;
+      width: 16px;
+      text-align: center;
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
+    .nav-item.active .nav-icon { opacity: 1; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 10px 0;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-3);
+    }
+    .sidebar-footer-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* ─── MAIN ───────────────────────────────────────────────── */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      padding: 0;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px 0;
+      max-width: calc(860px + 96px);
+    }
+
+    .header-left { display: flex; flex-direction: column; gap: 6px; }
+
+    .header-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: var(--text);
+    }
+    .version-badge {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--amber);
+      background: var(--amber-bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+    }
+    .status-badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+    .header-meta {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    /* ─── THEME SWITCHER ─────────────────────────────────────── */
+    .theme-switcher {
+      display: flex;
+      align-items: center;
+      background: var(--switcher-bg);
+      border-radius: 6px;
+      padding: 3px;
+      gap: 1px;
+    }
+    .theme-btn {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--switcher-text);
+      transition: background 0.12s, color 0.12s;
+      white-space: nowrap;
+    }
+    .theme-btn:hover { color: var(--text); }
+    .theme-btn.active {
+      background: var(--switcher-active-bg);
+      color: var(--switcher-active-text);
+      font-weight: 600;
+    }
+
+    /* ─── CONTENT ────────────────────────────────────────────── */
+    .content {
+      max-width: 860px;
+      padding: 32px 48px 80px;
+    }
+
+    /* ─── SECTION ────────────────────────────────────────────── */
+    .section { margin-bottom: 44px; }
+
+    .section-header {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ─── PRODUCT SECTION ────────────────────────────────────── */
+    .product-summary {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-2);
+      margin-bottom: 20px;
+    }
+    .product-summary strong { color: var(--text); font-weight: 600; }
+
+    .key-facts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .fact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--surface);
+    }
+    .fact-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-3);
+      width: 72px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .fact-value {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .fact-value code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 12px;
+      background: var(--surface2);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--accent-text);
+    }
+
+    .shipped-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      margin-bottom: 10px;
+    }
+    .shipped-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+    .shipped-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 0;
+      font-size: 13px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+    .shipped-item:nth-last-child(-n+2) { border-bottom: none; }
+    .check-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--green-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .check-icon svg { width: 9px; height: 9px; }
+
+    /* ─── TEAM SECTION ───────────────────────────────────────── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: #FFFFFF;
+    }
+
+    .avatar-orange  { background: #E8612A; }
+    .avatar-blue    { background: #3B7FC4; }
+    .avatar-teal    { background: #2A9D8F; }
+    .avatar-purple  { background: #7B5EA7; }
+    .avatar-slate   { background: #5E7A9D; }
+    .avatar-green   { background: #2A9D6F; }
+    .avatar-pink    { background: #C96B8A; }
+
+    .team-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .team-role {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-3);
+    }
+    .team-desc {
+      font-size: 11.5px;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    /* ─── TASKS SECTION ──────────────────────────────────────── */
+    .task-group { margin-bottom: 24px; }
+    .task-group-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      padding: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .task-group-count {
+      font-size: 10.5px;
+      font-weight: 600;
+      background: var(--surface2);
+      color: var(--text-3);
+      border-radius: 10px;
+      padding: 0 6px;
+      line-height: 16px;
+    }
+
+    .task-list { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      height: 36px;
+      border-bottom: 1px solid var(--border);
+      cursor: default;
+      transition: background 0.1s;
+    }
+    .task-row:last-child { border-bottom: none; }
+    .task-row:hover { background: var(--nav-hover-bg); }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-todo     { background: var(--text-3); }
+    .dot-progress { background: var(--amber); }
+    .dot-done     { background: var(--green); }
+
+    .task-title {
+      font-size: 13px;
+      color: var(--text);
+      flex: 1;
+    }
+    .task-title.done {
+      color: var(--text-3);
+      text-decoration: line-through;
+    }
+    .task-note {
+      font-size: 11.5px;
+      color: var(--text-3);
+    }
+
+    /* ─── FOOTER NOTE ────────────────────────────────────────── */
+    .footer-note {
+      font-size: 12px;
+      color: var(--text-3);
+      padding: 20px 0 0;
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+    .footer-note strong { color: var(--text-2); font-weight: 600; }
+
+    /* ─── SCROLLBAR ──────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-mark">M</div>
+      <span class="sidebar-logo-text">ManyClaw</span>
+    </div>
+
+    <div class="nav-section-label">Product</div>
+    <a class="nav-item active" href="#product">
+      <span class="nav-icon">◈</span> Overview
+    </a>
+    <a class="nav-item" href="#team">
+      <span class="nav-icon">◎</span> Team
+    </a>
+    <a class="nav-item" href="#tasks">
+      <span class="nav-icon">◻</span> Open Tasks
+    </a>
+
+    <div class="nav-section-label">Links</div>
+    <a class="nav-item" href="https://manyclaw.app" target="_blank">
+      <span class="nav-icon">↗</span> Website
+    </a>
+    <a class="nav-item" href="https://github.com/productvibe/manyclaw" target="_blank">
+      <span class="nav-icon">↗</span> GitHub
+    </a>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-row">
+        <div class="live-dot"></div>
+        Active development
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ────────────────────────────────────────────── -->
+  <div class="main">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <div class="header-title-row">
+          <span class="header-title">ManyClaw</span>
+          <span class="version-badge">v0.0.1</span>
+          <span class="status-badge">
+            <span class="status-badge-dot"></span>
+            Active development
+          </span>
+        </div>
+        <div class="header-meta">Last updated 2026-03-20</div>
+      </div>
+      <div class="theme-switcher" role="group" aria-label="Theme">
+        <button class="theme-btn active" data-theme="light" onclick="setTheme('light')">Light</button>
+        <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')">Dark</button>
+        <button class="theme-btn" data-theme="manyclaw" onclick="setTheme('manyclaw')">ManyClaw</button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- ── PRODUCT ──────────────────────────────────────── -->
+      <div class="section" id="product">
+        <div class="section-header">Overview</div>
+
+        <p class="product-summary">
+          <strong>ManyClaw</strong> is a native macOS app for running multiple OpenClaw AI agents side by side.
+          Think browser profiles, but for AI: each instance is fully isolated with its own identity, memory,
+          sessions, and config. One window, a sidebar of named color-coded agents, one click to start.
+          No terminal required, no port management, no config files. Just agents.
+        </p>
+
+        <div class="key-facts">
+          <div class="fact-row">
+            <div class="fact-label">Platform</div>
+            <div class="fact-value">macOS (Apple Silicon)</div>
+          </div>
+          <div class="fact-row">
+            <div class="fact-label">Stack</div>
+            <div class="fact-value">Electron + React + TypeScript</div>
+          </div>
+          <div class="fact-row">
+            <div class="fact-label">License</div>
+            <div class="fact-value"><code>GPL-3.0</code></div>
+          </div>
+          <div class="fact-row">
+            <div class="fact-label">Repo</div>
+            <div class="fact-value"><code>apps/desktop</code> &nbsp;/&nbsp; <code>website</code> &nbsp;/&nbsp; <code>product</code></div>
+          </div>
+        </div>
+
+        <div class="shipped-label">Shipped features</div>
+        <div class="shipped-list">
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Create, start, stop, delete instances
+          </div>
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Sidebar with drag to reorder
+          </div>
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Console log view per instance
+          </div>
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Interactive TUI toggle
+          </div>
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            In-app chat
+          </div>
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Open in browser (authenticated)
+          </div>
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Signed and notarized DMG
+          </div>
+          <div class="shipped-item">
+            <div class="check-icon">
+              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            First-run default instance
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TEAM ─────────────────────────────────────────── -->
+      <div class="section" id="team">
+        <div class="section-header">The Team</div>
+        <div class="team-grid">
+
+          <div class="team-card">
+            <div class="avatar avatar-orange">AL</div>
+            <div>
+              <div class="team-name">Alex</div>
+              <div class="team-role">Product Manager</div>
+            </div>
+            <div class="team-desc">Keeps the team aligned. Thinks in outcomes, ships things that matter.</div>
+          </div>
+
+          <div class="team-card">
+            <div class="avatar avatar-blue">BR</div>
+            <div>
+              <div class="team-name">Brook</div>
+              <div class="team-role">Engineer</div>
+            </div>
+            <div class="team-desc">Owns the main process, IPC, and instance lifecycle.</div>
+          </div>
+
+          <div class="team-card">
+            <div class="avatar avatar-teal">FN</div>
+            <div>
+              <div class="team-name">Finley</div>
+              <div class="team-role">Frontend</div>
+            </div>
+            <div class="team-desc">Builds the React UI. Owns the renderer and component library.</div>
+          </div>
+
+          <div class="team-card">
+            <div class="avatar avatar-purple">DE</div>
+            <div>
+              <div class="team-name">Dee</div>
+              <div class="team-role">UX</div>
+            </div>
+            <div class="team-desc">Writes specs and UX flows. Scope-minded, detail-oriented.</div>
+          </div>
+
+          <div class="team-card">
+            <div class="avatar avatar-slate">EM</div>
+            <div>
+              <div class="team-name">Emery</div>
+              <div class="team-role">Architect</div>
+            </div>
+            <div class="team-desc">Signs off on architecture before anything gets built.</div>
+          </div>
+
+          <div class="team-card">
+            <div class="avatar avatar-green">CE</div>
+            <div>
+              <div class="team-name">Cedar</div>
+              <div class="team-role">QA</div>
+            </div>
+            <div class="team-desc">Manual testing. Finds what breaks before users do.</div>
+          </div>
+
+          <div class="team-card">
+            <div class="avatar avatar-pink">GR</div>
+            <div>
+              <div class="team-name">Gray</div>
+              <div class="team-role">Marketing</div>
+            </div>
+            <div class="team-desc">Shapes the story. Owns positioning and copy.</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── TASKS ─────────────────────────────────────────── -->
+      <div class="section" id="tasks">
+        <div class="section-header">Open Tasks</div>
+
+        <!-- Release -->
+        <div class="task-group">
+          <div class="task-group-label">
+            Release <span class="task-group-count">3</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row">
+              <span class="status-dot dot-progress"></span>
+              <span class="task-title">Rebuild DMG with updated rounded icon</span>
+              <span class="task-note">New icon ready, needs dist:mac run</span>
+            </div>
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Push release to GitHub</span>
+              <span class="task-note">Tag v0.0.1, attach DMG artifact</span>
+            </div>
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Connect website domain to Cloudflare</span>
+              <span class="task-note">manyclaw.app DNS pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Website -->
+        <div class="task-group">
+          <div class="task-group-label">
+            Website <span class="task-group-count">2</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Verify about page renders correctly</span>
+              <span class="task-note">Check on local dev build</span>
+            </div>
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Build and deploy website</span>
+              <span class="task-note">First public deploy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- App -->
+        <div class="task-group">
+          <div class="task-group-label">
+            App <span class="task-group-count">2</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Write CONTRIBUTING.md</span>
+              <span class="task-note">Dev setup, build process, PR guidelines</span>
+            </div>
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Add GitHub Actions build workflow</span>
+              <span class="task-note">CI on push, optional notarized release build</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backlog -->
+        <div class="task-group">
+          <div class="task-group-label">
+            Backlog <span class="task-group-count">3</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Intel (x86) build support</span>
+              <span class="task-note">Requires cross-compiled node-pty</span>
+            </div>
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Auto-update mechanism</span>
+              <span class="task-note">electron-updater via GitHub Releases</span>
+            </div>
+            <div class="task-row">
+              <span class="status-dot dot-todo"></span>
+              <span class="task-title">Windows and Linux exploration</span>
+              <span class="task-note">Feasibility only; not committed</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── FOOTER ────────────────────────────────────────── -->
+      <div class="footer-note">
+        <strong>How to update:</strong> This file is maintained by Alex. Updated during heartbeat checks.
+        Edit directly to reflect current state.
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── THEME SWITCHER ──────────────────────────────────────
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('mc-dashboard-theme', theme);
+      document.querySelectorAll('.theme-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-theme') === theme);
+      });
+    }
+
+    (function() {
+      var saved = localStorage.getItem('mc-dashboard-theme');
+      if (saved && ['light','dark','manyclaw'].indexOf(saved) !== -1) {
+        setTheme(saved);
+      }
+    })();
+
+    // ── SIDEBAR NAV HIGHLIGHT ──────────────────────────────
+    var navItems = document.querySelectorAll('.nav-item[href^="#"]');
+    var sections = ['product','team','tasks'].map(function(id) {
+      return document.getElementById(id);
+    });
+
+    window.addEventListener('scroll', function() {
+      var scrollY = window.scrollY + 120;
+      var active = sections[0];
+      sections.forEach(function(s) {
+        if (s && s.offsetTop <= scrollY) active = s;
+      });
+      navItems.forEach(function(item) {
+        var href = item.getAttribute('href').slice(1);
+        item.classList.toggle('active', href === active.id);
+      });
+    }, { passive: true });
+
+    navItems.forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        var target = document.getElementById(item.getAttribute('href').slice(1));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+
+</body>
+</html>
