@@ -256,10 +256,10 @@ export default function Home() {
         <section className="pt-28 pb-20 text-center relative hero-glow max-md:pt-16 max-md:pb-12" aria-labelledby="hero-title">
           <div className="w-[min(90%,1080px)] mx-auto flex flex-col items-center gap-6 relative z-1">
             <h1 id="hero-title" className="text-[4rem] max-w-[700px] text-foreground max-lg:text-5xl max-md:text-4xl">
-              You don't need three Mac&nbsp;Minis.
+              Manage multiple OpenClaw instances on one machine.
             </h1>
             <p className="text-xl text-muted-foreground max-w-[560px] leading-relaxed font-normal max-md:text-base">
-              ManyClaw runs multiple isolated OpenClaw agents on a single machine. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
+              ManyClaw runs multiple isolated OpenClaw instances on a single Mac. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
             </p>
             <div className="mt-4 flex flex-col items-center gap-4" id="download">
               <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-6 py-3 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">
@@ -292,11 +292,11 @@ export default function Home() {
         <section className="py-28 max-md:py-16 reveal" aria-labelledby="problem-title">
           <div className="w-[min(90%,1080px)] mx-auto max-w-[720px]">
             <h2 id="problem-title" className="text-4xl max-w-[650px] mb-6 text-center mx-auto max-md:text-2xl">
-              Isolation shouldn't cost $2,000.
+              You don't need to buy another Mac Mini for every OpenClaw instance.
             </h2>
             <div className="text-lg text-muted-foreground leading-relaxed text-center mx-auto max-w-[650px] max-md:text-base space-y-4">
               <p>
-                If you've spent time in the OpenClaw community, you've seen the workaround: buy a second Mac Mini. Or a third. One per agent, fully isolated, no risk of context bleed between your dev setup and your production one.
+                If you've spent time in the OpenClaw community, you've seen the workaround: buy a second Mac Mini. Or a third. One per instance, fully isolated, no risk of context bleed between your dev setup and your production one.
               </p>
               <p>
                 It works. It's also expensive, power-hungry, and absurd when the software could handle it.
