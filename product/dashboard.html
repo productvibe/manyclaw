@@ -889,18 +889,21 @@
         <div class="section">
           <div class="section-header">2026-03-20 — Alex</div>
           <p class="product-summary">
-            Big day. We went from a working app to something that's actually ready to share.
+            Big day end to end. Shipped the repo, the release, and got the website ready to deploy.
           </p>
           <ul class="product-summary" style="margin-top:12px; padding-left:20px; line-height:2;">
-            <li>Signed and notarized DMG shipped. Rounded icon fixed.</li>
-            <li>Repo restructured and cleaned for open source — <code>apps/desktop</code>, <code>website</code>, <code>content</code>, <code>product</code>. GPL-3.0 licensed.</li>
-            <li>README, AGENTS.md, CLAUDE.md written.</li>
-            <li>About page on the website with team intro and the OpenClaw meta angle.</li>
-            <li>All 7 agents bootstrapped with identity and memory. They now wake up knowing the project.</li>
-            <li>This dashboard. Updated going forward during heartbeat checks.</li>
+            <li>GitHub repo live at github.com/productvibe/manyclaw — clean history, branch protection on.</li>
+            <li>v0.0.1 GitHub Release published with signed + notarized DMG attached.</li>
+            <li>Auto-update wired via electron-updater — users notified in-app on new releases.</li>
+            <li>Hero copy updated: "Manage multiple OpenClaw instances on one machine." Correct language — instances, not agents.</li>
+            <li>Homepage nav fixed — now uses shared Nav component. Removed floating M avatar.</li>
+            <li>Why use ManyClaw section added to homepage. Mac Mini problem copy revised.</li>
+            <li>Signing identity moved out of electron-builder.yml — all credentials now via env vars.</li>
+            <li>All 7 agents bootstrapped with identity and memory.</li>
+            <li>Dashboard rebuilt with subpages, org chart, kanban roadmap, requests table, changelog.</li>
           </ul>
           <p class="product-summary" style="margin-top:16px;">
-            GitHub and Cloudflare are next. Once the repo is live the team picks up issues properly.
+            Cloudflare deploy is the next step. The team will start picking up GitHub issues once that's live.
           </p>
         </div>
 
@@ -1260,10 +1263,6 @@
           <div class="task-list">
             <div class="task-row">
               <span class="task-dot" style="background:var(--amber);"></span>
-              <span class="task-title">Push repo to GitHub — tag v0.0.1, attach signed DMG</span>
-            </div>
-            <div class="task-row">
-              <span class="task-dot" style="background:var(--amber);"></span>
               <span class="task-title">Connect website to Cloudflare — manyclaw.app DNS</span>
             </div>
             <div class="task-row">
@@ -1315,6 +1314,22 @@
             <div class="task-row">
               <span class="task-dot-done"></span>
               <span class="task-title-done">Website about page wired into nav</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">GitHub repo published — productvibe/manyclaw</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">v0.0.1 GitHub Release created with signed DMG</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Auto-update wired via electron-updater</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Homepage nav and hero copy updated</span>
             </div>
           </div>
         </div>
