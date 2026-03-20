@@ -206,11 +206,54 @@
       flex-shrink: 0;
     }
 
-    /* ─── THEME CYCLE BUTTON ─────────────────────────────────── */
-    .theme-cycle-btn {
+    /* ─── SETTINGS ───────────────────────────────────────────── */
+    .settings-toggle {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-2);
+      user-select: none;
+    }
+    .settings-toggle:hover { background: var(--nav-hover-bg); color: var(--text); }
+    .settings-drawer {
+      padding: 10px 10px 4px;
+      display: none;
+    }
+    .settings-drawer.open { display: block; }
+    .settings-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+    .settings-themes {
+      display: flex;
+      gap: 6px;
+    }
+    .theme-btn {
+      flex: 1;
+      padding: 5px 0;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--surface);
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .theme-btn:hover { background: var(--nav-hover-bg); color: var(--text); }
+    .theme-btn.active { background: var(--nav-active-bg); color: var(--nav-active-text); border-color: var(--accent); }
+
+    /* ─── THEME CYCLE BUTTON (legacy, hidden) ────────────────── */
+    .theme-cycle-btn {
+      display: none;
       width: 32px;
       height: 32px;
       border-radius: 6px;
@@ -743,7 +786,18 @@
     </div>
 
     <div class="sidebar-footer">
-      <button class="theme-cycle-btn" id="themeCycleBtn" onclick="cycleTheme()" title="Toggle theme">☀️</button>
+      <div class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
+        <span class="nav-icon">⚙</span> Settings
+        <span id="settingsArrow" style="margin-left:auto; font-size:10px; color:var(--text-3);">▲</span>
+      </div>
+      <div class="settings-drawer" id="settingsDrawer">
+        <div class="settings-label">Theme</div>
+        <div class="settings-themes">
+          <button class="theme-btn" id="themeLight" onclick="setTheme('light')">Light</button>
+          <button class="theme-btn" id="themeDark" onclick="setTheme('dark')">Dark</button>
+          <button class="theme-btn" id="themeManyclaw" onclick="setTheme('manyclaw')">ManyClaw</button>
+        </div>
+      </div>
     </div>
   </aside>
 
@@ -1352,23 +1406,34 @@
       currentTheme = theme;
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('mc-dashboard-theme', theme);
-      var btn = document.getElementById('themeCycleBtn');
-      if (btn) btn.textContent = THEME_ICONS[theme];
+      // Update theme buttons
+      ['light','dark','manyclaw'].forEach(function(t) {
+        var btn = document.getElementById('theme' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) btn.classList.toggle('active', t === theme);
+      });
     }
 
     function cycleTheme() {
       var idx = THEMES.indexOf(currentTheme);
-      var next = THEMES[(idx + 1) % THEMES.length];
-      setTheme(next);
+      setTheme(THEMES[(idx + 1) % THEMES.length]);
+    }
+
+    function toggleSettings() {
+      var drawer = document.getElementById('settingsDrawer');
+      var arrow = document.getElementById('settingsArrow');
+      if (!drawer) return;
+      var open = drawer.classList.toggle('open');
+      if (arrow) arrow.textContent = open ? '▲' : '▼';
     }
 
     (function() {
       var saved = localStorage.getItem('mc-dashboard-theme');
-      if (saved && THEMES.indexOf(saved) !== -1) {
-        setTheme(saved);
-      } else {
-        setTheme('light');
-      }
+      setTheme((saved && THEMES.indexOf(saved) !== -1) ? saved : 'light');
+      // Open settings drawer by default
+      var drawer = document.getElementById('settingsDrawer');
+      var arrow = document.getElementById('settingsArrow');
+      if (drawer) drawer.classList.add('open');
+      if (arrow) arrow.textContent = '▲';
     })();
 
     // ── PANEL NAVIGATION ────────────────────────────────────
