@@ -23,11 +23,12 @@ mac:
   hardenedRuntime: true
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
-  # When signing, set APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID env vars
-  notarize: false  # set to true when credentials are configured
+  # Signing identity (from Keychain)
+  identity: "SEVEN LABS AS (JS353BKF9P)"
+  notarize: true
 
 dmg:
-  sign: false
+  sign: true
 
 # Don't publish yet
 publish: null
