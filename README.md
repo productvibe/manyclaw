@@ -104,6 +104,6 @@ website/          Marketing site (React Router + Tailwind)
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+GPL-3.0 — see [LICENSE](LICENSE)
 
 Built by [Productvibe](https://productvibe.io)
