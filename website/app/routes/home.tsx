@@ -300,24 +300,12 @@ export default function Home() {
                 <p className="text-muted-foreground leading-relaxed">Run a stable production instance alongside a dev instance where you try new skills, models, and configs. What breaks in dev stays in dev.</p>
               </div>
               <div>
-                <div className="text-lg font-semibold text-foreground mb-2">Test agent behaviour properly</div>
+                <div className="text-lg font-semibold text-foreground mb-2">Test OpenClaw properly</div>
                 <p className="text-muted-foreground leading-relaxed">Spin up a clean instance for testing without touching your main setup. Each instance has its own memory and session history from day one.</p>
               </div>
               <div>
                 <div className="text-lg font-semibold text-foreground mb-2">No terminal required</div>
                 <p className="text-muted-foreground leading-relaxed">Create, start, stop, and switch between instances from a single window. No flags, no port management, no config files.</p>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-foreground mb-2">Full OpenClaw isolation</div>
-                <p className="text-muted-foreground leading-relaxed">Each instance is a real OpenClaw profile — separate process, separate memory, separate workspace. Not a tab. Not a context. A completely isolated environment.</p>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-foreground mb-2">Switch instantly</div>
-                <p className="text-muted-foreground leading-relaxed">Click any instance in the sidebar. Console, TUI, and chat all follow. No windows to manage, no losing track of what's running where.</p>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-foreground mb-2">Open source</div>
-                <p className="text-muted-foreground leading-relaxed">GPL-3.0. Free to use, free to modify, free to build on. The team that builds ManyClaw uses ManyClaw to build it.</p>
               </div>
             </div>
           </div>
