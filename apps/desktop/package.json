@@ -2,7 +2,7 @@
   "name": "manyclaw",
   "version": "0.0.1",
   "description": "Manage multiple OpenClaw instances side by side",
-  "author": "SEVEN LABS AS",
+  "author": "Productvibe",
   "private": true,
   "type": "module",
   "main": "dist/main/main.js",
