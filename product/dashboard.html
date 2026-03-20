@@ -219,37 +219,73 @@
       user-select: none;
     }
     .settings-toggle:hover { background: var(--nav-hover-bg); color: var(--text); }
-    .settings-drawer {
-      padding: 10px 10px 4px;
+    /* ─── SETTINGS MODAL ────────────────────────────────────── */
+    .modal-backdrop {
       display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
     }
-    .settings-drawer.open { display: block; }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 340px;
+      padding: 24px;
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-3);
+      font-size: 18px;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .modal-close:hover { background: var(--nav-hover-bg); color: var(--text); }
     .settings-label {
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-3);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .settings-themes {
       display: flex;
-      gap: 6px;
+      gap: 8px;
     }
     .theme-btn {
       flex: 1;
-      padding: 5px 0;
+      padding: 8px 0;
       border: 1px solid var(--border);
-      border-radius: 5px;
+      border-radius: 6px;
       background: var(--surface);
       color: var(--text-2);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       transition: background 0.1s;
     }
     .theme-btn:hover { background: var(--nav-hover-bg); color: var(--text); }
-    .theme-btn.active { background: var(--nav-active-bg); color: var(--nav-active-text); border-color: var(--accent); }
+    .theme-btn.active { background: var(--nav-active-bg); color: var(--nav-active-text); border-color: var(--accent); font-weight: 600; }
 
     /* ─── THEME CYCLE BUTTON (legacy, hidden) ────────────────── */
     .theme-cycle-btn {
@@ -787,15 +823,6 @@
       </div>
       <div class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
         <span class="nav-icon">⚙</span> Settings
-        <span id="settingsArrow" style="margin-left:auto; font-size:10px; color:var(--text-3);">▲</span>
-      </div>
-      <div class="settings-drawer" id="settingsDrawer">
-        <div class="settings-label">Theme</div>
-        <div class="settings-themes">
-          <button class="theme-btn" id="themeLight" onclick="setTheme('light')">Light</button>
-          <button class="theme-btn" id="themeDark" onclick="setTheme('dark')">Dark</button>
-          <button class="theme-btn" id="themeManyclaw" onclick="setTheme('manyclaw')">ManyClaw</button>
-        </div>
       </div>
     </div>
   </aside>
@@ -1418,21 +1445,17 @@
     }
 
     function toggleSettings() {
-      var drawer = document.getElementById('settingsDrawer');
-      var arrow = document.getElementById('settingsArrow');
-      if (!drawer) return;
-      var open = drawer.classList.toggle('open');
-      if (arrow) arrow.textContent = open ? '▲' : '▼';
+      var modal = document.getElementById('settingsModal');
+      if (modal) modal.classList.toggle('open');
+    }
+    function closeSettingsOnBackdrop(e) {
+      if (e.target === document.getElementById('settingsModal')) toggleSettings();
     }
 
     (function() {
       var saved = localStorage.getItem('mc-dashboard-theme');
       setTheme((saved && THEMES.indexOf(saved) !== -1) ? saved : 'light');
-      // Open settings drawer by default
-      var drawer = document.getElementById('settingsDrawer');
-      var arrow = document.getElementById('settingsArrow');
-      if (drawer) drawer.classList.add('open');
-      if (arrow) arrow.textContent = '▲';
+
     })();
 
     // ── PANEL NAVIGATION ────────────────────────────────────
@@ -1484,6 +1507,22 @@
       }
     });
   </script>
+
+  <!-- ── SETTINGS MODAL ─────────────────────────────────────── -->
+  <div class="modal-backdrop" id="settingsModal" onclick="closeSettingsOnBackdrop(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Settings</div>
+        <button class="modal-close" onclick="toggleSettings()">✕</button>
+      </div>
+      <div class="settings-label">Theme</div>
+      <div class="settings-themes">
+        <button class="theme-btn" id="themeLight" onclick="setTheme('light')">Light</button>
+        <button class="theme-btn" id="themeDark" onclick="setTheme('dark')">Dark</button>
+        <button class="theme-btn" id="themeManyclaw" onclick="setTheme('manyclaw')">ManyClaw</button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
