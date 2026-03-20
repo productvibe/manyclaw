@@ -118,6 +118,7 @@ cd ~/Projects/manyclaw/apps/desktop
 APPLE_ID="developer@productamp.io" \
 APPLE_APP_SPECIFIC_PASSWORD="<app-specific-pw>" \
 APPLE_TEAM_ID="JS353BKF9P" \
+CSC_NAME="<Developer ID Application name>" \
 pnpm dist:mac
 ```
 
