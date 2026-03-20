@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import type { MetaFunction } from "react-router"
 import { Link } from "react-router"
+import Nav from "~/components/Nav"
 
 export const meta: MetaFunction = () => [
   { title: "ManyClaw — One machine. Multiple agents." },
@@ -248,31 +249,12 @@ export default function Home() {
       <div className="grain" aria-hidden="true" />
 
       {/* ── Nav ── */}
-      <header className="sticky top-0 z-100 bg-background/90 backdrop-blur-md border-b border-[--color-border-subtle]" role="banner">
-        <nav className="flex items-center justify-between h-17 w-[min(90%,1080px)] mx-auto" aria-label="Main navigation">
-          <a href="/" className="flex items-center gap-2.5 font-display font-extrabold text-xl text-foreground no-underline" aria-label="ManyClaw home">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-extrabold text-lg font-display">M</div>
-            <span>ManyClaw</span>
-            <span className="text-xs font-normal text-muted-foreground ml-1 max-md:hidden">One machine. Multiple agents.</span>
-          </a>
-          <div className="flex items-center gap-5 ml-8 relative top-0.5 max-md:hidden">
-            <Link to="/docs" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Docs</Link>
-            <Link to="/blog" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Blog</Link>
-          </div>
-          <div className="flex items-center gap-5 ml-auto">
-            <a href="https://github.com/productvibe/manyclaw" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-sm px-4 py-2 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">Download</Link>
-          </div>
-        </nav>
-      </header>
+      <Nav />
 
       <main>
         {/* ── Hero ── */}
         <section className="pt-28 pb-20 text-center relative hero-glow max-md:pt-16 max-md:pb-12" aria-labelledby="hero-title">
           <div className="w-[min(90%,1080px)] mx-auto flex flex-col items-center gap-6 relative z-1">
-            <div className="w-40 h-40 flex items-center justify-center mb-2 drop-shadow-[0_8px_24px_rgba(255,107,53,0.15)] animate-float max-md:w-30 max-md:h-30">
-              <div className="w-30 h-30 bg-primary rounded-[28px] flex items-center justify-center font-display font-extrabold text-5xl text-white shadow-[0_16px_48px_rgba(255,107,53,0.3)] max-md:w-[90px] max-md:h-[90px] max-md:text-4xl max-md:rounded-[22px]">M</div>
-            </div>
             <h1 id="hero-title" className="text-[4rem] max-w-[700px] text-foreground max-lg:text-5xl max-md:text-4xl">
               You don't need three Mac&nbsp;Minis.
             </h1>
