@@ -3,3 +3,11 @@ dist/
 .DS_Store
 *.local
 resources/openclaw
+
+release/
+apps/desktop/dist/
+apps/desktop/release/
+apps/website/build/
+.claude/
+**/.claude/
+**/node_modules/

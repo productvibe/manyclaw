@@ -1,5 +1,0 @@
-packages:
-  - website
-
-ignoredBuiltDependencies:
-  - node-pty
