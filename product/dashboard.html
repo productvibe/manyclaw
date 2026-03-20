@@ -1027,16 +1027,12 @@
               <div class="kanban-col-header">Now</div>
               <div class="kanban-cards">
                 <div class="kanban-card">
-                  <div class="kanban-card-title">Push repo to GitHub</div>
-                  <div class="kanban-card-note">Tag v0.0.1, attach signed DMG</div>
+                  <div class="kanban-card-title">macOS — stable v1</div>
+                  <div class="kanban-card-note">Polish the core experience. Reliable instance management, no rough edges.</div>
                 </div>
                 <div class="kanban-card">
-                  <div class="kanban-card-title">Connect website to Cloudflare</div>
-                  <div class="kanban-card-note">manyclaw.app DNS</div>
-                </div>
-                <div class="kanban-card">
-                  <div class="kanban-card-title">Verify about page on live site</div>
-                  <div class="kanban-card-note">Check rendered output post-deploy</div>
+                  <div class="kanban-card-title">Auto-update</div>
+                  <div class="kanban-card-note">In-app updates via GitHub Releases. Users should never have to manually download a DMG again.</div>
                 </div>
               </div>
             </div>
@@ -1046,20 +1042,16 @@
               <div class="kanban-col-header">Next</div>
               <div class="kanban-cards">
                 <div class="kanban-card">
-                  <div class="kanban-card-title">CONTRIBUTING.md</div>
-                  <div class="kanban-card-note">Dev setup, build process, PR guidelines</div>
+                  <div class="kanban-card-title">Anthropic Sandbox support</div>
+                  <div class="kanban-card-note">Run instances in Anthropic-managed sandboxes instead of local profiles. Deeper isolation, no local resource contention.</div>
                 </div>
                 <div class="kanban-card">
-                  <div class="kanban-card-title">GitHub Actions build workflow</div>
-                  <div class="kanban-card-note">CI on push, optional notarized release</div>
+                  <div class="kanban-card-title">Windows version</div>
+                  <div class="kanban-card-note">Electron supports it. Needs node-pty cross-compile and Windows code signing. Strong demand from the community.</div>
                 </div>
                 <div class="kanban-card">
-                  <div class="kanban-card-title">Intel (x86) build support</div>
-                  <div class="kanban-card-note">Requires cross-compiled node-pty</div>
-                </div>
-                <div class="kanban-card">
-                  <div class="kanban-card-title">Auto-update mechanism</div>
-                  <div class="kanban-card-note">electron-updater via GitHub Releases</div>
+                  <div class="kanban-card-title">macOS VM sandboxing</div>
+                  <div class="kanban-card-note">Each instance in a lightweight macOS VM. Maximum isolation for security-sensitive workflows.</div>
                 </div>
               </div>
             </div>
@@ -1069,19 +1061,20 @@
               <div class="kanban-col-header">Later</div>
               <div class="kanban-cards">
                 <div class="kanban-card">
-                  <div class="kanban-card-title">Windows build exploration</div>
-                  <div class="kanban-card-note">Feasibility only</div>
+                  <div class="kanban-card-title">Multi-runtime support</div>
+                  <div class="kanban-card-note">Manage non-OpenClaw agent runtimes. ManyClaw becomes the universal agent manager.</div>
                 </div>
                 <div class="kanban-card">
-                  <div class="kanban-card-title">Linux build exploration</div>
-                  <div class="kanban-card-note">Feasibility only</div>
+                  <div class="kanban-card-title">Linux version</div>
+                  <div class="kanban-card-note">For server and developer workflows. Lower priority than Windows.</div>
                 </div>
                 <div class="kanban-card">
-                  <div class="kanban-card-title">Homebrew cask distribution</div>
+                  <div class="kanban-card-title">Homebrew cask</div>
+                  <div class="kanban-card-note">Standard macOS distribution channel for developers.</div>
                 </div>
                 <div class="kanban-card">
-                  <div class="kanban-card-title">App Store submission</div>
-                  <div class="kanban-card-note">Requires sandboxing audit</div>
+                  <div class="kanban-card-title">Instance templates</div>
+                  <div class="kanban-card-note">Pre-configured instance types — dev, production, test. One click to spin up a known-good config.</div>
                 </div>
               </div>
             </div>
@@ -1097,6 +1090,32 @@
         <div><div class="page-title">Tasks</div></div>
       </div>
       <div class="content">
+        <div class="section">
+          <div class="section-header">Up next</div>
+          <div class="task-list">
+            <div class="task-row">
+              <span class="task-dot" style="background:var(--amber)"></span>
+              <span class="task-title">Push repo to GitHub — tag v0.0.1, attach signed DMG</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot" style="background:var(--amber)"></span>
+              <span class="task-title">Connect website to Cloudflare — manyclaw.app DNS</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot" style="background:var(--amber)"></span>
+              <span class="task-title">Verify about page renders correctly on live site</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot" style="background:var(--text-3)"></span>
+              <span class="task-title">Write CONTRIBUTING.md — dev setup, build process, PR guidelines</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot" style="background:var(--text-3)"></span>
+              <span class="task-title">GitHub Actions build workflow — CI on push</span>
+            </div>
+          </div>
+        </div>
+
         <div class="section">
           <div class="section-header">Completed</div>
           <div class="task-list">
