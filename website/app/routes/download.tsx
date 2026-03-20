@@ -61,7 +61,7 @@ export default function Download() {
             marginBottom: "2.5rem",
           }}
         >
-          ↓ Download ManyClaw 0.1 (.dmg)
+          ↓ Download ManyClaw v0.0.1 (.dmg)
         </a>
 
         {/* Requirements */}
@@ -97,7 +97,7 @@ export default function Download() {
             }}
           >
             <li>macOS 13 Ventura or later</li>
-            <li>Apple Silicon or Intel</li>
+            <li>Apple Silicon (arm64)</li>
           </ul>
         </div>
 
