@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react"
 import type { MetaFunction } from "react-router"
 import { Link } from "react-router"
 import Nav from "~/components/Nav"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 
 export const meta: MetaFunction = () => [
   { title: "ManyClaw — One machine. Multiple agents." },
@@ -262,9 +264,9 @@ export default function Home() {
               The simplest way to run multiple isolated OpenClaw instances on one Mac. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
             </p>
             <div className="mt-4 flex flex-col items-center gap-4" id="download">
-              <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-6 py-3 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">
-                Download for macOS
-              </Link>
+              <Button asChild size="lg" className="px-6 py-3 text-base rounded-sm">
+                <Link to="/download">Download for macOS</Link>
+              </Button>
             </div>
           </div>
           <div className="w-[min(95%,1300px)] mx-auto mt-12 relative z-1" style={{ perspective: 1800 }} ref={wrapRef}>
@@ -284,34 +286,7 @@ export default function Home() {
               />
             </div>
           </div>
-          <p className="text-center text-muted-foreground mt-8 text-base max-md:text-sm w-[min(90%,1080px)] mx-auto">
-            You don't need to buy another Mac Mini for every OpenClaw instance.
-          </p>
-        </section>
 
-        <Separator />
-
-        {/* ── Why ManyClaw ── */}
-        <section className="py-28 max-md:py-16 reveal" aria-labelledby="why-title">
-          <div className="w-[min(90%,1080px)] mx-auto">
-            <h2 id="why-title" className="text-4xl mb-12 text-center max-md:text-2xl max-md:mb-8">
-              Why use ManyClaw?
-            </h2>
-            <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
-              <div>
-                <div className="text-lg font-semibold text-foreground mb-2">Keep work and experiments separate</div>
-                <p className="text-muted-foreground leading-relaxed">Run a stable production instance alongside a dev instance where you try new skills, models, and configs. What breaks in dev stays in dev.</p>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-foreground mb-2">Test OpenClaw properly</div>
-                <p className="text-muted-foreground leading-relaxed">Spin up a clean instance for testing without touching your main setup. Each instance has its own memory and session history from day one.</p>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-foreground mb-2">No terminal required</div>
-                <p className="text-muted-foreground leading-relaxed">Create, start, stop, and switch between instances from a single window. No flags, no port management, no config files.</p>
-              </div>
-            </div>
-          </div>
         </section>
 
         <Separator />
@@ -320,7 +295,7 @@ export default function Home() {
         <section className="py-28 max-md:py-16 reveal" aria-labelledby="problem-title">
           <div className="w-[min(90%,1080px)] mx-auto max-w-[720px]">
             <h2 id="problem-title" className="text-4xl max-w-[650px] mb-6 text-center mx-auto max-md:text-2xl">
-              The problem it solves.
+              Don't buy a Mac Mini for every claw.
             </h2>
             <div className="text-lg text-muted-foreground leading-relaxed text-center mx-auto max-w-[650px] max-md:text-base space-y-4">
               <p>
@@ -339,6 +314,43 @@ export default function Home() {
 
         <Separator />
 
+        {/* ── Why ManyClaw ── */}
+        <section className="py-28 max-md:py-16 reveal" aria-labelledby="why-title">
+          <div className="w-[min(90%,1080px)] mx-auto">
+            <h2 id="why-title" className="text-4xl mb-12 text-center max-md:text-2xl max-md:mb-8">
+              Why use ManyClaw?
+            </h2>
+            <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
+              <Card className="bg-transparent ring-0 shadow-none">
+                <CardHeader>
+                  <CardTitle className="text-lg">Keep work and experiments separate</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">Run a stable production instance alongside a dev instance where you try new skills, models, and configs. What breaks in dev stays in dev.</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-transparent ring-0 shadow-none">
+                <CardHeader>
+                  <CardTitle className="text-lg">Test OpenClaw properly</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">Spin up a clean instance for testing without touching your main setup. Each instance has its own memory and session history from day one.</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-transparent ring-0 shadow-none">
+                <CardHeader>
+                  <CardTitle className="text-lg">No terminal required</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">Create, start, stop, and switch between instances from a single window. No flags, no port management, no config files.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        <Separator />
+
         {/* ── Features Bento ── */}
         <section className="py-28 max-md:py-16 reveal" id="features" aria-labelledby="solution-title">
           <div className="w-[min(90%,1080px)] mx-auto">
@@ -347,65 +359,75 @@ export default function Home() {
             </h2>
             <div className="bento-grid mt-12" id="how-it-works">
               {/* 1. Named profiles in a sidebar */}
-              <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
+              <Card className="bento-card bg-white/10 rounded-sm ring-[--color-border-subtle] py-0 gap-0">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <SidebarVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Named profiles in a sidebar</h3>
-                <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Colour-coded agents — green for running, grey for stopped. Start, stop, or restart any instance with one click. Drag to reorder. Status at a glance.
-                </p>
-              </div>
+                <CardHeader className="px-8 pt-6 pb-0">
+                  <CardTitle className="text-xl font-normal font-display">Named profiles in a sidebar</CardTitle>
+                </CardHeader>
+                <CardContent className="px-8 pb-8">
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Every instance listed by name with its status. Start, stop, or restart any one with a single click. Drag to reorder. Status at a glance.
+                  </p>
+                </CardContent>
+              </Card>
               {/* 2. Real isolation, per instance */}
-              <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
+              <Card className="bento-card bg-white/10 rounded-sm ring-[--color-border-subtle] py-0 gap-0">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <IsolationVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Real isolation, per instance</h3>
-                <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Each agent is a separate OpenClaw profile. Independent memory, sessions, workspace, and API auth. Your dev agent and your production agent don't know each other exist.
-                </p>
-              </div>
+                <CardHeader className="px-8 pt-6 pb-0">
+                  <CardTitle className="text-xl font-normal font-display">Real isolation, per instance</CardTitle>
+                </CardHeader>
+                <CardContent className="px-8 pb-8">
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Each agent is a separate OpenClaw profile. Independent memory, sessions, workspace, and API auth. Your dev agent and your production agent don't know each other exist.
+                  </p>
+                </CardContent>
+              </Card>
               {/* 3. Clone a working instance */}
-              <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
+              <Card className="bento-card bg-white/10 rounded-sm ring-[--color-border-subtle] py-0 gap-0">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <TerminalToggleVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Clone a working instance</h3>
-                <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Spin up an exact copy of any agent in seconds. Test a configuration change, try a different model, or branch a working setup — without touching the original.
-                </p>
-              </div>
+                <CardHeader className="px-8 pt-6 pb-0">
+                  <CardTitle className="text-xl font-normal font-display">Clone a working instance</CardTitle>
+                </CardHeader>
+                <CardContent className="px-8 pb-8">
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Spin up an exact copy of any agent in seconds. Test a configuration change, try a different model, or branch a working setup — without touching the original.
+                  </p>
+                </CardContent>
+              </Card>
               {/* 4. Live console and TUI */}
-              <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
+              <Card className="bento-card bg-white/10 rounded-sm ring-[--color-border-subtle] py-0 gap-0">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <ChatVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Live console and TUI</h3>
-                <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Console output per instance, in-app. Switch to the full interactive TUI in one click when you need it — same toolbar, same window.
-                </p>
-              </div>
-              {/* 5. In-app chat */}
-              <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
-                <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
-                  <BrowserVisual />
-                </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">In-app chat</h3>
-                <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Message any running instance directly and read replies inline. No browser tab, no authentication step, no switching contexts.
-                </p>
-              </div>
-              {/* 6. Zero setup on first run */}
-              <div className="bento-card bg-white/10 border border-[--color-border-subtle] rounded-sm overflow-hidden">
+                <CardHeader className="px-8 pt-6 pb-0">
+                  <CardTitle className="text-xl font-normal font-display">Live console and TUI</CardTitle>
+                </CardHeader>
+                <CardContent className="px-8 pb-8">
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Console output per instance, in-app. Switch to the full interactive TUI in one click when you need it — same toolbar, same window.
+                  </p>
+                </CardContent>
+              </Card>
+              {/* 5. Zero setup on first run */}
+              <Card className="bento-card bg-white/10 rounded-sm ring-[--color-border-subtle] py-0 gap-0">
                 <div className="bento-visual w-full overflow-hidden" aria-hidden="true">
                   <DragReorderVisual />
                 </div>
-                <h3 className="text-xl font-normal text-foreground font-display px-8 pt-6 pb-2">Zero setup on first run</h3>
-                <p className="text-base text-muted-foreground leading-relaxed px-8 pb-8">
-                  Opens with a default instance already created. Press Start. No wizard, no configuration required before you can use it.
-                </p>
-              </div>
+                <CardHeader className="px-8 pt-6 pb-0">
+                  <CardTitle className="text-xl font-normal font-display">Zero setup on first run</CardTitle>
+                </CardHeader>
+                <CardContent className="px-8 pb-8">
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Opens with a default instance already created. Press Start. No wizard, no configuration required before you can use it.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
@@ -417,48 +439,54 @@ export default function Home() {
               Built the right way.
             </h2>
             <div className="grid grid-cols-3 gap-12 mt-12 max-md:grid-cols-1 max-md:gap-12">
-              <div className="text-center">
-                <div className="trust-icon w-18 h-18 mx-auto mb-6 flex items-center justify-center" aria-hidden="true">
-                  <div className="w-10 h-10 flex items-center justify-center text-3xl text-primary">
+              <Card className="bg-transparent ring-0 shadow-none text-center">
+                <CardHeader className="items-center">
+                  <div className="trust-icon w-18 h-18 mb-2 flex items-center justify-center" aria-hidden="true">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
                       <line x1="8" y1="21" x2="16" y2="21" />
                       <line x1="12" y1="17" x2="12" y2="21" />
                     </svg>
                   </div>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Local-first</h3>
-                <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  No cloud, no accounts, no telemetry. Every agent runs on your machine. Nothing leaves.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="trust-icon w-18 h-18 mx-auto mb-6 flex items-center justify-center" aria-hidden="true">
-                  <div className="w-10 h-10 flex items-center justify-center text-3xl text-primary">
+                  <CardTitle className="text-xl">Local-first</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                    No cloud, no accounts, no telemetry. Every agent runs on your machine. Nothing leaves.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-transparent ring-0 shadow-none text-center">
+                <CardHeader className="items-center">
+                  <div className="trust-icon w-18 h-18 mb-2 flex items-center justify-center" aria-hidden="true">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                   </div>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Open source</h3>
-                <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  MIT licensed. The code is on GitHub. Read it, fork it, build on it.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="trust-icon w-18 h-18 mx-auto mb-6 flex items-center justify-center" aria-hidden="true">
-                  <div className="w-10 h-10 flex items-center justify-center text-3xl text-primary">
+                  <CardTitle className="text-xl">Open source</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                    MIT licensed. The code is on GitHub. Read it, fork it, build on it.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-transparent ring-0 shadow-none text-center">
+                <CardHeader className="items-center">
+                  <div className="trust-icon w-18 h-18 mb-2 flex items-center justify-center" aria-hidden="true">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="4 17 10 11 4 5" />
                       <line x1="12" y1="19" x2="20" y2="19" />
                     </svg>
                   </div>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Built on OpenClaw</h3>
-                <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  ManyClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
-                </p>
-              </div>
+                  <CardTitle className="text-xl">Built on OpenClaw</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-base text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                    ManyClaw is a management layer on top of OpenClaw's native profile system. No lock-in, no custom runtime. Your agents are standard OpenClaw profiles.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
@@ -485,7 +513,9 @@ export default function Home() {
             <p className="text-lg text-muted-foreground max-w-[440px]">
               ManyClaw is free, open source, and runs entirely on your hardware.
             </p>
-            <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-5.5 py-2.5 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">Download for macOS</Link>
+            <Button asChild size="lg" className="px-6 py-3 text-base rounded-sm">
+              <Link to="/download">Download for macOS</Link>
+            </Button>
           </div>
         </section>
       </main>
