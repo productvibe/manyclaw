@@ -646,15 +646,19 @@
     .task-row:last-child { border-bottom: none; }
     .task-row:hover { background: var(--nav-hover-bg); }
 
-    .task-dot-done {
+    .task-dot, .task-dot-done {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--green);
       flex-shrink: 0;
     }
+    .task-dot-done { background: var(--green); }
+    .task-title, .task-title-done {
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .task-title { color: var(--text); }
     .task-title-done {
-      font-size: 14px;
       color: var(--text-3);
       text-decoration: line-through;
       text-decoration-color: var(--text-3);
@@ -1256,23 +1260,23 @@
           <div class="section-header">Up next</div>
           <div class="task-list">
             <div class="task-row">
-              <span class="task-dot" style="background:var(--amber)"></span>
+              <span class="task-dot" style="background:var(--amber);"></span>
               <span class="task-title">Push repo to GitHub — tag v0.0.1, attach signed DMG</span>
             </div>
             <div class="task-row">
-              <span class="task-dot" style="background:var(--amber)"></span>
+              <span class="task-dot" style="background:var(--amber);"></span>
               <span class="task-title">Connect website to Cloudflare — manyclaw.app DNS</span>
             </div>
             <div class="task-row">
-              <span class="task-dot" style="background:var(--amber)"></span>
+              <span class="task-dot" style="background:var(--amber);"></span>
               <span class="task-title">Verify about page renders correctly on live site</span>
             </div>
             <div class="task-row">
-              <span class="task-dot" style="background:var(--text-3)"></span>
+              <span class="task-dot" style="background:var(--text-3);"></span>
               <span class="task-title">Write CONTRIBUTING.md — dev setup, build process, PR guidelines</span>
             </div>
             <div class="task-row">
-              <span class="task-dot" style="background:var(--text-3)"></span>
+              <span class="task-dot" style="background:var(--text-3);"></span>
               <span class="task-title">GitHub Actions build workflow — CI on push</span>
             </div>
           </div>
