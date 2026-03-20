@@ -224,10 +224,20 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 500;
       color: var(--text-2);
       user-select: none;
+      width: 100%;
+      box-sizing: border-box;
     }
     .settings-toggle:hover { background: var(--nav-hover-bg); color: var(--text); }
+    .settings-toggle .nav-icon {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
     /* ─── SETTINGS MODAL ────────────────────────────────────── */
     .modal-backdrop {
       display: none;
