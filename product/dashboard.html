@@ -110,15 +110,24 @@
     /* ─── SIDEBAR ────────────────────────────────────────────── */
     .sidebar {
       width: 220px;
-      min-height: 100vh;
       background: var(--sidebar-bg);
-      padding: 20px 10px 20px;
+      padding: 20px 10px 0;
       display: flex;
       flex-direction: column;
       position: fixed;
       top: 0; left: 0; bottom: 0;
       z-index: 10;
+      overflow: hidden;
     }
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 8px;
+    }
+    .sidebar-scroll::-webkit-scrollbar { width: 3px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .sidebar-logo {
       display: flex;
@@ -791,6 +800,7 @@
       <span class="sidebar-logo-text">ManyClaw</span>
     </div>
 
+    <div class="sidebar-scroll">
     <div class="nav-section-label">Product</div>
 
     <div class="nav-item active" data-panel="overview" onclick="showPanel('overview', this)">
@@ -826,6 +836,7 @@
       <span class="nav-icon">☰</span> Documentation
     </a>
 
+    </div><!-- /sidebar-scroll -->
     <div class="sidebar-footer">
       <div class="nav-item" data-panel="ways" onclick="showPanel('ways', this)">
         <span class="nav-icon">◇</span> Ways of Working
