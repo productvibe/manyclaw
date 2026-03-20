@@ -284,6 +284,9 @@ export default function Home() {
               />
             </div>
           </div>
+          <p className="text-center text-muted-foreground mt-8 text-base max-md:text-sm w-[min(90%,1080px)] mx-auto">
+            You don't need to buy another Mac Mini for every OpenClaw instance.
+          </p>
         </section>
 
         <Separator />
@@ -317,7 +320,7 @@ export default function Home() {
         <section className="py-28 max-md:py-16 reveal" aria-labelledby="problem-title">
           <div className="w-[min(90%,1080px)] mx-auto max-w-[720px]">
             <h2 id="problem-title" className="text-4xl max-w-[650px] mb-6 text-center mx-auto max-md:text-2xl">
-              You don't need to buy another Mac Mini for every OpenClaw instance.
+              The problem it solves.
             </h2>
             <div className="text-lg text-muted-foreground leading-relaxed text-center mx-auto max-w-[650px] max-md:text-base space-y-4">
               <p>
