@@ -24,7 +24,7 @@ mac:
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
   # Signing identity (from Keychain)
-  # Legal entity name as registered with Apple (Productvibe brand)
+  # Apple Developer account identity — required for signing, set to your own Developer ID
   identity: "SEVEN LABS AS (JS353BKF9P)"
   notarize: true
 

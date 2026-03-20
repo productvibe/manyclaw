@@ -146,8 +146,8 @@ Auto-update in the app checks GitHub Releases on launch. Users get notified and 
 
 - Apple ID: `developer@productamp.io` (single m)
 - Team ID: `JS353BKF9P`
-- Legal entity: SEVEN LABS AS (Productvibe brand)
+- Legal entity on Apple Developer account (Productvibe brand)
 - App-specific passwords: generate at appleid.apple.com → App-Specific Passwords
-- Signing identity in Keychain: `Developer ID Application: SEVEN LABS AS (JS353BKF9P)`
+- Signing identity in Keychain: `Developer ID Application: <legal entity> (JS353BKF9P)`
 
 Note: the Apple ID account must have agreed to all current developer agreements at appstoreconnect.apple.com or notarization will return 401.
