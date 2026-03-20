@@ -38,6 +38,11 @@ gh repo create productvibe/manyclaw --public --description "Manage multiple Open
 cd ~/Projects/manyclaw
 git remote add origin https://github.com/productvibe/manyclaw.git
 git push -u origin main
+
+# Note: if protection is already on and you need to push setup commits directly:
+# gh api repos/productvibe/manyclaw/branches/main/protection -X DELETE
+# git push
+# ... then re-enable protection (step 2)
 ```
 
 ### 2. Protect the main branch
