@@ -24,6 +24,7 @@ mac:
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
   # Signing identity (from Keychain)
+  # Legal entity name as registered with Apple (Productvibe brand)
   identity: "SEVEN LABS AS (JS353BKF9P)"
   notarize: true
 
