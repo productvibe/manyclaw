@@ -12,8 +12,8 @@
     :root,
     [data-theme="light"] {
       --bg:          #FFFFFF;
-      --bg-main:     #F7F7F7;
-      --sidebar-bg:  #FAFAFA;
+      --bg-main:     #FFFFFF;
+      --sidebar-bg:  #F5F5F5;
       --surface:     #FFFFFF;
       --surface2:    #F3F3F3;
       --border:      #E8E8E8;
@@ -29,13 +29,9 @@
       --amber-bg:    #FEF3E2;
       --avatar-bg:   #EBEBEB;
       --avatar-text: #555555;
-      --nav-active-bg: #EBEBEB;
+      --nav-active-bg: #E8E8E8;
       --nav-active-text: #0F0F0F;
-      --nav-hover-bg: #F0F0F0;
-      --switcher-active-bg: #0F0F0F;
-      --switcher-active-text: #FFFFFF;
-      --switcher-bg: #F0F0F0;
-      --switcher-text: #6B6B6B;
+      --nav-hover-bg: #EEEEEE;
       --tag-done-bg: #EAF7F1;
       --tag-done-text: #26A96C;
       --tag-active-bg: #FEF3E2;
@@ -64,10 +60,6 @@
       --nav-active-bg: #272727;
       --nav-active-text: #F0F0F0;
       --nav-hover-bg: #1E1E1E;
-      --switcher-active-bg: #F0F0F0;
-      --switcher-active-text: #0F0F0F;
-      --switcher-bg: #252525;
-      --switcher-text: #8A8A8A;
       --tag-done-bg: #0F2B1E;
       --tag-done-text: #34C97A;
       --tag-active-bg: #2A1F0A;
@@ -77,7 +69,7 @@
     [data-theme="manyclaw"] {
       --bg:          #1C1710;
       --bg-main:     #1C1710;
-      --sidebar-bg:  #231D14;
+      --sidebar-bg:  #141008;
       --surface:     #2A2218;
       --surface2:    #332A1E;
       --border:      #3D3226;
@@ -96,10 +88,6 @@
       --nav-active-bg: #3A2E20;
       --nav-active-text: #FF6B35;
       --nav-hover-bg: #2E2418;
-      --switcher-active-bg: #FF6B35;
-      --switcher-active-text: #FFFFFF;
-      --switcher-bg: #2E2418;
-      --switcher-text: #9A8A76;
       --tag-done-bg: #0D2318;
       --tag-done-text: #52C97A;
       --tag-active-bg: #2A1C08;
@@ -123,7 +111,7 @@
       width: 220px;
       min-height: 100vh;
       background: var(--sidebar-bg);
-      padding: 20px 10px 24px;
+      padding: 20px 10px 20px;
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -180,6 +168,7 @@
       text-decoration: none;
       transition: background 0.1s, color 0.1s;
       white-space: nowrap;
+      user-select: none;
     }
     .nav-item:hover { background: var(--nav-hover-bg); color: var(--text); }
     .nav-item.active {
@@ -198,21 +187,43 @@
 
     .sidebar-footer {
       margin-top: auto;
-      padding: 16px 10px 0;
+      padding: 14px 10px 0;
       border-top: 1px solid var(--border);
-      font-size: 11px;
-      color: var(--text-3);
     }
-    .sidebar-footer-row {
+    .sidebar-footer-status {
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 11px;
+      color: var(--text-3);
+      margin-bottom: 12px;
     }
     .live-dot {
       width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--green);
       flex-shrink: 0;
+    }
+
+    /* ─── THEME CYCLE BUTTON ─────────────────────────────────── */
+    .theme-cycle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      font-size: 15px;
+      color: var(--text-2);
+      transition: background 0.1s, color 0.1s;
+      line-height: 1;
+    }
+    .theme-cycle-btn:hover {
+      background: var(--nav-hover-bg);
+      color: var(--text);
     }
 
     /* ─── MAIN ───────────────────────────────────────────────── */
@@ -222,27 +233,24 @@
       padding: 0;
     }
 
-    /* ─── HEADER ─────────────────────────────────────────────── */
-    .header {
+    /* ─── PAGE HEADER ────────────────────────────────────────── */
+    .page-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 48px 0;
-      max-width: calc(860px + 96px);
+      padding: 32px 48px 0;
     }
-
-    .header-left { display: flex; flex-direction: column; gap: 6px; }
-
-    .header-title-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .header-title {
+    .page-title {
       font-size: 20px;
       font-weight: 700;
       letter-spacing: -0.4px;
       color: var(--text);
+    }
+    .page-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
     }
     .version-badge {
       font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
@@ -264,51 +272,26 @@
       background: var(--amber-bg);
       padding: 2px 8px;
       border-radius: 4px;
-      border: 1px solid transparent;
     }
     .status-badge-dot {
       width: 5px; height: 5px;
       border-radius: 50%;
       background: var(--amber);
     }
-    .header-meta {
+    .page-updated {
       font-size: 12px;
       color: var(--text-3);
-    }
-
-    /* ─── THEME SWITCHER ─────────────────────────────────────── */
-    .theme-switcher {
-      display: flex;
-      align-items: center;
-      background: var(--switcher-bg);
-      border-radius: 6px;
-      padding: 3px;
-      gap: 1px;
-    }
-    .theme-btn {
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 11.5px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      color: var(--switcher-text);
-      transition: background 0.12s, color 0.12s;
-      white-space: nowrap;
-    }
-    .theme-btn:hover { color: var(--text); }
-    .theme-btn.active {
-      background: var(--switcher-active-bg);
-      color: var(--switcher-active-text);
-      font-weight: 600;
+      margin-top: 4px;
     }
 
     /* ─── CONTENT ────────────────────────────────────────────── */
     .content {
-      max-width: 860px;
-      padding: 32px 48px 80px;
+      padding: 28px 48px 80px;
     }
+
+    /* ─── PANELS ─────────────────────────────────────────────── */
+    .panel { display: none; }
+    .panel.active { display: block; }
 
     /* ─── SECTION ────────────────────────────────────────────── */
     .section { margin-bottom: 44px; }
@@ -324,12 +307,13 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* ─── PRODUCT SECTION ────────────────────────────────────── */
+    /* ─── OVERVIEW ───────────────────────────────────────────── */
     .product-summary {
       font-size: 14px;
       line-height: 1.7;
       color: var(--text-2);
       margin-bottom: 20px;
+      max-width: 680px;
     }
     .product-summary strong { color: var(--text); font-weight: 600; }
 
@@ -341,7 +325,6 @@
       border: 1px solid var(--border);
       border-radius: 6px;
       overflow: hidden;
-      margin-bottom: 20px;
     }
     .fact-row {
       display: flex;
@@ -374,170 +357,342 @@
       color: var(--accent-text);
     }
 
-    .shipped-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-3);
-      margin-bottom: 10px;
-    }
-    .shipped-list {
+    /* ─── FEATURES GRID ──────────────────────────────────────── */
+    .features-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-    }
-    .shipped-item {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 8px 0;
-      font-size: 13px;
-      color: var(--text);
-      border-bottom: 1px solid var(--border);
-    }
-    .shipped-item:nth-last-child(-n+2) { border-bottom: none; }
-    .check-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--green-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .check-icon svg { width: 9px; height: 9px; }
-
-    /* ─── TEAM SECTION ───────────────────────────────────────── */
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
     }
+    @media (max-width: 700px) { .features-grid { grid-template-columns: 1fr; } }
 
-    .team-card {
+    .feature-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 14px 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
+      padding: 14px 16px;
+    }
+    .feature-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .feature-card-desc {
+      font-size: 12.5px;
+      color: var(--text-2);
+      line-height: 1.5;
     }
 
-    .avatar {
-      width: 32px;
-      height: 32px;
+    /* ─── ORG CHART ──────────────────────────────────────────── */
+    .org-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 8px 0 0;
+    }
+
+    .org-root {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .org-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .org-avatar {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
-      flex-shrink: 0;
       color: #FFFFFF;
+      flex-shrink: 0;
+      border: 2px solid var(--bg-main);
     }
 
-    .avatar-orange  { background: #E8612A; }
-    .avatar-blue    { background: #3B7FC4; }
-    .avatar-teal    { background: #2A9D8F; }
-    .avatar-purple  { background: #7B5EA7; }
-    .avatar-slate   { background: #5E7A9D; }
-    .avatar-green   { background: #2A9D6F; }
-    .avatar-pink    { background: #C96B8A; }
-
-    .team-name {
-      font-size: 13px;
+    .org-name {
+      font-size: 12px;
       font-weight: 600;
       color: var(--text);
-      line-height: 1.2;
+      text-align: center;
     }
-    .team-role {
-      font-size: 11px;
+    .org-role {
+      font-size: 10px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--text-3);
-    }
-    .team-desc {
-      font-size: 11.5px;
-      color: var(--text-2);
-      line-height: 1.4;
+      text-align: center;
     }
 
-    /* ─── TASKS SECTION ──────────────────────────────────────── */
-    .task-group { margin-bottom: 24px; }
-    .task-group-label {
+    /* connector line down from root */
+    .org-root-line {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    /* horizontal bar across children */
+    .org-connector-row {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    /* the horizontal line spanning children */
+    .org-hline {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 1px;
+      background: var(--border);
+    }
+
+    .org-child-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .org-child-vline {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+    }
+
+    /* avatar color classes */
+    .av-orange  { background: #E8612A; }
+    .av-blue    { background: #3B7FC4; }
+    .av-teal    { background: #2A9D8F; }
+    .av-purple  { background: #7B5EA7; }
+    .av-slate   { background: #5E7A9D; }
+    .av-green   { background: #2A9D6F; }
+    .av-pink    { background: #C96B8A; }
+
+    /* ─── ROADMAP KANBAN ─────────────────────────────────────── */
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .kanban-col-header {
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--text-3);
-      padding: 0 0 4px;
+      margin-bottom: 10px;
+    }
+
+    .kanban-cards {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 6px;
     }
-    .task-group-count {
-      font-size: 10.5px;
-      font-weight: 600;
-      background: var(--surface2);
+
+    .kanban-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 12px;
+    }
+    .kanban-card-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .kanban-card-note {
+      font-size: 11.5px;
       color: var(--text-3);
-      border-radius: 10px;
-      padding: 0 6px;
-      line-height: 16px;
+      margin-top: 3px;
+      line-height: 1.4;
     }
 
-    .task-list { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
-
+    /* ─── TASKS FLAT LIST ────────────────────────────────────── */
+    .task-list {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
     .task-row {
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 0 14px;
-      height: 36px;
+      height: 38px;
       border-bottom: 1px solid var(--border);
-      cursor: default;
       transition: background 0.1s;
     }
     .task-row:last-child { border-bottom: none; }
     .task-row:hover { background: var(--nav-hover-bg); }
 
-    .status-dot {
-      width: 6px;
-      height: 6px;
+    .task-dot-done {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
+      background: var(--green);
       flex-shrink: 0;
     }
-    .dot-todo     { background: var(--text-3); }
-    .dot-progress { background: var(--amber); }
-    .dot-done     { background: var(--green); }
-
-    .task-title {
+    .task-title-done {
       font-size: 13px;
-      color: var(--text);
-      flex: 1;
-    }
-    .task-title.done {
       color: var(--text-3);
       text-decoration: line-through;
+      text-decoration-color: var(--text-3);
     }
-    .task-note {
-      font-size: 11.5px;
+
+    /* ─── REQUESTS TABLE ─────────────────────────────────────── */
+    .requests-note {
+      font-size: 12px;
+      color: var(--text-3);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .requests-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .requests-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .requests-table th {
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+      padding: 9px 14px;
+      text-align: left;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .requests-table td {
+      font-size: 13px;
+      color: var(--text);
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .requests-table tr:last-child td { border-bottom: none; }
+    .requests-table tbody tr:hover td { background: var(--nav-hover-bg); }
+
+    .req-num {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
       color: var(--text-3);
     }
 
-    /* ─── FOOTER NOTE ────────────────────────────────────────── */
-    .footer-note {
+    .type-pill {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+    .type-feature      { background: #EEF0FD; color: #4952B8; }
+    .type-distribution { background: #F3EEFF; color: #7B5EA7; }
+    .type-docs         { background: #EAF7F1; color: #26A96C; }
+    .type-dev          { background: #FEF3E2; color: #D97706; }
+
+    [data-theme="dark"] .type-feature      { background: #1E1F3A; color: #9BA2E8; }
+    [data-theme="dark"] .type-distribution { background: #2A1F3A; color: #B89AE8; }
+    [data-theme="dark"] .type-docs         { background: #0F2B1E; color: #34C97A; }
+    [data-theme="dark"] .type-dev          { background: #2A1F0A; color: #F0A030; }
+
+    [data-theme="manyclaw"] .type-feature      { background: #1E1F3A; color: #9BA2E8; }
+    [data-theme="manyclaw"] .type-distribution { background: #2A1F3A; color: #B89AE8; }
+    [data-theme="manyclaw"] .type-docs         { background: #0D2318; color: #52C97A; }
+    [data-theme="manyclaw"] .type-dev          { background: #2A1C08; color: #F0A030; }
+
+    .status-pill {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+    .status-planned    { background: var(--amber-bg);  color: var(--amber); }
+    .status-consider   { background: var(--surface2);  color: var(--text-3); }
+    .status-inprogress { background: var(--accent-bg); color: var(--accent-text); }
+    .status-done       { background: var(--tag-done-bg); color: var(--tag-done-text); }
+
+    .req-gh { font-size: 12px; color: var(--text-3); }
+    .req-gh a { color: var(--accent-text); text-decoration: none; }
+    .req-gh a:hover { text-decoration: underline; }
+
+    /* ─── CHANGELOG ──────────────────────────────────────────── */
+    .changelog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .changelog-entry {}
+    .changelog-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .changelog-version {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-text);
+      background: var(--accent-bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .changelog-date {
       font-size: 12px;
       color: var(--text-3);
-      padding: 20px 0 0;
-      border-top: 1px solid var(--border);
-      line-height: 1.6;
     }
-    .footer-note strong { color: var(--text-2); font-weight: 600; }
+    .changelog-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .changelog-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.5;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .changelog-items li:last-child .changelog-item { border-bottom: none; padding-bottom: 0; }
+    .changelog-bullet {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
 
     /* ─── SCROLLBAR ──────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 6px; }
@@ -555,354 +710,614 @@
     </div>
 
     <div class="nav-section-label">Product</div>
-    <a class="nav-item active" href="#product">
+    <div class="nav-item active" data-panel="overview" onclick="showPanel('overview', this)">
       <span class="nav-icon">◈</span> Overview
-    </a>
-    <a class="nav-item" href="#team">
+    </div>
+    <div class="nav-item" data-panel="product" onclick="showPanel('product', this)">
+      <span class="nav-icon">◉</span> Product
+    </div>
+    <div class="nav-item" data-panel="features" onclick="showPanel('features', this)">
+      <span class="nav-icon">◻</span> Features
+    </div>
+    <div class="nav-item" data-panel="team" onclick="showPanel('team', this)">
       <span class="nav-icon">◎</span> Team
-    </a>
-    <a class="nav-item" href="#tasks">
-      <span class="nav-icon">◻</span> Open Tasks
-    </a>
-
-    <div class="nav-section-label">Links</div>
-    <a class="nav-item" href="https://manyclaw.app" target="_blank">
-      <span class="nav-icon">↗</span> Website
-    </a>
-    <a class="nav-item" href="https://github.com/productvibe/manyclaw" target="_blank">
-      <span class="nav-icon">↗</span> GitHub
-    </a>
+    </div>
+    <div class="nav-item" data-panel="roadmap" onclick="showPanel('roadmap', this)">
+      <span class="nav-icon">▷</span> Roadmap
+    </div>
+    <div class="nav-item" data-panel="tasks" onclick="showPanel('tasks', this)">
+      <span class="nav-icon">✓</span> Tasks
+    </div>
+    <div class="nav-item" data-panel="requests" onclick="showPanel('requests', this)">
+      <span class="nav-icon">⊕</span> Requests
+    </div>
+    <div class="nav-item" data-panel="changelog" onclick="showPanel('changelog', this)">
+      <span class="nav-icon">◑</span> Changelog
+    </div>
 
     <div class="sidebar-footer">
-      <div class="sidebar-footer-row">
+      <div class="sidebar-footer-status">
         <div class="live-dot"></div>
         Active development
       </div>
+      <button class="theme-cycle-btn" id="themeCycleBtn" onclick="cycleTheme()" title="Toggle theme">☀️</button>
     </div>
   </aside>
 
   <!-- ── MAIN ────────────────────────────────────────────── -->
   <div class="main">
 
-    <!-- Header -->
-    <div class="header">
-      <div class="header-left">
-        <div class="header-title-row">
-          <span class="header-title">ManyClaw</span>
-          <span class="version-badge">v0.0.1</span>
-          <span class="status-badge">
-            <span class="status-badge-dot"></span>
-            Active development
-          </span>
+    <!-- ── PANEL: OVERVIEW ────────────────────────────────── -->
+    <div class="panel active" id="panel-overview">
+      <div class="page-header">
+        <div>
+          <div class="page-title">ManyClaw</div>
+          <div class="page-meta">
+            <span class="version-badge">v0.0.1</span>
+            <span class="status-badge"><span class="status-badge-dot"></span>Active development</span>
+          </div>
+          <div class="page-updated">Last updated 2026-03-20</div>
         </div>
-        <div class="header-meta">Last updated 2026-03-20</div>
       </div>
-      <div class="theme-switcher" role="group" aria-label="Theme">
-        <button class="theme-btn active" data-theme="light" onclick="setTheme('light')">Light</button>
-        <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')">Dark</button>
-        <button class="theme-btn" data-theme="manyclaw" onclick="setTheme('manyclaw')">ManyClaw</button>
+      <div class="content">
+        <div class="section">
+          <div class="section-header">Summary</div>
+          <p class="product-summary">
+            <strong>ManyClaw</strong> is a native macOS app for running multiple OpenClaw AI agents side by side.
+            Think browser profiles, but for AI: each instance is fully isolated with its own identity, memory,
+            sessions, and config. One window, a sidebar of named color-coded agents, one click to start.
+            No terminal required, no port management, no config files. Just agents.
+          </p>
+        </div>
+        <div class="section">
+          <div class="section-header">Key Facts</div>
+          <div class="key-facts">
+            <div class="fact-row">
+              <div class="fact-label">Platform</div>
+              <div class="fact-value">macOS (Apple Silicon)</div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-label">Stack</div>
+              <div class="fact-value">Electron + React + TypeScript</div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-label">License</div>
+              <div class="fact-value"><code>GPL-3.0</code></div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-label">Repo</div>
+              <div class="fact-value"><code>apps/desktop</code> · <code>website</code> · <code>product</code></div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-label">Version</div>
+              <div class="fact-value"><code>v0.0.1</code> — signed &amp; notarized DMG</div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-label">Status</div>
+              <div class="fact-value">Active development · pre-release</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="content">
-
-      <!-- ── PRODUCT ──────────────────────────────────────── -->
-      <div class="section" id="product">
-        <div class="section-header">Overview</div>
-
-        <p class="product-summary">
-          <strong>ManyClaw</strong> is a native macOS app for running multiple OpenClaw AI agents side by side.
-          Think browser profiles, but for AI: each instance is fully isolated with its own identity, memory,
-          sessions, and config. One window, a sidebar of named color-coded agents, one click to start.
-          No terminal required, no port management, no config files. Just agents.
-        </p>
-
-        <div class="key-facts">
-          <div class="fact-row">
-            <div class="fact-label">Platform</div>
-            <div class="fact-value">macOS (Apple Silicon)</div>
-          </div>
-          <div class="fact-row">
-            <div class="fact-label">Stack</div>
-            <div class="fact-value">Electron + React + TypeScript</div>
-          </div>
-          <div class="fact-row">
-            <div class="fact-label">License</div>
-            <div class="fact-value"><code>GPL-3.0</code></div>
-          </div>
-          <div class="fact-row">
-            <div class="fact-label">Repo</div>
-            <div class="fact-value"><code>apps/desktop</code> &nbsp;/&nbsp; <code>website</code> &nbsp;/&nbsp; <code>product</code></div>
-          </div>
+    <!-- ── PANEL: PRODUCT ─────────────────────────────────── -->
+    <div class="panel" id="panel-product">
+      <div class="page-header">
+        <div><div class="page-title">Product</div></div>
+      </div>
+      <div class="content">
+        <div class="section">
+          <div class="section-header">What it is</div>
+          <p class="product-summary">
+            <strong>ManyClaw</strong> is a native macOS app for running multiple OpenClaw AI agents side by side.
+            Think browser profiles, but for AI: each instance is fully isolated with its own identity, memory,
+            sessions, and config. One window, a sidebar of named color-coded agents, one click to start.
+            No terminal required, no port management, no config files. Just agents.
+          </p>
         </div>
-
-        <div class="shipped-label">Shipped features</div>
-        <div class="shipped-list">
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="section">
+          <div class="section-header">Key Facts</div>
+          <div class="key-facts">
+            <div class="fact-row">
+              <div class="fact-label">Platform</div>
+              <div class="fact-value">macOS (Apple Silicon)</div>
             </div>
-            Create, start, stop, delete instances
-          </div>
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="fact-row">
+              <div class="fact-label">Stack</div>
+              <div class="fact-value">Electron + React + TypeScript</div>
             </div>
-            Sidebar with drag to reorder
-          </div>
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="fact-row">
+              <div class="fact-label">License</div>
+              <div class="fact-value"><code>GPL-3.0</code></div>
             </div>
-            Console log view per instance
-          </div>
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="fact-row">
+              <div class="fact-label">Repo</div>
+              <div class="fact-value"><code>apps/desktop</code> · <code>website</code> · <code>product</code></div>
             </div>
-            Interactive TUI toggle
-          </div>
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="fact-row">
+              <div class="fact-label">Version</div>
+              <div class="fact-value"><code>v0.0.1</code> — signed &amp; notarized DMG</div>
             </div>
-            In-app chat
-          </div>
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="fact-row">
+              <div class="fact-label">Domain</div>
+              <div class="fact-value">manyclaw.app</div>
             </div>
-            Open in browser (authenticated)
-          </div>
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            Signed and notarized DMG
-          </div>
-          <div class="shipped-item">
-            <div class="check-icon">
-              <svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#26A96C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            First-run default instance
           </div>
         </div>
       </div>
-
-      <!-- ── TEAM ─────────────────────────────────────────── -->
-      <div class="section" id="team">
-        <div class="section-header">The Team</div>
-        <div class="team-grid">
-
-          <div class="team-card">
-            <div class="avatar avatar-orange">AL</div>
-            <div>
-              <div class="team-name">Alex</div>
-              <div class="team-role">Product Manager</div>
-            </div>
-            <div class="team-desc">Keeps the team aligned. Thinks in outcomes, ships things that matter.</div>
-          </div>
-
-          <div class="team-card">
-            <div class="avatar avatar-blue">BR</div>
-            <div>
-              <div class="team-name">Brook</div>
-              <div class="team-role">Engineer</div>
-            </div>
-            <div class="team-desc">Owns the main process, IPC, and instance lifecycle.</div>
-          </div>
-
-          <div class="team-card">
-            <div class="avatar avatar-teal">FN</div>
-            <div>
-              <div class="team-name">Finley</div>
-              <div class="team-role">Frontend</div>
-            </div>
-            <div class="team-desc">Builds the React UI. Owns the renderer and component library.</div>
-          </div>
-
-          <div class="team-card">
-            <div class="avatar avatar-purple">DE</div>
-            <div>
-              <div class="team-name">Dee</div>
-              <div class="team-role">UX</div>
-            </div>
-            <div class="team-desc">Writes specs and UX flows. Scope-minded, detail-oriented.</div>
-          </div>
-
-          <div class="team-card">
-            <div class="avatar avatar-slate">EM</div>
-            <div>
-              <div class="team-name">Emery</div>
-              <div class="team-role">Architect</div>
-            </div>
-            <div class="team-desc">Signs off on architecture before anything gets built.</div>
-          </div>
-
-          <div class="team-card">
-            <div class="avatar avatar-green">CE</div>
-            <div>
-              <div class="team-name">Cedar</div>
-              <div class="team-role">QA</div>
-            </div>
-            <div class="team-desc">Manual testing. Finds what breaks before users do.</div>
-          </div>
-
-          <div class="team-card">
-            <div class="avatar avatar-pink">GR</div>
-            <div>
-              <div class="team-name">Gray</div>
-              <div class="team-role">Marketing</div>
-            </div>
-            <div class="team-desc">Shapes the story. Owns positioning and copy.</div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── TASKS ─────────────────────────────────────────── -->
-      <div class="section" id="tasks">
-        <div class="section-header">Open Tasks</div>
-
-        <!-- Release -->
-        <div class="task-group">
-          <div class="task-group-label">
-            Release <span class="task-group-count">3</span>
-          </div>
-          <div class="task-list">
-            <div class="task-row">
-              <span class="status-dot dot-progress"></span>
-              <span class="task-title">Rebuild DMG with updated rounded icon</span>
-              <span class="task-note">New icon ready, needs dist:mac run</span>
-            </div>
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Push release to GitHub</span>
-              <span class="task-note">Tag v0.0.1, attach DMG artifact</span>
-            </div>
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Connect website domain to Cloudflare</span>
-              <span class="task-note">manyclaw.app DNS pending</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Website -->
-        <div class="task-group">
-          <div class="task-group-label">
-            Website <span class="task-group-count">2</span>
-          </div>
-          <div class="task-list">
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Verify about page renders correctly</span>
-              <span class="task-note">Check on local dev build</span>
-            </div>
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Build and deploy website</span>
-              <span class="task-note">First public deploy</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- App -->
-        <div class="task-group">
-          <div class="task-group-label">
-            App <span class="task-group-count">2</span>
-          </div>
-          <div class="task-list">
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Write CONTRIBUTING.md</span>
-              <span class="task-note">Dev setup, build process, PR guidelines</span>
-            </div>
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Add GitHub Actions build workflow</span>
-              <span class="task-note">CI on push, optional notarized release build</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Backlog -->
-        <div class="task-group">
-          <div class="task-group-label">
-            Backlog <span class="task-group-count">3</span>
-          </div>
-          <div class="task-list">
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Intel (x86) build support</span>
-              <span class="task-note">Requires cross-compiled node-pty</span>
-            </div>
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Auto-update mechanism</span>
-              <span class="task-note">electron-updater via GitHub Releases</span>
-            </div>
-            <div class="task-row">
-              <span class="status-dot dot-todo"></span>
-              <span class="task-title">Windows and Linux exploration</span>
-              <span class="task-note">Feasibility only; not committed</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ── FOOTER ────────────────────────────────────────── -->
-      <div class="footer-note">
-        <strong>How to update:</strong> This file is maintained by Alex. Updated during heartbeat checks.
-        Edit directly to reflect current state.
-      </div>
-
     </div>
-  </div>
+
+    <!-- ── PANEL: FEATURES ────────────────────────────────── -->
+    <div class="panel" id="panel-features">
+      <div class="page-header">
+        <div><div class="page-title">Features</div></div>
+      </div>
+      <div class="content">
+        <div class="section">
+          <div class="section-header">Shipped</div>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-card-title">Multi-instance management</div>
+              <div class="feature-card-desc">Create, start, stop, and delete named OpenClaw instances from a single window.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-title">Full isolation</div>
+              <div class="feature-card-desc">Each instance runs its own OpenClaw profile with independent memory, sessions, and config.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-title">Live console</div>
+              <div class="feature-card-desc">Per-instance log output, always accessible without switching windows.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-title">Interactive TUI</div>
+              <div class="feature-card-desc">Full terminal interface per instance, one click away from the console view.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-title">In-app chat</div>
+              <div class="feature-card-desc">Send messages to any running instance and get replies inline, no browser needed.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-title">Open in browser</div>
+              <div class="feature-card-desc">Launch the full OpenClaw dashboard for any instance, pre-authenticated.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-title">Drag to reorder</div>
+              <div class="feature-card-desc">Rearrange instances in the sidebar. Order persists across restarts.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-title">Zero setup</div>
+              <div class="feature-card-desc">Opens with a default instance ready. No wizard, no config files.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: TEAM ────────────────────────────────────── -->
+    <div class="panel" id="panel-team">
+      <div class="page-header">
+        <div><div class="page-title">Team</div></div>
+      </div>
+      <div class="content">
+        <div class="section">
+          <div class="section-header">Org Chart</div>
+          <div class="org-chart">
+
+            <!-- Root: Alex -->
+            <div class="org-root">
+              <div class="org-node">
+                <div class="org-avatar av-orange">AL</div>
+                <div class="org-name">Alex</div>
+                <div class="org-role">Product Manager</div>
+              </div>
+              <div class="org-root-line"></div>
+            </div>
+
+            <!-- Children row -->
+            <div style="position:relative; width:100%; display:flex; justify-content:center;">
+              <!-- Horizontal line — width set by JS after render, fallback inline -->
+              <div id="org-hline" style="position:absolute; top:0; height:1px; background:var(--border);"></div>
+              <div class="org-connector-row" id="org-children-row">
+                <div class="org-child-wrap">
+                  <div class="org-child-vline"></div>
+                  <div class="org-node">
+                    <div class="org-avatar av-blue">BR</div>
+                    <div class="org-name">Brook</div>
+                    <div class="org-role">Engineer</div>
+                  </div>
+                </div>
+                <div class="org-child-wrap">
+                  <div class="org-child-vline"></div>
+                  <div class="org-node">
+                    <div class="org-avatar av-teal">FN</div>
+                    <div class="org-name">Finley</div>
+                    <div class="org-role">Frontend</div>
+                  </div>
+                </div>
+                <div class="org-child-wrap">
+                  <div class="org-child-vline"></div>
+                  <div class="org-node">
+                    <div class="org-avatar av-purple">DE</div>
+                    <div class="org-name">Dee</div>
+                    <div class="org-role">UX</div>
+                  </div>
+                </div>
+                <div class="org-child-wrap">
+                  <div class="org-child-vline"></div>
+                  <div class="org-node">
+                    <div class="org-avatar av-slate">EM</div>
+                    <div class="org-name">Emery</div>
+                    <div class="org-role">Architect</div>
+                  </div>
+                </div>
+                <div class="org-child-wrap">
+                  <div class="org-child-vline"></div>
+                  <div class="org-node">
+                    <div class="org-avatar av-green">CE</div>
+                    <div class="org-name">Cedar</div>
+                    <div class="org-role">QA</div>
+                  </div>
+                </div>
+                <div class="org-child-wrap">
+                  <div class="org-child-vline"></div>
+                  <div class="org-node">
+                    <div class="org-avatar av-pink">GR</div>
+                    <div class="org-name">Gray</div>
+                    <div class="org-role">Marketing</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: ROADMAP ─────────────────────────────────── -->
+    <div class="panel" id="panel-roadmap">
+      <div class="page-header">
+        <div><div class="page-title">Roadmap</div></div>
+      </div>
+      <div class="content">
+        <div class="section">
+          <div class="kanban">
+
+            <!-- Now -->
+            <div>
+              <div class="kanban-col-header">Now</div>
+              <div class="kanban-cards">
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Push repo to GitHub</div>
+                  <div class="kanban-card-note">Tag v0.0.1, attach signed DMG</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Connect website to Cloudflare</div>
+                  <div class="kanban-card-note">manyclaw.app DNS</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Verify about page on live site</div>
+                  <div class="kanban-card-note">Check rendered output post-deploy</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Next -->
+            <div>
+              <div class="kanban-col-header">Next</div>
+              <div class="kanban-cards">
+                <div class="kanban-card">
+                  <div class="kanban-card-title">CONTRIBUTING.md</div>
+                  <div class="kanban-card-note">Dev setup, build process, PR guidelines</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">GitHub Actions build workflow</div>
+                  <div class="kanban-card-note">CI on push, optional notarized release</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Intel (x86) build support</div>
+                  <div class="kanban-card-note">Requires cross-compiled node-pty</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Auto-update mechanism</div>
+                  <div class="kanban-card-note">electron-updater via GitHub Releases</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Later -->
+            <div>
+              <div class="kanban-col-header">Later</div>
+              <div class="kanban-cards">
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Windows build exploration</div>
+                  <div class="kanban-card-note">Feasibility only</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Linux build exploration</div>
+                  <div class="kanban-card-note">Feasibility only</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Homebrew cask distribution</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">App Store submission</div>
+                  <div class="kanban-card-note">Requires sandboxing audit</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: TASKS ───────────────────────────────────── -->
+    <div class="panel" id="panel-tasks">
+      <div class="page-header">
+        <div><div class="page-title">Tasks</div></div>
+      </div>
+      <div class="content">
+        <div class="section">
+          <div class="section-header">Completed</div>
+          <div class="task-list">
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Repo restructured for open source</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">GPL-3.0 license added</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">README, AGENTS.md, CLAUDE.md written</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">About page built (team intro, OpenClaw meta angle)</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Product dashboard created</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Signed + notarized DMG built (rounded icon)</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Team agents bootstrapped with identity and memory</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Website about page wired into nav</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: REQUESTS ────────────────────────────────── -->
+    <div class="panel" id="panel-requests">
+      <div class="page-header">
+        <div><div class="page-title">Requests</div></div>
+      </div>
+      <div class="content">
+        <div class="section">
+          <p class="requests-note">Requests are tracked here for visibility. A listing does not mean commitment to implement. Link to GitHub issues once the repo is live.</p>
+          <div class="requests-table-wrap">
+            <table class="requests-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>GitHub</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="req-num">1</td>
+                  <td>Intel (x86) support</td>
+                  <td><span class="type-pill type-feature">Feature</span></td>
+                  <td><span class="status-pill status-consider">Under consideration</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+                <tr>
+                  <td class="req-num">2</td>
+                  <td>Windows build</td>
+                  <td><span class="type-pill type-feature">Feature</span></td>
+                  <td><span class="status-pill status-consider">Under consideration</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+                <tr>
+                  <td class="req-num">3</td>
+                  <td>Linux build</td>
+                  <td><span class="type-pill type-feature">Feature</span></td>
+                  <td><span class="status-pill status-consider">Under consideration</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+                <tr>
+                  <td class="req-num">4</td>
+                  <td>Auto-update mechanism</td>
+                  <td><span class="type-pill type-feature">Feature</span></td>
+                  <td><span class="status-pill status-planned">Planned</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+                <tr>
+                  <td class="req-num">5</td>
+                  <td>Homebrew cask</td>
+                  <td><span class="type-pill type-distribution">Distribution</span></td>
+                  <td><span class="status-pill status-planned">Planned</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+                <tr>
+                  <td class="req-num">6</td>
+                  <td>App Store submission</td>
+                  <td><span class="type-pill type-distribution">Distribution</span></td>
+                  <td><span class="status-pill status-consider">Under consideration</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+                <tr>
+                  <td class="req-num">7</td>
+                  <td>CONTRIBUTING.md</td>
+                  <td><span class="type-pill type-docs">Docs</span></td>
+                  <td><span class="status-pill status-inprogress">In progress</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+                <tr>
+                  <td class="req-num">8</td>
+                  <td>GitHub Actions CI build</td>
+                  <td><span class="type-pill type-dev">Dev</span></td>
+                  <td><span class="status-pill status-planned">Planned</span></td>
+                  <td class="req-gh">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: CHANGELOG ───────────────────────────────── -->
+    <div class="panel" id="panel-changelog">
+      <div class="page-header">
+        <div><div class="page-title">Changelog</div></div>
+      </div>
+      <div class="content">
+        <div class="section">
+          <div class="changelog-list">
+
+            <div class="changelog-entry">
+              <div class="changelog-header">
+                <span class="changelog-version">v0.0.1</span>
+                <span class="changelog-date">2026-03-20</span>
+              </div>
+              <ul class="changelog-items">
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>First signed and notarized release (macOS arm64)</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Repo restructured for open source (apps/desktop, website, content, product)</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>About page added to website with team intro</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Product dashboard created</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Team agents bootstrapped with persistent identity and memory</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>App icon updated with macOS-standard rounded corners</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>GPL-3.0 license</div></li>
+              </ul>
+            </div>
+
+            <div class="changelog-entry">
+              <div class="changelog-header">
+                <span class="changelog-version">v0.0.1-beta</span>
+                <span class="changelog-date">2026-03-15</span>
+              </div>
+              <ul class="changelog-items">
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Interactive TUI via xterm.js + node-pty</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>In-app chat</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Open in browser (authenticated via dashboard --no-open)</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>DMG distribution build pipeline</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Domain secured: manyclaw.app</div></li>
+              </ul>
+            </div>
+
+            <div class="changelog-entry">
+              <div class="changelog-header">
+                <span class="changelog-version">v0.0.1-alpha</span>
+                <span class="changelog-date">2026-03-14</span>
+              </div>
+              <ul class="changelog-items">
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Create, start, stop, delete instances</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Sidebar with drag-to-reorder and live status</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Console log view per instance</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Console/TUI toggle (pill-style segmented control)</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Mac Mini icon, color = status</div></li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
 
   <script>
-    // ── THEME SWITCHER ──────────────────────────────────────
+    // ── THEME ───────────────────────────────────────────────
+    var THEMES = ['light', 'dark', 'manyclaw'];
+    var THEME_ICONS = { light: '☀️', dark: '🌙', manyclaw: '🔥' };
+    var currentTheme = 'light';
+
     function setTheme(theme) {
+      currentTheme = theme;
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('mc-dashboard-theme', theme);
-      document.querySelectorAll('.theme-btn').forEach(function(btn) {
-        btn.classList.toggle('active', btn.getAttribute('data-theme') === theme);
-      });
+      var btn = document.getElementById('themeCycleBtn');
+      if (btn) btn.textContent = THEME_ICONS[theme];
+    }
+
+    function cycleTheme() {
+      var idx = THEMES.indexOf(currentTheme);
+      var next = THEMES[(idx + 1) % THEMES.length];
+      setTheme(next);
     }
 
     (function() {
       var saved = localStorage.getItem('mc-dashboard-theme');
-      if (saved && ['light','dark','manyclaw'].indexOf(saved) !== -1) {
+      if (saved && THEMES.indexOf(saved) !== -1) {
         setTheme(saved);
+      } else {
+        setTheme('light');
       }
     })();
 
-    // ── SIDEBAR NAV HIGHLIGHT ──────────────────────────────
-    var navItems = document.querySelectorAll('.nav-item[href^="#"]');
-    var sections = ['product','team','tasks'].map(function(id) {
-      return document.getElementById(id);
-    });
+    // ── PANEL NAVIGATION ────────────────────────────────────
+    function showPanel(panelId, navEl) {
+      // Hide all panels
+      document.querySelectorAll('.panel').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      // Show target
+      var target = document.getElementById('panel-' + panelId);
+      if (target) target.classList.add('active');
 
-    window.addEventListener('scroll', function() {
-      var scrollY = window.scrollY + 120;
-      var active = sections[0];
-      sections.forEach(function(s) {
-        if (s && s.offsetTop <= scrollY) active = s;
+      // Update nav active state
+      document.querySelectorAll('.nav-item').forEach(function(item) {
+        item.classList.remove('active');
       });
-      navItems.forEach(function(item) {
-        var href = item.getAttribute('href').slice(1);
-        item.classList.toggle('active', href === active.id);
-      });
-    }, { passive: true });
+      if (navEl) navEl.classList.add('active');
 
-    navItems.forEach(function(item) {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        var target = document.getElementById(item.getAttribute('href').slice(1));
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
-      });
+      // Draw org chart hline if switching to team
+      if (panelId === 'team') {
+        requestAnimationFrame(drawOrgHline);
+      }
+    }
+
+    // ── ORG CHART HORIZONTAL LINE ────────────────────────────
+    function drawOrgHline() {
+      var row = document.getElementById('org-children-row');
+      var hline = document.getElementById('org-hline');
+      if (!row || !hline) return;
+
+      var children = row.querySelectorAll('.org-child-wrap');
+      if (children.length < 2) return;
+
+      var rowRect = row.getBoundingClientRect();
+      var firstRect = children[0].getBoundingClientRect();
+      var lastRect = children[children.length - 1].getBoundingClientRect();
+
+      var left = firstRect.left + firstRect.width / 2 - rowRect.left;
+      var right = lastRect.left + lastRect.width / 2 - rowRect.left;
+
+      hline.style.left = left + 'px';
+      hline.style.width = (right - left) + 'px';
+    }
+
+    window.addEventListener('resize', function() {
+      var teamPanel = document.getElementById('panel-team');
+      if (teamPanel && teamPanel.classList.contains('active')) {
+        drawOrgHline();
+      }
     });
   </script>
 
