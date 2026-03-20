@@ -907,73 +907,84 @@
       </div>
       <div class="content">
         <div class="section">
-          <div class="section-header">Org Chart</div>
-          <div class="org-chart">
+          <div class="section-header">The team</div>
+          <div class="features-grid">
 
-            <!-- Root: Alex -->
-            <div class="org-root">
-              <div class="org-node">
-                <div class="org-avatar av-orange">AL</div>
-                <div class="org-name">Alex</div>
-                <div class="org-role">Product Manager</div>
+            <div class="feature-card">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                <div class="org-avatar av-orange" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">AL</div>
+                <div>
+                  <div class="feature-card-title">Alex</div>
+                  <div class="feature-card-desc" style="font-size:12px; margin:0;">Product Manager</div>
+                </div>
               </div>
-              <div class="org-root-line"></div>
+              <div class="feature-card-desc">Keeps the team aligned and sets direction. Manages the roadmap, writes briefs, delegates to the team, and follows up. The one responsible for shipping.</div>
             </div>
 
-            <!-- Children row -->
-            <div style="position:relative; width:100%; display:flex; justify-content:center;">
-              <!-- Horizontal line — width set by JS after render, fallback inline -->
-              <div id="org-hline" style="position:absolute; top:0; height:1px; background:var(--border);"></div>
-              <div class="org-connector-row" id="org-children-row">
-                <div class="org-child-wrap">
-                  <div class="org-child-vline"></div>
-                  <div class="org-node">
-                    <div class="org-avatar av-blue">BR</div>
-                    <div class="org-name">Brook</div>
-                    <div class="org-role">Engineer</div>
-                  </div>
-                </div>
-                <div class="org-child-wrap">
-                  <div class="org-child-vline"></div>
-                  <div class="org-node">
-                    <div class="org-avatar av-teal">FN</div>
-                    <div class="org-name">Finley</div>
-                    <div class="org-role">Frontend</div>
-                  </div>
-                </div>
-                <div class="org-child-wrap">
-                  <div class="org-child-vline"></div>
-                  <div class="org-node">
-                    <div class="org-avatar av-purple">DE</div>
-                    <div class="org-name">Dee</div>
-                    <div class="org-role">UX</div>
-                  </div>
-                </div>
-                <div class="org-child-wrap">
-                  <div class="org-child-vline"></div>
-                  <div class="org-node">
-                    <div class="org-avatar av-slate">EM</div>
-                    <div class="org-name">Emery</div>
-                    <div class="org-role">Architect</div>
-                  </div>
-                </div>
-                <div class="org-child-wrap">
-                  <div class="org-child-vline"></div>
-                  <div class="org-node">
-                    <div class="org-avatar av-green">CE</div>
-                    <div class="org-name">Cedar</div>
-                    <div class="org-role">QA</div>
-                  </div>
-                </div>
-                <div class="org-child-wrap">
-                  <div class="org-child-vline"></div>
-                  <div class="org-node">
-                    <div class="org-avatar av-pink">GR</div>
-                    <div class="org-name">Gray</div>
-                    <div class="org-role">Marketing</div>
-                  </div>
+            <div class="feature-card">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                <div class="org-avatar av-blue" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">BR</div>
+                <div>
+                  <div class="feature-card-title">Brook</div>
+                  <div class="feature-card-desc" style="font-size:12px; margin:0;">Software Engineer</div>
                 </div>
               </div>
+              <div class="feature-card-desc">Owns the Electron main process, IPC layer, and instance lifecycle. Reads the spec, asks one good question, and ships. Built the core of ManyClaw.</div>
+            </div>
+
+            <div class="feature-card">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                <div class="org-avatar av-teal" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">FN</div>
+                <div>
+                  <div class="feature-card-title">Finley</div>
+                  <div class="feature-card-desc" style="font-size:12px; margin:0;">Frontend Engineer</div>
+                </div>
+              </div>
+              <div class="feature-card-desc">Owns the React UI and the marketing website. Cares about the details others skip. Takes Dee's specs and makes them feel right.</div>
+            </div>
+
+            <div class="feature-card">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                <div class="org-avatar av-purple" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">DE</div>
+                <div>
+                  <div class="feature-card-title">Dee</div>
+                  <div class="feature-card-desc" style="font-size:12px; margin:0;">UX &amp; Interaction Design</div>
+                </div>
+              </div>
+              <div class="feature-card-desc">Senior minimalist. Specs only what was asked, makes the call on ambiguous details, and keeps the surface area small. Works upstream of Finley.</div>
+            </div>
+
+            <div class="feature-card">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                <div class="org-avatar av-slate" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">EM</div>
+                <div>
+                  <div class="feature-card-title">Emery</div>
+                  <div class="feature-card-desc" style="font-size:12px; margin:0;">Technical Architect</div>
+                </div>
+              </div>
+              <div class="feature-card-desc">Signs off on architecture before implementation starts. Thinks about how systems fail, scale, and stay maintainable. Not a gatekeeper — a guardrail.</div>
+            </div>
+
+            <div class="feature-card">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                <div class="org-avatar av-green" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">CE</div>
+                <div>
+                  <div class="feature-card-title">Cedar</div>
+                  <div class="feature-card-desc" style="font-size:12px; margin:0;">QA &amp; Testing</div>
+                </div>
+              </div>
+              <div class="feature-card-desc">Runs the actual app and reports exactly what she sees. Manual testing only. Give her a running build and she'll find what's broken.</div>
+            </div>
+
+            <div class="feature-card">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                <div class="org-avatar av-pink" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">GR</div>
+                <div>
+                  <div class="feature-card-title">Gray</div>
+                  <div class="feature-card-desc" style="font-size:12px; margin:0;">Product Marketing</div>
+                </div>
+              </div>
+              <div class="feature-card-desc">Writes the blog, researches the community, and finds the angle. Sharp, opinionated, no fluff. Publishes one post per day and pitches the next one to Alex.</div>
             </div>
 
           </div>
