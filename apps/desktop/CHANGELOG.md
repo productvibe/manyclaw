@@ -1,6 +1,23 @@
 # Changelog
 
-## 0.0.1 (2026-03-14)
+## 0.0.1 (2026-03-20)
+
+### Release
+- Signed and notarized DMG for macOS arm64
+- App icon updated with macOS-standard rounded corners
+- Repo restructured for open source: `apps/desktop`, `website`, `content`, `product`
+- GPL-3.0 license
+
+### Features
+- **Auto-update** — electron-updater wired to GitHub Releases; users notified in-app when a new version is available
+
+### Infrastructure
+- electron-builder publish configured for GitHub Releases (`productvibe/manyclaw`)
+- Team agents bootstrapped with persistent identity and memory
+
+---
+
+## 0.0.1-alpha (2026-03-14)
 
 Initial pre-release.
 
