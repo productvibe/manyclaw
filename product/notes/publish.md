@@ -28,12 +28,45 @@ git push -u origin main
 ### 1. Push the repo
 
 ```bash
+# Ensure you're on the productvibe account
+gh auth switch --user productvibe
+
+# Create the repo (if not already done)
+gh repo create productvibe/manyclaw --public --description "Manage multiple OpenClaw instances on one machine"
+
+# Push (after purging large files from history — see above)
 cd ~/Projects/manyclaw
 git remote add origin https://github.com/productvibe/manyclaw.git
 git push -u origin main
 ```
 
-### 2. Create the GitHub Release
+### 2. Protect the main branch
+
+Require PRs with 1 approval. No direct pushes, not even from admins. Stale approvals dismissed on new commits.
+
+```bash
+gh api repos/productvibe/manyclaw/branches/main/protection \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  --input - <<'EOF'
+{
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "dismiss_stale_reviews": true
+  },
+  "enforce_admins": true,
+  "required_status_checks": null,
+  "restrictions": null
+}
+EOF
+```
+
+This means:
+- Nobody can push directly to `main` (not even admins)
+- All changes need a PR with at least 1 approval
+- Stale approvals are dismissed if new commits are pushed
+
+### 3. Create the GitHub Release
 
 ```bash
 gh release create v0.0.1 \
@@ -51,7 +84,7 @@ Or via the GitHub UI:
 
 The download button on manyclaw.app points to `/releases/latest` — it will work automatically.
 
-### 3. Deploy the website to Cloudflare Pages
+### 4. Deploy the website to Cloudflare Pages
 
 - Go to dash.cloudflare.com → Workers & Pages → Create → Pages
 - Connect GitHub → select `productvibe/manyclaw`
@@ -64,7 +97,7 @@ The download button on manyclaw.app points to `/releases/latest` — it will wor
 
 Cloudflare auto-deploys on every push to `main` after this.
 
-### 4. Custom domain
+### 5. Custom domain
 
 - Cloudflare Pages → Custom domains → Add `manyclaw.app`
 - Update DNS to point to Cloudflare (add the CNAME they provide)
