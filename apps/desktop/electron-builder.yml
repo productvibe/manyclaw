@@ -31,5 +31,7 @@ mac:
 dmg:
   sign: true
 
-# Don't publish yet
-publish: null
+publish:
+  provider: github
+  owner: productvibe
+  repo: manyclaw

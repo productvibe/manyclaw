@@ -12,6 +12,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { InstanceManager } from '../instances/manager.js'
+import { initUpdater } from './updater.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const isDev = !!process.env.VITE_DEV_PORT
@@ -235,6 +236,11 @@ app.whenReady().then(async () => {
   await manager.init()
   const win = await createWindow()
   setupIpc(win)
+
+  // Auto-update — production only
+  if (app.isPackaged) {
+    initUpdater()
+  }
 
   // macOS: re-create window when dock icon is clicked and no windows are open
   app.on('activate', async () => {
