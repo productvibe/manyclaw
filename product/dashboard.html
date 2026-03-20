@@ -735,6 +735,9 @@
       <span class="nav-icon">◑</span> Changelog
     </div>
 
+    <div class="nav-item" data-panel="ways" onclick="showPanel('ways', this)">
+      <span class="nav-icon">◇</span> Ways of Working
+    </div>
     <div class="nav-item" data-panel="team" onclick="showPanel('team', this)">
       <span class="nav-icon">◎</span> Team
     </div>
@@ -894,6 +897,70 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL: WAYS OF WORKING ───────────────────────────── -->
+    <div class="panel" id="panel-ways">
+      <div class="page-header">
+        <div><div class="page-title">Ways of Working</div></div>
+      </div>
+      <div class="content">
+
+        <div class="section">
+          <div class="section-header">How we operate</div>
+          <p class="product-summary">
+            ManyClaw is built by an AI agent team running on OpenClaw, managed through ManyClaw itself.
+            The team works async. Alex sets direction, delegates to agents, and follows up.
+            Each agent has a defined role, a persistent workspace, and memory that carries across sessions.
+          </p>
+        </div>
+
+        <div class="section">
+          <div class="section-header">Delegation</div>
+          <p class="product-summary">
+            Alex is the PM. Everything flows through Alex — briefs go out, work comes back.
+            Agents don't self-assign. They receive a task, execute it, and report back.
+            If something is unclear, they ask one precise question before starting, not five vague ones after.
+          </p>
+          <p class="product-summary" style="margin-top:12px;">
+            Before delegating anything, Alex reads the relevant docs and forms a clear spec.
+            Agents implement — they don't investigate. The thinking happens before the handoff.
+          </p>
+        </div>
+
+        <div class="section">
+          <div class="section-header">Roles are hard constraints</div>
+          <ul class="product-summary" style="padding-left:20px; line-height:2;">
+            <li><strong>Cedar</strong> does manual testing only. She gets a running app and reports what she sees. She never reads docs, writes specs, or makes architecture calls.</li>
+            <li><strong>Emery</strong> signs off on architecture before implementation. If there's any question about the right approach, Emery goes first.</li>
+            <li><strong>Dee</strong> specs only what was asked. Scope is capped explicitly on every brief.</li>
+            <li><strong>Brook</strong> owns the main process. <strong>Finley</strong> owns the renderer and website. They don't cross domains without being asked.</li>
+            <li><strong>Gray</strong> writes content. One post per day, outside-in always — start with the human problem, not the product feature.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <div class="section-header">Memory and continuity</div>
+          <p class="product-summary">
+            Each agent has a persistent workspace with SOUL.md, IDENTITY.md, MEMORY.md, and daily notes.
+            They wake up knowing who they are, what the project is, and what they've done before.
+            Alex maintains a long-term MEMORY.md with key decisions, lessons, and context.
+          </p>
+          <p class="product-summary" style="margin-top:12px;">
+            If something is worth remembering, it goes in a file. Mental notes don't survive session restarts.
+          </p>
+        </div>
+
+        <div class="section">
+          <div class="section-header">Quality</div>
+          <p class="product-summary">
+            Don't second-guess verified correct work. If something was confirmed working, don't re-litigate it.
+            When something breaks, diagnose before delegating — don't throw unsolved problems at the team.
+            Brook and Finley are reliable. Orchestration is the weak link, not execution.
+          </p>
+        </div>
+
       </div>
     </div>
 
