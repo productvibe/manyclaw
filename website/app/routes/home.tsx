@@ -259,7 +259,7 @@ export default function Home() {
               Manage multiple OpenClaw instances on one machine.
             </h1>
             <p className="text-xl text-muted-foreground max-w-[560px] leading-relaxed font-normal max-md:text-base">
-              ManyClaw runs multiple isolated OpenClaw instances on a single Mac. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
+              The simplest way to run multiple isolated OpenClaw instances on one Mac. Each one gets its own memory, sessions, workspace, and config. No cross-contamination. No extra hardware.
             </p>
             <div className="mt-4 flex flex-col items-center gap-4" id="download">
               <Link to="/download" className="inline-flex items-center gap-1.5 font-medium text-base px-6 py-3 rounded-sm bg-primary text-primary-foreground no-underline whitespace-nowrap hover:bg-[--color-accent-dark] transition-colors">
