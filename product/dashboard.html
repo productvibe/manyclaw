@@ -711,7 +711,7 @@
 
     <div class="nav-section-label">Product</div>
     <div class="nav-item active" data-panel="overview" onclick="showPanel('overview', this)">
-      <span class="nav-icon">◈</span> Overview
+      <span class="nav-icon">◈</span> Home
     </div>
     <div class="nav-item" data-panel="product" onclick="showPanel('product', this)">
       <span class="nav-icon">◉</span> Product
@@ -751,53 +751,55 @@
     <div class="panel active" id="panel-overview">
       <div class="page-header">
         <div>
-          <div class="page-title">ManyClaw</div>
+          <div class="page-title">Home</div>
           <div class="page-meta">
             <span class="version-badge">v0.0.1</span>
             <span class="status-badge"><span class="status-badge-dot"></span>Active development</span>
           </div>
-          <div class="page-updated">Last updated 2026-03-20</div>
+          <div class="page-updated">Last updated 2026-03-20 · Alex, PM</div>
         </div>
       </div>
       <div class="content">
+
         <div class="section">
-          <div class="section-header">Summary</div>
-          <p class="product-summary">
-            <strong>ManyClaw</strong> is a native macOS app for running multiple OpenClaw AI agents side by side.
-            Think browser profiles, but for AI: each instance is fully isolated with its own identity, memory,
-            sessions, and config. One window, a sidebar of named color-coded agents, one click to start.
-            No terminal required, no port management, no config files. Just agents.
+          <div class="section-header">2026-03-20 — Status update</div>
+          <p class="product-summary" style="margin-bottom:20px;">
+            Big day. We went from a working app to something that's actually ready to share.
+            Focused entirely on getting the repo clean for open source, wiring up the release pipeline, and setting the team up properly.
           </p>
-        </div>
-        <div class="section">
-          <div class="section-header">Key Facts</div>
           <div class="key-facts">
             <div class="fact-row">
-              <div class="fact-label">Platform</div>
-              <div class="fact-value">macOS (Apple Silicon)</div>
-            </div>
-            <div class="fact-row">
-              <div class="fact-label">Stack</div>
-              <div class="fact-value">Electron + React + TypeScript</div>
-            </div>
-            <div class="fact-row">
-              <div class="fact-label">License</div>
-              <div class="fact-value"><code>GPL-3.0</code></div>
+              <div class="fact-label">Release</div>
+              <div class="fact-value">Signed and notarized DMG shipped. Rounded icon fixed. Build runs clean from <code>apps/desktop</code>.</div>
             </div>
             <div class="fact-row">
               <div class="fact-label">Repo</div>
-              <div class="fact-value"><code>apps/desktop</code> · <code>website</code> · <code>product</code></div>
+              <div class="fact-value">Restructured to <code>apps/desktop</code>, <code>website</code>, <code>content</code>, <code>product</code>. GPL-3.0 licensed. README, AGENTS.md, CLAUDE.md written.</div>
             </div>
             <div class="fact-row">
-              <div class="fact-label">Version</div>
-              <div class="fact-value"><code>v0.0.1</code> — signed &amp; notarized DMG</div>
+              <div class="fact-label">Website</div>
+              <div class="fact-value">About page live with team intro and the OpenClaw meta angle. Nav updated. "We use OpenClaw to build ManyClaw."</div>
             </div>
             <div class="fact-row">
-              <div class="fact-label">Status</div>
-              <div class="fact-value">Active development · pre-release</div>
+              <div class="fact-label">Team</div>
+              <div class="fact-value">All 7 agents bootstrapped with identity, soul, and memory. No more cold-start sub-agents — they now wake up knowing the project.</div>
+            </div>
+            <div class="fact-row">
+              <div class="fact-label">Dashboard</div>
+              <div class="fact-value">This file. Built today. Updated during heartbeat checks going forward.</div>
             </div>
           </div>
         </div>
+
+        <div class="section">
+          <div class="section-header">What's next</div>
+          <p class="product-summary">
+            GitHub repo setup and Cloudflare deploy are the immediate priorities — Yook is handling both.
+            Once the repo is live, the team can start picking up GitHub issues properly.
+            CONTRIBUTING.md and a CI build workflow are next on my list.
+          </p>
+        </div>
+
       </div>
     </div>
 
