@@ -6,7 +6,7 @@ import Nav from "~/components/Nav";
 import Footer from "~/components/Footer";
 import { getPost, listPosts, type PostMeta } from "~/lib/content";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof clientLoader> = ({ data }) => {
   if (!data) return [{ title: "ManyClaw Docs" }];
   return [
     { title: `${data.post.title} — ManyClaw Docs` },
@@ -16,7 +16,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const [post, allDocs] = await Promise.all([
     getPost("docs", params.slug),
     Promise.resolve(listPosts("docs")),
@@ -127,7 +127,7 @@ function NextStepCard({ next }: { next: PostMeta }) {
 //   └─────────┴────────────────────────┘
 
 export default function DocsSlug() {
-  const { post, allDocs, prev, next } = useLoaderData<typeof loader>();
+  const { post, allDocs, prev, next } = useLoaderData<typeof clientLoader>();
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground font-sans">

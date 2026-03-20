@@ -4,14 +4,14 @@ import { data } from "react-router";
 import Layout from "~/components/Layout";
 import { getPost } from "~/lib/content";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const post = await getPost("blog", params.slug);
   if (!post) throw data("Not found", { status: 404 });
   return { post };
 }
 
 export default function BlogPost() {
-  const { post } = useLoaderData<typeof loader>();
+  const { post } = useLoaderData<typeof clientLoader>();
   return (
     <Layout>
       <main className="max-w-[720px] mx-auto px-6 py-16 font-sans">

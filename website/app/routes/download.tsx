@@ -45,7 +45,7 @@ export default function Download() {
 
         {/* Primary CTA */}
         <a
-          href="https://github.com/productvibe/manyclaw/releases/latest"
+          href="https://github.com/productvibe/manyclaw/releases/download/v0.0.1/ManyClaw-0.0.1-arm64.dmg"
           style={{
             display: "inline-flex",
             alignItems: "center",

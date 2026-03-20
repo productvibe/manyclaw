@@ -9,12 +9,12 @@ export const meta: MetaFunction = () => [
   { name: "description", content: "Updates, stories, and release notes from the ManyClaw team." },
 ];
 
-export function loader(_: Route.LoaderArgs) {
+export function clientLoader(_: Route.ClientLoaderArgs) {
   return { posts: listPosts("blog") };
 }
 
 export default function BlogIndex() {
-  const { posts } = useLoaderData<typeof loader>();
+  const { posts } = useLoaderData<typeof clientLoader>();
   return (
     <Layout>
       <main className="max-w-[720px] mx-auto px-6 py-16 font-sans">

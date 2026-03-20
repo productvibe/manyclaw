@@ -1,9 +1,5 @@
-import fs from "node:fs";
-import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
-
-const contentRoot = path.resolve(process.cwd(), "..", "content");
 
 export interface PostMeta {
   slug: string;
@@ -18,27 +14,47 @@ export interface Post extends PostMeta {
   html: string;
 }
 
-export function listPosts(dir: "blog" | "docs"): PostMeta[] {
-  const folder = path.join(contentRoot, dir);
-  if (!fs.existsSync(folder)) return [];
-  const posts = fs
-    .readdirSync(folder)
-    .filter((f) => f.endsWith(".md"))
-    .map((file) => {
-      const raw = fs.readFileSync(path.join(folder, file), "utf8");
-      const { data } = matter(raw);
-      const slug = data.slug ?? file.replace(/\.md$/, "");
-      return {
-        slug,
-        title: data.title ?? slug,
-        date: data.date ? String(data.date) : "",
-        description: data.description ?? "",
-        order: typeof data.order === "number" ? data.order : 0,
-        section: data.section ?? "",
-      };
-    });
+// Import all markdown files at build time (no filesystem needed at runtime)
+const blogFiles = import.meta.glob("/content/blog/*.md", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
 
-  // Docs: sort by order. Blog: sort by date descending.
+const docsFiles = import.meta.glob("/content/docs/*.md", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+function parseFile(
+  filePath: string,
+  raw: string
+): { slug: string; data: Record<string, unknown>; content: string } {
+  const fileName = filePath.split("/").pop()!.replace(/\.md$/, "");
+  const { data, content } = matter(raw);
+  const slug = (data.slug as string) ?? fileName;
+  return { slug, data, content };
+}
+
+function getFiles(dir: "blog" | "docs"): Record<string, string> {
+  return dir === "blog" ? blogFiles : docsFiles;
+}
+
+export function listPosts(dir: "blog" | "docs"): PostMeta[] {
+  const files = getFiles(dir);
+  const posts = Object.entries(files).map(([filePath, raw]) => {
+    const { slug, data } = parseFile(filePath, raw);
+    return {
+      slug,
+      title: (data.title as string) ?? slug,
+      date: data.date ? String(data.date) : "",
+      description: (data.description as string) ?? "",
+      order: typeof data.order === "number" ? data.order : 0,
+      section: (data.section as string) ?? "",
+    };
+  });
+
   if (dir === "docs") {
     return posts.sort((a, b) => a.order - b.order);
   }
@@ -54,30 +70,35 @@ function slugify(text: string): string {
     .replace(/\s+/g, "-");
 }
 
-// Renderer that adds id= to h2/h3 so TOC anchor links work
 const renderer = new marked.Renderer();
-renderer.heading = function ({ text, depth }: { text: string; depth: number }) {
+renderer.heading = function ({
+  text,
+  depth,
+}: {
+  text: string;
+  depth: number;
+}) {
   const id = slugify(text);
   return `<h${depth} id="${id}">${text}</h${depth}>\n`;
 };
 
-export async function getPost(dir: "blog" | "docs", slug: string): Promise<Post | null> {
-  const folder = path.join(contentRoot, dir);
-  if (!fs.existsSync(folder)) return null;
-  const files = fs.readdirSync(folder).filter((f) => f.endsWith(".md"));
-  for (const file of files) {
-    const raw = fs.readFileSync(path.join(folder, file), "utf8");
-    const { data, content } = matter(raw);
-    const fileSlug = data.slug ?? file.replace(/\.md$/, "");
-    if (fileSlug === slug) {
-      const html = await marked(content, { renderer });
+export async function getPost(
+  dir: "blog" | "docs",
+  slug: string
+): Promise<Post | null> {
+  const files = getFiles(dir);
+  for (const [filePath, raw] of Object.entries(files)) {
+    const parsed = parseFile(filePath, raw);
+    if (parsed.slug === slug) {
+      const html = await marked(parsed.content, { renderer });
       return {
-        slug: fileSlug,
-        title: data.title ?? fileSlug,
-        date: data.date ? String(data.date) : "",
-        description: data.description ?? "",
-        order: typeof data.order === "number" ? data.order : 0,
-        section: data.section ?? "",
+        slug: parsed.slug,
+        title: (parsed.data.title as string) ?? parsed.slug,
+        date: parsed.data.date ? String(parsed.data.date) : "",
+        description: (parsed.data.description as string) ?? "",
+        order:
+          typeof parsed.data.order === "number" ? parsed.data.order : 0,
+        section: (parsed.data.section as string) ?? "",
         html,
       };
     }
