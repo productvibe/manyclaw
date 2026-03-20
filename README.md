@@ -4,6 +4,8 @@
 
 ManyClaw is a native macOS app that gives you a clean visual shell around OpenClaw's profile system. Named, color-coded agents in a sidebar. One click to start. Fully isolated — each instance has its own memory, sessions, workspace, and config.
 
+![ManyClaw screenshot](website/public/images/hero.png)
+
 ---
 
 ## The problem
