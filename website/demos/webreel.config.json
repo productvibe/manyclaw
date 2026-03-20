@@ -1,0 +1,42 @@
+{
+  "$schema": "https://webreel.dev/schema/v1.json",
+  "viewport": { "width": 1440, "height": 900 },
+  "defaultDelay": 600,
+  "videos": {
+    "manyclaw-demo": {
+      "url": "http://localhost:3000",
+      "output": "public/videos/manyclaw-demo.mp4",
+      "waitFor": "#hero-title",
+      "steps": [
+        { "action": "pause", "ms": 1000 },
+
+        { "action": "scroll", "y": 320, "delay": 800 },
+        { "action": "pause", "ms": 600 },
+
+        { "action": "scroll", "y": 900, "delay": 1000 },
+        { "action": "pause", "ms": 800 },
+
+        { "action": "scroll", "y": 1800, "delay": 1200 },
+        { "action": "pause", "ms": 1000 },
+
+        { "action": "scroll", "y": 2800, "delay": 1200 },
+        { "action": "pause", "ms": 800 },
+
+        { "action": "scroll", "y": 3600, "delay": 1000 },
+        { "action": "pause", "ms": 600 },
+
+        { "action": "scroll", "y": 4200, "delay": 800 },
+        { "action": "pause", "ms": 1200 },
+
+        { "action": "click", "selector": "a[href='/blog']", "delay": 1000 },
+        { "action": "pause", "ms": 800 },
+
+        { "action": "click", "selector": "ul li:first-child a", "delay": 1000 },
+        { "action": "pause", "ms": 800 },
+
+        { "action": "scroll", "y": 400, "delay": 1000 },
+        { "action": "pause", "ms": 1200 }
+      ]
+    }
+  }
+}

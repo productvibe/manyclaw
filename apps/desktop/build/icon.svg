@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- ManyClaw icon: macOS requires the squircle baked into the icon with transparent corners -->
+  <defs>
+    <clipPath id="squircle">
+      <!-- Apple continuous-curvature superellipse, ~824x824 centered in 1024x1024 -->
+      <path d="
+        M 512 100
+        C 693 100 748 100 800 126
+        C 852 152 872 172 898 224
+        C 924 276 924 331 924 512
+        C 924 693 924 748 898 800
+        C 872 852 852 872 800 898
+        C 748 924 693 924 512 924
+        C 331 924 276 924 224 898
+        C 172 872 152 852 126 800
+        C 100 748 100 693 100 512
+        C 100 331 100 276 126 224
+        C 152 172 172 152 224 126
+        C 276 100 331 100 512 100
+        Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Dark background clipped to squircle -->
+  <g clip-path="url(#squircle)">
+    <rect width="1024" height="1024" fill="#2c2418"/>
+
+    <!-- Three parallel parallelogram stripes -->
+    <!-- Stripe 1 — rearmost, darkest -->
+    <polygon points="402,740 486,740 326,260 242,260" fill="#C44A1C"/>
+    <!-- Stripe 2 — middle -->
+    <polygon points="532,740 616,740 456,260 372,260" fill="#E05929"/>
+    <!-- Stripe 3 — foremost, full orange -->
+    <polygon points="662,740 746,740 586,260 502,260" fill="#FF6B35"/>
+  </g>
+</svg>

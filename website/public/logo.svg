@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 184 36" width="184" height="36">
+  <!--
+    ManyClaw wordmark — icon mark + logotype
+    Light-background variant (dark text, orange mark)
+    Icon mark: 3 diagonal stripes scaled to 28×28, positioned at (4, 4)
+    Original stripe region: x 202–822, y 190–810 (620×620px in the 1024px icon)
+    Scale: 28/620 ≈ 0.04516
+  -->
+
+  <!-- Icon mark (no background — floats on page bg) -->
+  <g transform="translate(4,4) scale(0.04516) translate(-202,-190)">
+    <polygon points="402,810 502,810 302,190 202,190" fill="#C44A1C"/>
+    <polygon points="562,810 662,810 462,190 362,190" fill="#E05929"/>
+    <polygon points="722,810 822,810 622,190 522,190" fill="#FF6B35"/>
+  </g>
+
+  <!-- Logotype -->
+  <text
+    x="40"
+    y="26"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif"
+    font-size="20"
+    font-weight="700"
+    fill="#2c2418"
+    letter-spacing="-0.3"
+  >ManyClaw</text>
+</svg>
