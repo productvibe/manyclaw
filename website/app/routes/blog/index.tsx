@@ -2,19 +2,19 @@ import { useLoaderData, Link } from "react-router";
 import type { MetaFunction } from "react-router";
 import type { Route } from "./+types/index";
 import Layout from "~/components/Layout";
-import { listPosts } from "~/lib/content";
+import { listPosts } from "~/lib/content.server";
 
 export const meta: MetaFunction = () => [
   { title: "Blog — ManyClaw" },
   { name: "description", content: "Updates, stories, and release notes from the ManyClaw team." },
 ];
 
-export function clientLoader(_: Route.ClientLoaderArgs) {
+export function loader(_: Route.LoaderArgs) {
   return { posts: listPosts("blog") };
 }
 
 export default function BlogIndex() {
-  const { posts } = useLoaderData<typeof clientLoader>();
+  const { posts } = useLoaderData<typeof loader>();
   return (
     <Layout>
       <main className="max-w-[720px] mx-auto px-6 py-16 font-sans">

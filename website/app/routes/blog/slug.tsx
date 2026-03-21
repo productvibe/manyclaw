@@ -2,16 +2,16 @@ import { useLoaderData } from "react-router";
 import type { Route } from "./+types/slug";
 import { data } from "react-router";
 import Layout from "~/components/Layout";
-import { getPost } from "~/lib/content";
+import { getPost } from "~/lib/content.server";
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
   const post = await getPost("blog", params.slug);
   if (!post) throw data("Not found", { status: 404 });
   return { post };
 }
 
 export default function BlogPost() {
-  const { post } = useLoaderData<typeof clientLoader>();
+  const { post } = useLoaderData<typeof loader>();
   return (
     <Layout>
       <main className="max-w-[720px] mx-auto px-6 py-16 font-sans">

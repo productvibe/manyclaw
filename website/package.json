@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
+    "build": "react-router build && node scripts/gen-sitemap.mjs",
     "dev": "react-router dev",
     "preview": "npx serve build/client",
     "typecheck": "react-router typegen && tsc",
@@ -50,6 +50,7 @@
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "wrangler": "^4.76.0"
   }
 }

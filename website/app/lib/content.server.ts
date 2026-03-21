@@ -15,13 +15,13 @@ export interface Post extends PostMeta {
 }
 
 // Import all markdown files at build time (no filesystem needed at runtime)
-const blogFiles = import.meta.glob("/content/blog/*.md", {
+const blogFiles = import.meta.glob("../../../content/blog/*.md", {
   query: "?raw",
   import: "default",
   eager: true,
 }) as Record<string, string>;
 
-const docsFiles = import.meta.glob("/content/docs/*.md", {
+const docsFiles = import.meta.glob("../../../content/docs/*.md", {
   query: "?raw",
   import: "default",
   eager: true,

@@ -4,9 +4,9 @@ import type { Route } from "./+types/slug";
 import { data } from "react-router";
 import Nav from "~/components/Nav";
 import Footer from "~/components/Footer";
-import { getPost, listPosts, type PostMeta } from "~/lib/content";
+import { getPost, listPosts, type PostMeta } from "~/lib/content.server";
 
-export const meta: MetaFunction<typeof clientLoader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [{ title: "ManyClaw Docs" }];
   return [
     { title: `${data.post.title} — ManyClaw Docs` },
@@ -16,7 +16,7 @@ export const meta: MetaFunction<typeof clientLoader> = ({ data }) => {
 
 // ── Loader ────────────────────────────────────────────────────────────────────
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
   const [post, allDocs] = await Promise.all([
     getPost("docs", params.slug),
     Promise.resolve(listPosts("docs")),
@@ -127,7 +127,7 @@ function NextStepCard({ next }: { next: PostMeta }) {
 //   └─────────┴────────────────────────┘
 
 export default function DocsSlug() {
-  const { post, allDocs, prev, next } = useLoaderData<typeof clientLoader>();
+  const { post, allDocs, prev, next } = useLoaderData<typeof loader>();
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground font-sans">
