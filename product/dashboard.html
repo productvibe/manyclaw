@@ -881,10 +881,26 @@
             <span class="version-badge">v0.0.1</span>
             <span class="status-badge"><span class="status-badge-dot"></span>Active development</span>
           </div>
-          <div class="page-updated">Last updated 2026-03-20 · Alex, PM</div>
+          <div class="page-updated">Last updated 2026-03-21 · Alex, PM</div>
         </div>
       </div>
       <div class="content">
+
+        <div class="section">
+          <div class="section-header">2026-03-21 — Alex</div>
+          <p class="product-summary">
+            Website hosting migrated from Cloudflare Pages to GitHub Pages. Static pre-rendering added so every page loads fast without JavaScript.
+          </p>
+          <ul class="product-summary" style="margin-top:12px; padding-left:20px; line-height:2;">
+            <li>Switched from Cloudflare Pages to GitHub Pages — simpler, no extra deps.</li>
+            <li>Static pre-rendering added to website — pages now load without JS.</li>
+            <li>Cloudflare-specific dependencies removed from package.json and lockfile.</li>
+            <li>pnpm-lock.yaml regenerated clean.</li>
+          </ul>
+          <p class="product-summary" style="margin-top:16px;">
+            Website is live on GitHub Pages. Next: wire up manyclaw.app DNS and verify the about page renders correctly.
+          </p>
+        </div>
 
         <div class="section">
           <div class="section-header">2026-03-20 — Alex</div>
@@ -903,7 +919,7 @@
             <li>Dashboard rebuilt with subpages, org chart, kanban roadmap, requests table, changelog.</li>
           </ul>
           <p class="product-summary" style="margin-top:16px;">
-            Cloudflare deploy is the next step. The team will start picking up GitHub issues once that's live.
+            Cloudflare deploy was the next step — done on 2026-03-21, now on GitHub Pages.
           </p>
         </div>
 
@@ -1263,7 +1279,7 @@
           <div class="task-list">
             <div class="task-row">
               <span class="task-dot" style="background:var(--amber);"></span>
-              <span class="task-title">Connect website to Cloudflare — manyclaw.app DNS</span>
+              <span class="task-title">Connect manyclaw.app DNS to GitHub Pages</span>
             </div>
             <div class="task-row">
               <span class="task-dot" style="background:var(--amber);"></span>
@@ -1283,6 +1299,14 @@
         <div class="section">
           <div class="section-header">Completed</div>
           <div class="task-list">
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Website deployed on GitHub Pages with static pre-rendering</span>
+            </div>
+            <div class="task-row">
+              <span class="task-dot-done"></span>
+              <span class="task-title-done">Cloudflare dependencies removed — clean static build</span>
+            </div>
             <div class="task-row">
               <span class="task-dot-done"></span>
               <span class="task-title-done">Repo restructured for open source</span>
@@ -1427,6 +1451,18 @@
       <div class="content">
         <div class="section">
           <div class="changelog-list">
+
+            <div class="changelog-entry">
+              <div class="changelog-header">
+                <span class="changelog-version">website</span>
+                <span class="changelog-date">2026-03-21</span>
+              </div>
+              <ul class="changelog-items">
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Migrated website hosting from Cloudflare Pages to GitHub Pages</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Added static pre-rendering — pages load without JavaScript</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Removed Cloudflare-specific dependencies</div></li>
+              </ul>
+            </div>
 
             <div class="changelog-entry">
               <div class="changelog-header">
