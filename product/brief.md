@@ -84,6 +84,10 @@ ManyClaw is a visual shell — not a replacement for OpenClaw. It doesn't manage
 
 **When citing community sources (Reddit, HN, forums etc.):** always include the actual link to the post. Don't reference a thread without linking it. Readers should be able to click through to the original.
 
+**Community engagement loop:** When a blog post is inspired by a Reddit/HN thread, Gray also drafts a comment to leave on the original thread. Gray sends the draft to Alex for review. Alex approves and posts it — no human review needed. The comment should be genuine and add value (not just "we wrote a post about this"). Usually: acknowledge the original post, share one useful insight, link the full post if relevant.
+
+**Posting mechanism:** Requires Reddit or HN credentials configured in the workspace. TODO: set up API access so Alex can post comments directly.
+
 ---
 
 ## Status
