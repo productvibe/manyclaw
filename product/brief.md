@@ -80,6 +80,12 @@ ManyClaw is a visual shell — not a replacement for OpenClaw. It doesn't manage
 
 ---
 
+## Content & Blog Guidelines
+
+**When citing community sources (Reddit, HN, forums etc.):** always include the actual link to the post. Don't reference a thread without linking it. Readers should be able to click through to the original.
+
+---
+
 ## Status
 
 Core functionality is working:
