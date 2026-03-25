@@ -15,6 +15,7 @@ export default function Nav() {
 
           {/* Desktop links */}
           <div className="hidden sm:flex items-center gap-5">
+            <Link to="/about" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">About</Link>
             <Link to="/blog" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Blog</Link>
             <Link to="/docs" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Docs</Link>
             <a href="https://github.com/productvibe/manyclaw" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -48,6 +49,7 @@ export default function Nav() {
       {/* Mobile menu overlay */}
       {menuOpen && (
         <div className="fixed top-17 inset-x-0 bottom-0 z-99 bg-background/[0.98] backdrop-blur-md flex flex-col items-center pt-12 gap-6 sm:hidden">
+          <Link to="/about" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">About</Link>
           <Link to="/blog" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">Blog</Link>
           <Link to="/docs" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">Docs</Link>
           <a href="https://github.com/productvibe/manyclaw" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-foreground no-underline">GitHub</a>

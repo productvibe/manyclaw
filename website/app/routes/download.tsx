@@ -1,5 +1,4 @@
 import type { MetaFunction } from "react-router";
-import { Link } from "react-router";
 import Layout from "~/components/Layout";
 
 export const meta: MetaFunction = () => [
@@ -10,130 +9,62 @@ export const meta: MetaFunction = () => [
 export default function Download() {
   return (
     <Layout>
-      <main
-        style={{
-          maxWidth: 600,
-          margin: "0 auto",
-          padding: "6rem 1.5rem 5rem",
-          textAlign: "center",
-          fontFamily: "DM Sans, sans-serif",
-          color: "#2c2418",
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: "Bricolage Grotesque, sans-serif",
-            fontSize: "clamp(2rem, 5vw, 3rem)",
-            fontWeight: 700,
-            marginBottom: "0.625rem",
-            lineHeight: 1.15,
-            marginTop: 0,
-          }}
-        >
+      <main className="max-w-[520px] mx-auto px-6 py-24 text-center font-sans">
+        <h1 className="font-display text-[clamp(2rem,5vw,3rem)] font-bold mb-2.5 mt-0 leading-tight">
           Download ManyClaw
         </h1>
-        <p
-          style={{
-            fontSize: "1.125rem",
-            color: "rgba(44,36,24,0.6)",
-            marginBottom: "2.5rem",
-            lineHeight: 1.6,
-          }}
-        >
+        <p className="text-lg text-foreground/60 mb-8 leading-relaxed">
           Free and open source. Everything runs on your machine.
         </p>
 
-        {/* Primary CTA */}
-        <a
-          href="https://github.com/productvibe/manyclaw/releases/download/v0.0.1/ManyClaw-0.0.1-arm64.dmg"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            background: "#FF6B35",
-            color: "#fff",
-            fontFamily: "DM Sans, sans-serif",
-            fontWeight: 600,
-            fontSize: "1rem",
-            padding: "0.875rem 2rem",
-            borderRadius: "0.625rem",
-            textDecoration: "none",
-            marginBottom: "2.5rem",
-          }}
-        >
-          ↓ Download ManyClaw v0.0.1 (.dmg)
-        </a>
-
-        {/* Requirements */}
-        <div
-          style={{
-            borderTop: "1px solid rgba(44,36,24,0.1)",
-            paddingTop: "2rem",
-            marginBottom: "2rem",
-          }}
-        >
-          <p
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "rgba(44,36,24,0.4)",
-              marginBottom: "0.75rem",
-            }}
-          >
-            System Requirements
+        {/* OpenClaw prerequisite */}
+        <div className="border border-border rounded-lg bg-foreground/[0.03] px-5 py-4 mb-8 text-sm text-foreground/70">
+          <p className="m-0">
+            OpenClaw must be installed first.{" "}
+            <a
+              href="https://openclaw.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary no-underline font-medium hover:underline"
+            >
+              Get OpenClaw →
+            </a>
           </p>
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-              margin: 0,
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.4rem",
-              fontSize: "0.9rem",
-              color: "rgba(44,36,24,0.65)",
-            }}
-          >
-            <li>macOS 13 Ventura or later</li>
-            <li>Apple Silicon (arm64)</li>
-          </ul>
         </div>
 
-        {/* Notes */}
-        <p
-          style={{
-            fontSize: "0.875rem",
-            color: "rgba(44,36,24,0.5)",
-            lineHeight: 1.7,
-            marginBottom: "0.5rem",
-          }}
+        {/* Primary download */}
+        <a
+          href="https://github.com/productvibe/manyclaw/releases/download/v0.0.1/ManyClaw-0.0.1-arm64.dmg"
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold text-base px-8 py-3.5 rounded-lg no-underline mb-3 hover:bg-[--color-accent-dark] transition-colors"
         >
-          The DMG is signed and notarized. Open it, drag ManyClaw to Applications, launch.
-        </p>
-        <p style={{ fontSize: "0.875rem", color: "rgba(44,36,24,0.5)" }}>
-          Source code and release notes on{" "}
+          ↓ Download for M1/M2/M3/M4
+        </a>
+
+        {/* Intel link */}
+        <p className="text-sm text-foreground/45 mb-0">
           <a
-            href="https://github.com/productvibe/manyclaw"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#FF6B35", textDecoration: "none" }}
+            href="https://github.com/productvibe/manyclaw/releases/download/v0.0.1/ManyClaw-0.0.1-x64.dmg"
+            className="text-primary no-underline hover:underline"
           >
-            GitHub →
+            ↓ Intel Mac
           </a>
         </p>
 
-        {/* Changelog link */}
-        <p style={{ fontSize: "0.875rem", color: "rgba(44,36,24,0.4)", marginTop: "2rem" }}>
-          Already have it?{" "}
-          <Link
-            to="/blog"
-            style={{ color: "#FF6B35", textDecoration: "none" }}
-          >
-            Check the changelog →
-          </Link>
-        </p>
+        {/* Footer links */}
+        <div className="border-t border-border mt-10 pt-6 text-sm text-foreground/45 space-y-1">
+          <p className="m-0">
+            Source on{" "}
+            <a
+              href="https://github.com/productvibe/manyclaw"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary no-underline hover:underline"
+            >
+              GitHub →
+            </a>
+          </p>
+          <p className="m-0">macOS 13+</p>
+        </div>
       </main>
     </Layout>
   );

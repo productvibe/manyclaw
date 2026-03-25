@@ -17,6 +17,7 @@ export default {
 
     return [
       "/",
+      "/about",
       "/download",
       "/blog",
       ...blogSlugs.map(s => `/blog/${s}`),

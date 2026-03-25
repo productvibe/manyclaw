@@ -849,6 +849,178 @@ export class InstanceManager extends EventEmitter {
     }
   }
 
+  // ── Export / Import ──────────────────────────────────────────────────
+
+  async exportInstance(
+    id: string,
+    outputPath: string,
+    opts?: { includeSessions?: boolean; removeApiKeys?: boolean }
+  ): Promise<{ success: boolean; path?: string; error?: string }> {
+    const inst = this.instances.get(id)
+    if (!inst) return { success: false, error: 'Instance not found' }
+
+    const includeSessions = opts?.includeSessions ?? false
+    const removeApiKeys = opts?.removeApiKeys ?? true
+
+    try {
+      const archiver = (await import('archiver')).default
+      const { createWriteStream } = await import('node:fs')
+
+      // Write metadata so import knows the original name/label
+      const metadata = {
+        version: 1,
+        name: inst.name,
+        label: inst.label,
+        exportedAt: new Date().toISOString(),
+      }
+
+      const output = createWriteStream(outputPath)
+      const archive = archiver('zip', { zlib: { level: 6 } })
+
+      return await new Promise((resolve, reject) => {
+        output.on('close', () => resolve({ success: true, path: outputPath }))
+        archive.on('error', (err) => reject(err))
+
+        archive.pipe(output)
+
+        // Add metadata
+        archive.append(JSON.stringify(metadata, null, 2), { name: 'manifest.json' })
+
+        // Add profile directory contents
+        const profilePath = inst.profileDir
+        if (fs.existsSync(profilePath)) {
+          archive.directory(profilePath, 'profile', (entry) => {
+            // Skip sessions if not included
+            if (!includeSessions && entry.name.includes('/sessions/')) return false
+            return entry
+          })
+        }
+
+        // If removing API keys, we'll patch the config after archiving
+        // Actually, we need to add a modified config instead
+        if (removeApiKeys) {
+          const configPath = path.join(profilePath, 'openclaw.json')
+          if (fs.existsSync(configPath)) {
+            try {
+              const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+              // Strip sensitive tokens
+              if (config.gateway?.auth?.token) config.gateway.auth.token = ''
+              if (config.providers) {
+                for (const p of Object.values(config.providers) as Record<string, unknown>[]) {
+                  if (p && typeof p === 'object' && 'apiKey' in p) p.apiKey = ''
+                  if (p && typeof p === 'object' && 'token' in p) p.token = ''
+                }
+              }
+              // Override the config in the zip
+              archive.append(JSON.stringify(config, null, 2), { name: 'profile/openclaw.json' })
+            } catch { /* config parse failed — include as-is */ }
+          }
+        }
+
+        archive.finalize()
+      })
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Export failed' }
+    }
+  }
+
+  async importInstance(
+    zipPath: string,
+    name: string,
+    port: number,
+  ): Promise<{ success: boolean; id?: string; error?: string }> {
+    try {
+      const extractZip = (await import('extract-zip')).default
+
+      const newId = this.generateId(name)
+      const newDir = profileDir(newId)
+
+      if (fs.existsSync(newDir)) {
+        return { success: false, error: `Directory already exists: ${newDir}` }
+      }
+
+      // Extract to a temp dir first
+      const tmpDir = path.join(os.tmpdir(), `manyclaw-import-${Date.now()}`)
+      await extractZip(zipPath, { dir: tmpDir })
+
+      // Move profile contents to the real profile dir
+      const extractedProfile = path.join(tmpDir, 'profile')
+      if (fs.existsSync(extractedProfile)) {
+        fs.cpSync(extractedProfile, newDir, { recursive: true })
+      } else {
+        // Fallback: maybe the zip has files at root level
+        fs.cpSync(tmpDir, newDir, { recursive: true })
+      }
+
+      // Clean up temp
+      fs.rmSync(tmpDir, { recursive: true, force: true })
+
+      // Remove manifest.json from profile dir if it landed there
+      const manifestInProfile = path.join(newDir, 'manifest.json')
+      if (fs.existsSync(manifestInProfile)) fs.rmSync(manifestInProfile)
+
+      // Update config with new port and fresh auth token
+      const configPath = path.join(newDir, 'openclaw.json')
+      try {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+        if (config.gateway) config.gateway.port = port
+        if (config.agents?.defaults?.workspace) {
+          config.agents.defaults.workspace = path.join(newDir, 'workspace')
+        }
+        const crypto = await import('node:crypto')
+        if (config.gateway?.auth) {
+          config.gateway.auth.token = crypto.randomBytes(24).toString('hex')
+        }
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8')
+      } catch { /* no config — will be created on first start */ }
+
+      // Rewrite any hardcoded paths in session files
+      // We don't know the original path, but we can look for common patterns
+      const agentsDir = path.join(newDir, 'agents')
+      if (fs.existsSync(agentsDir)) {
+        // Find the old path from any session file
+        try {
+          const agents = fs.readdirSync(agentsDir)
+          for (const agent of agents) {
+            const sessionsDir = path.join(agentsDir, agent, 'sessions')
+            try {
+              const files = fs.readdirSync(sessionsDir).filter(f => f.endsWith('.json') || f.endsWith('.jsonl'))
+              for (const file of files) {
+                const content = fs.readFileSync(path.join(sessionsDir, file), 'utf8')
+                // Match old openclaw profile paths and replace with new
+                const oldPathMatch = content.match(/\/Users\/[^"]*?\/\.openclaw-[^"/]*/)
+                if (oldPathMatch) {
+                  const updated = content.replaceAll(oldPathMatch[0], newDir)
+                  fs.writeFileSync(path.join(sessionsDir, file), updated, 'utf8')
+                }
+              }
+            } catch { /* skip */ }
+          }
+        } catch { /* skip */ }
+      }
+
+      // Register the instance
+      const inst: InternalInstance = {
+        id: newId,
+        name,
+        port,
+        color: '#007AFF',
+        status: 'stopped',
+        profileDir: newDir,
+      }
+
+      this.instances.set(newId, inst)
+      this.logs.set(newId, [])
+      this.saveCurrentState()
+      this.emit('statusChanged', toInstanceInfo(inst))
+
+      console.log(`[manager] Imported instance ${newId} from ${zipPath}`)
+      return { success: true, id: newId }
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Import failed' }
+    }
+  }
+
   private generateId(name: string): string {
     const base = name
       .toLowerCase()

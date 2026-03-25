@@ -18,6 +18,7 @@ mac:
   target:
     - target: dmg
       arch:
+        - x64
         - arm64
   # Hardened runtime required for notarization
   hardenedRuntime: true
@@ -28,6 +29,7 @@ mac:
   notarize: true
 
 dmg:
+  artifactName: "${productName}-${version}-${arch}.${ext}"
   sign: true
 
 publish:

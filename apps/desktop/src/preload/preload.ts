@@ -42,6 +42,15 @@ const api: ManyClawAPI = {
     getLogs: (id) =>
       ipcRenderer.invoke('instances:getLogs', id),
 
+    exportInstance: (id, opts?) =>
+      ipcRenderer.invoke('instances:export', id, opts),
+
+    importInstance: (opts) =>
+      ipcRenderer.invoke('instances:import', opts),
+
+    pickImportFile: () =>
+      ipcRenderer.invoke('instances:pickImportFile'),
+
     openDashboard: (id) =>
       ipcRenderer.invoke('instances:openDashboard', id),
 

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Loader2, AlertCircle, CheckCircle2, ClipboardPaste } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Loader2, AlertCircle, CheckCircle2, ClipboardPaste, Upload } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -39,6 +39,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 type Step = 'form' | 'provider' | 'creating' | 'done' | 'error'
+type Tab = 'new' | 'import'
 
 interface InstanceDialogProps {
   open: boolean
@@ -56,10 +57,17 @@ function nameToId(name: string): string {
 
 export default function InstanceDialog({ open, onClose, onCreate }: InstanceDialogProps) {
   const [step, setStep] = useState<Step>('form')
+  const [tab, setTab] = useState<Tab>('new')
   const [statusMsg, setStatusMsg] = useState('')
   const [selectedProvider, setSelectedProvider] = useState('anthropic')
   const [token, setToken] = useState('')
   const [conflicts, setConflicts] = useState<{ idExists: boolean; portExists: boolean; dirExists: boolean }>({ idExists: false, portExists: false, dirExists: false })
+
+  // Import state
+  const [importFile, setImportFile] = useState<string | undefined>()
+  const [importName, setImportName] = useState('')
+  const [importPort, setImportPort] = useState(40001)
+  const [importing, setImporting] = useState(false)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -70,11 +78,18 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
     if (open) {
       form.reset()
       setStep('form')
+      setTab('new')
       setStatusMsg('')
       setSelectedProvider('anthropic')
       setToken('')
       setConflicts({ idExists: false, portExists: false, dirExists: false })
-      window.multiclaw.instances.getNextPort().then((p) => form.setValue('port', p))
+      setImportFile(undefined)
+      setImportName('')
+      setImporting(false)
+      window.multiclaw.instances.getNextPort().then((p) => {
+        form.setValue('port', p)
+        setImportPort(p)
+      })
     }
   }, [open])
 
@@ -148,6 +163,43 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
     }
   }
 
+  async function handleImport() {
+    if (!importFile || !importName.trim()) return
+    setImporting(true)
+    setStep('creating')
+    setStatusMsg('Importing Claw...')
+    try {
+      const result = await window.multiclaw.instances.importInstance({
+        filePath: importFile,
+        name: importName.trim(),
+        port: importPort,
+      })
+      if (result.success) {
+        setStep('done')
+        setStatusMsg('Claw imported.')
+        setTimeout(() => onClose(), 1000)
+      } else {
+        setStep('error')
+        setStatusMsg(result.error ?? 'Import failed')
+      }
+    } catch (err) {
+      setStep('error')
+      setStatusMsg(err instanceof Error ? err.message : 'Import failed')
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  async function handlePickFile() {
+    const filePath = await window.multiclaw.instances.pickImportFile()
+    if (filePath) {
+      setImportFile(filePath)
+      // Extract a suggested name from the filename
+      const basename = filePath.split('/').pop()?.replace('.manyclaw', '') ?? ''
+      if (!importName) setImportName(basename)
+    }
+  }
+
   const currentProvider = AI_PROVIDERS.find(p => p.id === selectedProvider)!
 
   return (
@@ -157,12 +209,95 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
         {step === 'form' && (
           <>
             <DialogHeader className="shrink-0">
-              <DialogTitle>New Claw</DialogTitle>
+              <DialogTitle>
+                <div className="flex gap-1 mb-1">
+                  <button
+                    type="button"
+                    onClick={() => setTab('new')}
+                    className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                      tab === 'new'
+                        ? 'bg-accent font-semibold'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    New
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTab('import')}
+                    className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                      tab === 'import'
+                        ? 'bg-accent font-semibold'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    Import
+                  </button>
+                </div>
+              </DialogTitle>
               <DialogDescription>
-                Each Claw gets its own gateway, workspace, and channels.
+                {tab === 'new'
+                  ? 'Each Claw gets its own gateway, workspace, and channels.'
+                  : 'Import a Claw from a .manyclaw file.'}
               </DialogDescription>
             </DialogHeader>
 
+            {tab === 'import' && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-[1fr_100px] gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium">Name</label>
+                    <Input
+                      placeholder="My Agent"
+                      value={importName}
+                      onChange={(e) => setImportName(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium">Port</label>
+                    <Input
+                      type="number"
+                      min={1024}
+                      max={65535}
+                      className="font-mono"
+                      value={importPort}
+                      onChange={(e) => setImportPort(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handlePickFile}
+                  className="w-full rounded-lg border-2 border-dashed border-border hover:border-foreground/20 transition-colors p-6 text-center cursor-pointer"
+                >
+                  {importFile ? (
+                    <p className="text-sm text-foreground font-mono">{importFile.split('/').pop()}</p>
+                  ) : (
+                    <div className="space-y-1">
+                      <Upload className="h-5 w-5 mx-auto text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">Click to choose .manyclaw file</p>
+                    </div>
+                  )}
+                </button>
+
+                <Separator />
+
+                <div className="flex justify-end gap-3">
+                  <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+                  <Button
+                    type="button"
+                    onClick={handleImport}
+                    disabled={!importFile || !importName.trim() || importing}
+                  >
+                    Import
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {tab === 'new' && (
             <Form {...form}>
               <form onSubmit={(e) => { e.preventDefault(); handleNext() }} className="space-y-4">
                 <div className="grid grid-cols-[1fr_100px] gap-3">
@@ -229,6 +364,7 @@ export default function InstanceDialog({ open, onClose, onCreate }: InstanceDial
                 </div>
               </form>
             </Form>
+            )}
           </>
         )}
 

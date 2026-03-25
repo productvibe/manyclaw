@@ -63,6 +63,28 @@ function registerIpcHandlers(): void {
     return manager.delete(id, opts?.deleteData ?? false)
   })
   ipcMain.handle('instances:getLogs', (_, id: string) => manager.getLogs(id))
+  ipcMain.handle('instances:export', async (_, id: string, opts?: { includeSessions?: boolean; removeApiKeys?: boolean }) => {
+    const inst = manager.getInstance(id)
+    if (!inst) return { success: false, error: 'Instance not found' }
+    const win = BrowserWindow.getAllWindows()[0]
+    const defaultName = `${inst.id}.manyclaw`
+    const result = await dialog.showSaveDialog(win, {
+      defaultPath: defaultName,
+      filters: [{ name: 'ManyClaw Archive', extensions: ['manyclaw'] }],
+    })
+    if (result.canceled || !result.filePath) return { success: false }
+    return manager.exportInstance(id, result.filePath, opts)
+  })
+  ipcMain.handle('instances:import', (_, opts: { filePath: string; name: string; port: number }) =>
+    manager.importInstance(opts.filePath, opts.name, opts.port))
+  ipcMain.handle('instances:pickImportFile', async () => {
+    const win = BrowserWindow.getAllWindows()[0]
+    const result = await dialog.showOpenDialog(win, {
+      filters: [{ name: 'ManyClaw Archive', extensions: ['manyclaw'] }],
+      properties: ['openFile'],
+    })
+    return result.canceled ? undefined : result.filePaths[0]
+  })
   ipcMain.handle('instances:openDashboard', (_, id: string) => manager.openDashboard(id))
   ipcMain.handle('gateway:status', () => manager.getGatewayStatus())
   ipcMain.handle('gateway:start', () => manager.startGateway())

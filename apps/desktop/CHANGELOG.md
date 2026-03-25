@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.2 (2026-03-25)
+
+### Features
+- **Export Claw** — save any instance as a portable `.manyclaw` archive from its profile view. Options to strip API keys/tokens (on by default) and include or exclude session history.
+- **Import Claw** — restore a `.manyclaw` archive as a new instance via a new Import tab in the New Claw dialog. Patches the config with a fresh port and auth token on import.
+
+---
+
 ## 0.0.1 (2026-03-20)
 
 ### Release

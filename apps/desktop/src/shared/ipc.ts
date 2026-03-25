@@ -104,6 +104,15 @@ export interface ManyClawAPI {
     /** Returns recent log lines (up to 2000) for the given instance. */
     getLogs(id: string): Promise<string[]>
 
+    /** Export an instance to a .manyclaw zip file. Returns the chosen path or undefined if cancelled. */
+    exportInstance(id: string, opts?: { includeSessions?: boolean; removeApiKeys?: boolean }): Promise<{ success: boolean; path?: string; error?: string }>
+
+    /** Import an instance from a .manyclaw zip file. */
+    importInstance(opts: { filePath: string; name: string; port: number }): Promise<{ success: boolean; id?: string; error?: string }>
+
+    /** Show a native file open dialog for .manyclaw files. Returns the path or undefined if cancelled. */
+    pickImportFile(): Promise<string | undefined>
+
     /** Open the dashboard in the default browser via `openclaw --profile {id} dashboard` */
     openDashboard(id: string): Promise<void>
 

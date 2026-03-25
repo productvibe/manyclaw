@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Trash2, Loader2 } from 'lucide-react'
+import { Trash2, Loader2, Download } from 'lucide-react'
 import type { InstanceInfo } from '@shared/ipc'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -133,9 +133,94 @@ function DetailsSection({ instance, onClone }: { instance: InstanceInfo; onClone
           </div>
         )}
 
+        <ExportSection instance={instance} />
         <CloneSection instance={instance} onClone={onClone} />
       </div>
     </div>
+  )
+}
+
+function ExportSection({ instance }: { instance: InstanceInfo }) {
+  const [open, setOpen] = useState(false)
+  const [includeSessions, setIncludeSessions] = useState(false)
+  const [removeApiKeys, setRemoveApiKeys] = useState(true)
+  const [exporting, setExporting] = useState(false)
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      await window.multiclaw.instances.exportInstance(instance.id, { includeSessions, removeApiKeys })
+    } finally {
+      setExporting(false)
+      setOpen(false)
+    }
+  }
+
+  return (
+    <>
+      <div className="rounded-lg border border-border p-4 space-y-3">
+        <div>
+          <h4 className="text-sm font-medium">Export Claw</h4>
+          <p className="text-sm text-muted-foreground">
+            Save this Claw as a portable .manyclaw file.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+          <Download className="h-3.5 w-3.5 mr-1.5" />
+          Export
+        </Button>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Export &ldquo;{instance.name}&rdquo;</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="include-sessions"
+                checked={includeSessions}
+                onCheckedChange={(v) => setIncludeSessions(v === true)}
+              />
+              <Label htmlFor="include-sessions" className="text-sm leading-snug cursor-pointer">
+                Include session history
+              </Label>
+            </div>
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="remove-api-keys"
+                checked={removeApiKeys}
+                onCheckedChange={(v) => setRemoveApiKeys(v === true)}
+              />
+              <Label htmlFor="remove-api-keys" className="text-sm leading-snug cursor-pointer">
+                Strip credentials
+              </Label>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Removes API keys, auth tokens, and provider credentials from the export. The recipient will need to configure their own.
+            </p>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)} disabled={exporting}>
+              Cancel
+            </Button>
+            <Button onClick={handleExport} disabled={exporting}>
+              {exporting ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-1.5" /> Exporting...</>
+              ) : (
+                'Export'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
