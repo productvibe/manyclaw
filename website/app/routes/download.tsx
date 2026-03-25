@@ -34,7 +34,7 @@ export default function Download() {
 
         {/* Primary download */}
         <a
-          href="https://github.com/productvibe/manyclaw/releases/download/v0.0.1/ManyClaw-0.0.1-arm64.dmg"
+          href="https://github.com/productvibe/manyclaw/releases/download/v0.0.2/ManyClaw-0.0.2-arm64.dmg"
           className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold text-base px-8 py-3.5 rounded-lg no-underline mb-3 hover:bg-[--color-accent-dark] transition-colors"
         >
           ↓ Download for M1/M2/M3/M4
@@ -43,7 +43,7 @@ export default function Download() {
         {/* Intel link */}
         <p className="text-sm text-foreground/45 mb-0">
           <a
-            href="https://github.com/productvibe/manyclaw/releases/download/v0.0.1/ManyClaw-0.0.1-x64.dmg"
+            href="https://github.com/productvibe/manyclaw/releases/download/v0.0.2/ManyClaw-0.0.2-x64.dmg"
             className="text-primary no-underline hover:underline"
           >
             ↓ Intel Mac
