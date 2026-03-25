@@ -878,13 +878,26 @@
         <div>
           <div class="page-title">Home</div>
           <div class="page-meta">
-            <span class="version-badge">v0.0.1</span>
+            <span class="version-badge">v0.0.2</span>
             <span class="status-badge"><span class="status-badge-dot"></span>Active development</span>
           </div>
-          <div class="page-updated">Last updated 2026-03-22 (afternoon) · Alex, PM</div>
+          <div class="page-updated">Last updated 2026-03-25 · Alex, PM</div>
         </div>
       </div>
       <div class="content">
+
+        <div class="section">
+          <div class="section-header">2026-03-25 — Alex</div>
+          <p class="product-summary">
+            Shipped v0.0.2. New export/import feature lets users move Claws between machines as portable .manyclaw archives.
+          </p>
+          <ul class="product-summary" style="margin-top:12px; padding-left:20px; line-height:2;">
+            <li>Export Claw — save any instance as a .manyclaw archive. Strips API keys by default, optional session history inclusion.</li>
+            <li>Import Claw — restore a .manyclaw archive as a new instance via a new Import tab in the New Claw dialog. Auto-patches port and auth token.</li>
+            <li>v0.0.2 released on GitHub with arm64 + x64 DMGs. Download page updated.</li>
+            <li>Blog post: "The Agent That Runs Your Blog" — Gray, March 25.</li>
+          </ul>
+        </div>
 
         <div class="section">
           <div class="section-header">2026-03-22 — Alex</div>
@@ -995,7 +1008,7 @@
             </div>
             <div class="fact-row">
               <div class="fact-label">Version</div>
-              <div class="fact-value"><code>v0.0.1</code> — signed &amp; notarized DMG</div>
+              <div class="fact-value"><code>v0.0.2</code> — signed &amp; notarized DMG</div>
             </div>
             <div class="fact-row">
               <div class="fact-label">Domain</div>
@@ -1226,10 +1239,6 @@
                   <div class="kanban-card-title">macOS — stable v1</div>
                   <div class="kanban-card-note">Polish the core experience. Reliable instance management, no rough edges.</div>
                 </div>
-                <div class="kanban-card">
-                  <div class="kanban-card-title">Auto-update</div>
-                  <div class="kanban-card-note">In progress — electron-updater wired to GitHub Releases. Ships with next build.</div>
-                </div>
               </div>
             </div>
 
@@ -1361,11 +1370,11 @@
             </div>
             <div class="task-row">
               <span class="task-dot-done"></span>
-              <span class="task-title-done">v0.0.1 GitHub Release created with signed DMG</span>
+              <span class="task-title-done">v0.0.2 GitHub Release — export/import Claws (arm64 + x64)</span>
             </div>
             <div class="task-row">
               <span class="task-dot-done"></span>
-              <span class="task-title-done">Auto-update wired via electron-updater</span>
+              <span class="task-title-done">Auto-update wired via electron-updater (shipped v0.0.2)</span>
             </div>
             <div class="task-row">
               <span class="task-dot-done"></span>
@@ -1467,6 +1476,18 @@
       <div class="content">
         <div class="section">
           <div class="changelog-list">
+
+            <div class="changelog-entry">
+              <div class="changelog-header">
+                <span class="changelog-version">v0.0.2</span>
+                <span class="changelog-date">2026-03-25</span>
+              </div>
+              <ul class="changelog-items">
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Export Claw — save any instance as a portable .manyclaw archive. Strips API keys by default.</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>Import Claw — restore a .manyclaw archive as a new instance. Auto-patches port and auth token.</div></li>
+                <li><div class="changelog-item"><div class="changelog-bullet"></div>arm64 + x64 DMGs released on GitHub</div></li>
+              </ul>
+            </div>
 
             <div class="changelog-entry">
               <div class="changelog-header">
